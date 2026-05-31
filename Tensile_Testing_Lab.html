@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EG4022 · Tensile Strength Testing Laboratory</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #f5f2ec;
+  --paper:     #fdfcf8;
+  --ink:       #1a1a18;
+  --muted:     #7a7568;
+  --rule:      #d8d3c8;
+  --amber:     #c8860a;
+  --red:       #c0392b;
+  --blue:      #1a4a8a;
+  --green:     #2a7a4a;
+  --steel:     #4a6878;
+  --steel-lt:  #d0dce4;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --shadow:    0 1px 3px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*::selection{background:transparent}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── HEADER ── */
+.lab-header{background:var(--ink);color:var(--bg);padding:1.2rem 2rem;display:flex;align-items:center;gap:2rem;border-bottom:3px solid var(--amber)}
+.lab-header .logo{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);line-height:1.4}
+.lab-header h1{font-family:var(--font-mono);font-size:1rem;font-weight:700;letter-spacing:.04em;color:#fff}
+.lab-header .subtitle{font-size:.75rem;color:#999;font-weight:300;margin-top:.1rem}
+.lab-header .status-pill{margin-left:auto;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .8rem;border:1px solid;color:var(--amber);border-color:var(--amber)}
+.lab-header .status-pill.running{color:#4caf50;border-color:#4caf50;animation:blink 1s infinite}
+.lab-header .status-pill.complete{color:#64b5f6;border-color:#64b5f6}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── STAGE NAV ── */
+.stage-nav{background:var(--paper);border-bottom:1px solid var(--rule);display:flex;overflow-x:auto}
+.stage-btn{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.9rem 1.4rem;border:none;border-bottom:3px solid transparent;background:none;cursor:pointer;color:var(--muted);white-space:nowrap;transition:all .2s;position:relative}
+.stage-btn .step-num{display:block;font-size:.55rem;color:var(--muted);margin-bottom:.1rem;opacity:.6}
+.stage-btn:hover{color:var(--ink)}
+.stage-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+.stage-btn.done{color:var(--green);border-bottom-color:var(--green)}
+.stage-btn.done::after{content:' ✓';font-size:.6rem}
+
+/* ── LAYOUT ── */
+.lab-body{display:grid;grid-template-columns:1fr 360px;min-height:calc(100vh - 112px)}
+@media(max-width:900px){.lab-body{grid-template-columns:1fr}}
+.main-pane{padding:2rem;border-right:1px solid var(--rule)}
+.side-pane{padding:1.5rem;background:var(--paper);overflow-y:auto;max-height:calc(100vh - 112px);position:sticky;top:0}
+
+/* ── STAGES ── */
+.stage{display:none}
+.stage.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stage-title{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.stage-h2{font-family:var(--font-mono);font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:1.5rem;padding-bottom:.8rem;border-bottom:1px solid var(--rule)}
+
+/* ── CARDS ── */
+.card{background:var(--paper);border:1px solid var(--rule);padding:1.4rem;margin-bottom:1.2rem;box-shadow:var(--shadow)}
+.card-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.card-label::before{content:'';display:block;width:8px;height:1px;background:var(--muted)}
+
+/* ── SPECIMEN GRID ── */
+.specimen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1rem}
+@media(max-width:700px){.specimen-grid{grid-template-columns:repeat(2,1fr)}}
+.spec-select-card{border:2px solid var(--rule);padding:.9rem;cursor:pointer;transition:all .2s;background:var(--paper);text-align:center}
+.spec-select-card:hover{border-color:var(--steel)}
+.spec-select-card.selected{border-color:var(--amber);background:#fdf8ec}
+.spec-swatch{width:100%;height:6px;border-radius:1px;margin-bottom:.6rem}
+.spec-mat-name{font-family:var(--font-mono);font-size:.75rem;font-weight:700;color:var(--ink);margin-bottom:.2rem}
+.spec-mat-class{font-size:.65rem;color:var(--muted);margin-bottom:.4rem}
+.spec-hint{font-size:.68rem;color:var(--muted);line-height:1.4}
+
+/* ── SPECIMEN CONTAINER ── */
+.spec-container{width:100%;display:flex;justify-content:center;padding:1rem 0}
+
+/* ── FORM ROWS ── */
+.form-row{display:flex;align-items:center;gap:1rem;margin-bottom:.9rem}
+.form-row label{font-size:.78rem;color:var(--ink);min-width:160px}
+.form-row input[type=number],.form-row select{background:var(--bg);border:1px solid var(--rule);padding:.4rem .7rem;font-family:var(--font-mono);font-size:.8rem;color:var(--ink);width:auto;min-width:140px;outline:none}
+.form-row input[type=range]{flex:1;accent-color:var(--amber);cursor:pointer}
+.form-row input:focus,.form-row select:focus{border-color:var(--amber)}
+.form-unit{font-family:var(--font-mono);font-size:.7rem;color:var(--muted)}
+.val-badge{font-family:var(--font-mono);font-size:.75rem;font-weight:700;color:var(--amber);min-width:60px}
+
+/* ── BUTTONS ── */
+.btn-primary{background:var(--ink);color:var(--bg);border:none;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.8rem 2rem;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.5rem}
+.btn-primary:hover{background:var(--amber)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:transparent;color:var(--ink);border:1px solid var(--ink);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.7rem 1.5rem;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.5rem}
+.btn-secondary:hover{background:var(--ink);color:var(--bg)}
+.btn-secondary:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── MACHINE WRAP ── */
+.machine-wrap{display:flex;justify-content:center;align-items:center;margin:1.5rem 0;height:280px;position:relative;overflow:hidden;background:linear-gradient(180deg,#eee8dc 0%,#f5f2ec 100%);border:1px solid var(--rule)}
+
+/* ── LIVE CHART ── */
+#liveChart{width:100%;height:300px;background:var(--ink);border:1px solid #333;display:block}
+
+/* ── READOUTS ── */
+.readout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1rem}
+.readout-box{background:var(--ink);color:var(--bg);padding:.8rem;text-align:center}
+.readout-val{font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:var(--amber);display:block;line-height:1}
+.readout-lbl{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-top:.3rem}
+
+/* ── PROGRESS ── */
+.test-progress-wrap{height:4px;background:#333;margin-bottom:1rem;overflow:hidden}
+.test-progress-fill{height:100%;background:var(--amber);transition:width .1s linear}
+
+/* ── PHASE TAGS ── */
+.phase-indicator{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.phase-tag{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--rule);color:var(--muted);transition:all .2s}
+.phase-tag.active-elastic{border-color:var(--green);color:var(--green);background:#efffef;font-weight:600}
+.phase-tag.active-yield{border-color:var(--amber);color:var(--amber);background:#fff8ee;font-weight:600}
+.phase-tag.active-plastic{border-color:#e07820;color:#e07820;background:#fff5e8;font-weight:600}
+.phase-tag.active-neck{border-color:var(--red);color:var(--red);background:#fff0ee;font-weight:600}
+.phase-tag.active-fracture{border-color:var(--red);background:var(--red);color:#fff;font-weight:600}
+
+/* ── OBS LOG ── */
+.obs-log{background:var(--ink);color:#ccc;font-family:var(--font-mono);font-size:.68rem;padding:.8rem;height:110px;overflow-y:auto;line-height:1.8}
+.obs-time{color:var(--amber)}
+.obs-event{color:#7cf}
+.obs-warn{color:#fc7}
+.obs-error{color:#f77}
+.obs-ok{color:#6f6}
+
+/* ── RESULTS TABLE ── */
+.results-table{width:100%;border-collapse:collapse;font-size:.8rem;font-family:var(--font-mono);margin-bottom:1rem}
+.results-table th{background:var(--ink);color:var(--bg);padding:.5rem .8rem;text-align:left;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
+.results-table td{padding:.5rem .8rem;border-bottom:1px solid var(--rule);color:var(--ink)}
+.results-table tr:nth-child(even) td{background:#f5f2ec}
+.results-table .highlight{color:var(--amber);font-weight:600}
+
+/* ── ANALYSIS CHART ── */
+#analysisChart{width:100%;height:380px;background:var(--paper);border:1px solid var(--rule);display:block}
+
+/* ── REPORT SECTIONS ── */
+.report-section{border:1px solid var(--rule);margin-bottom:1.2rem;overflow:hidden}
+.report-section-header{background:var(--ink);color:var(--bg);padding:.6rem 1rem;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.report-section-body{padding:1rem;background:var(--paper)}
+.report-field{width:100%;border:none;border-bottom:1px solid var(--rule);background:transparent;font-family:var(--font-body);font-size:.82rem;color:var(--ink);padding:.4rem 0;margin-bottom:.8rem;resize:none;outline:none;line-height:1.6}
+.report-field:focus{border-bottom-color:var(--amber)}
+.report-field-label{font-family:var(--font-mono);font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem}
+.auto-filled{font-family:var(--font-mono);font-size:.75rem;color:var(--blue);background:#eef3ff;border:1px solid #c0d0f0;padding:.4rem .7rem;margin-bottom:.8rem;display:block;line-height:1.7}
+
+/* ── SIDE PANEL ── */
+.side-title{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--rule)}
+.info-block{margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--rule)}
+.info-block:last-child{border-bottom:none}
+.info-block h4{font-family:var(--font-mono);font-size:.7rem;font-weight:600;color:var(--ink);margin-bottom:.4rem}
+.info-block p{font-size:.77rem;color:var(--muted);line-height:1.6}
+.formula-box{background:var(--bg);border-left:3px solid var(--amber);padding:.6rem .8rem;font-family:var(--font-mono);font-size:.75rem;color:var(--ink);margin-top:.5rem;line-height:1.8}
+
+/* ── CHECKLIST ── */
+.checklist{margin-top:.5rem}
+.check-item{display:flex;gap:.5rem;align-items:flex-start;font-size:.75rem;color:var(--muted);margin-bottom:.3rem;cursor:pointer;transition:color .15s}
+.check-item input[type=checkbox]{margin-top:.1rem;accent-color:var(--amber)}
+.check-item.checked{color:var(--green);text-decoration:line-through}
+
+/* ── HS2 CALLOUT ── */
+.hs2-callout{background:#fdf8ec;border:1px solid #e8c878;border-left:4px solid var(--amber);padding:.8rem 1rem;margin:.8rem 0;font-size:.78rem;color:var(--ink);line-height:1.6}
+.hs2-callout strong{color:var(--amber);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:.3rem}
+
+/* ── PRINT ── */
+@media print{
+  .lab-header,.stage-nav,.side-pane,.btn-primary,.btn-secondary{display:none!important}
+  .lab-body{grid-template-columns:1fr}
+  .main-pane{padding:0}
+  .stage{display:block!important}
+  .card{box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="lab-header">
+  <div class="logo">EG4022 Engineering Materials<br/>Malvern University Partnerships · UEL</div>
+  <div>
+    <h1>Tensile Strength Testing Laboratory</h1>
+    <div class="subtitle">Virtual Experiment · Based on BS EN ISO 6892-1 · HS2 Phase One Context · Vismay Loliyaniya — Module Lead</div>
+  </div>
+  <div class="status-pill" id="labStatus">STANDBY</div>
+</header>
+
+<!-- STAGE NAV -->
+<nav class="stage-nav">
+  <button class="stage-btn active" id="btn-s1" onclick="goStage(1)"><span class="step-num">Stage 01</span>Specimen Setup</button>
+  <button class="stage-btn" id="btn-s2" onclick="goStage(2)"><span class="step-num">Stage 02</span>Machine Setup</button>
+  <button class="stage-btn" id="btn-s3" onclick="goStage(3)"><span class="step-num">Stage 03</span>Run Test</button>
+  <button class="stage-btn" id="btn-s4" onclick="goStage(4)"><span class="step-num">Stage 04</span>Results &amp; Analysis</button>
+  <button class="stage-btn" id="btn-s5" onclick="goStage(5)"><span class="step-num">Stage 05</span>Lab Report</button>
+</nav>
+
+<div class="lab-body">
+<div class="main-pane">
+
+<!-- ══════════ STAGE 1 ══════════ -->
+<div class="stage active" id="stage-1">
+  <div class="stage-title">Stage 01 / 05</div>
+  <h2 class="stage-h2">Specimen Preparation &amp; Material Selection</h2>
+
+  <div class="card">
+    <div class="card-label">Select material specimen — 8 engineering materials</div>
+    <div class="specimen-grid" id="specimenGrid">
+      <div class="spec-select-card selected" onclick="selectMaterial('s355',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#2a4a7a,#4a6a9a)"></div>
+        <div class="spec-mat-name">S355 Structural Steel</div>
+        <div class="spec-mat-class">Metal · Ferrous · HS2</div>
+        <div class="spec-hint">Primary HS2 viaduct steel. Clear yield point. Excellent ductility and weldability.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('mild_steel',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#7a8a8a,#c0c8c8)"></div>
+        <div class="spec-mat-name">Mild Steel S275</div>
+        <div class="spec-mat-class">Metal · Ferrous</div>
+        <div class="spec-hint">Classic ductile behaviour. Sharp upper and lower yield point. Cottrell atmosphere pinning.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('rail900',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#8a6010,#c8a040)"></div>
+        <div class="spec-mat-name">Rail Steel 900A</div>
+        <div class="spec-mat-class">Metal · Ferrous · HS2</div>
+        <div class="spec-hint">HS2 mainline rail. High UTS ≥900 MPa. Pearlitic microstructure. Resists RCF at 360 km/h.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('aluminium',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#b8c8d0,#e0e8ec)"></div>
+        <div class="spec-mat-name">Aluminium 6061-T6</div>
+        <div class="spec-mat-class">Metal · Non-ferrous</div>
+        <div class="spec-hint">Lightweight, no distinct yield. Uses 0.2% proof stress. OLE masts in HS2.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('stainless',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#a0a8b0,#d8dce0)"></div>
+        <div class="spec-mat-name">Stainless Steel 316L</div>
+        <div class="spec-mat-class">Metal · Ferrous · Austenitic</div>
+        <div class="spec-hint">High corrosion resistance. Austenitic FCC structure — no DBTT. Used for fixings.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('cast_iron',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#404848,#686868)"></div>
+        <div class="spec-mat-name">Cast Iron (Grey)</div>
+        <div class="spec-mat-class">Metal · Ferrous · Brittle</div>
+        <div class="spec-hint">Brittle. Fractures suddenly. Graphite flakes = internal notches. Low K_IC.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('copper',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#b87333,#d4904a)"></div>
+        <div class="spec-mat-name">Copper (Annealed)</div>
+        <div class="spec-mat-class">Metal · Non-ferrous</div>
+        <div class="spec-hint">Extremely ductile. Very high elongation. Low yield strength. Excellent toughness.</div>
+      </div>
+      <div class="spec-select-card" onclick="selectMaterial('hdpe',this)">
+        <div class="spec-swatch" style="background:linear-gradient(90deg,#e8e0d0,#f0ece4)"></div>
+        <div class="spec-mat-name">HDPE Polymer</div>
+        <div class="spec-mat-class">Polymer · Thermoplastic</div>
+        <div class="spec-hint">Very low E (~1 GPa). Cold-drawing neck propagation. Demonstrates polymer behaviour.</div>
+      </div>
+    </div>
+    <div class="hs2-callout" id="matCallout">
+      <strong>🚄 HS2 Phase One — Material Context</strong>
+      S355 J2+N is the primary structural steel for HS2 Phase One, used in the Colne Valley Viaduct (3.4 km), portal frames, and all primary load-bearing connections. Yield strength 355 MPa, UTS 470–630 MPa, elongation ≥22%. Specified to EN 10025-2 with Charpy impact test at −20°C (27 J min) to prevent brittle fracture in UK winter conditions.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Specimen dimensions — BS EN ISO 6892-1</div>
+    <div class="form-row">
+      <label>Gauge Length (L₀)</label>
+      <input type="number" id="gaugeLen" value="50" min="20" max="200">
+      <span class="form-unit">mm</span>
+    </div>
+    <div class="form-row">
+      <label>Width (b)</label>
+      <input type="number" id="specWidth" value="12.5" min="5" max="30" step="0.5">
+      <span class="form-unit">mm</span>
+    </div>
+    <div class="form-row">
+      <label>Thickness (a)</label>
+      <input type="number" id="specThick" value="3.0" min="1" max="10" step="0.1">
+      <span class="form-unit">mm</span>
+    </div>
+    <div style="margin-top:.5rem;padding:.6rem .8rem;background:#eef3ff;border:1px solid #c0d0f0;font-family:var(--font-mono);font-size:.75rem;color:var(--blue)">
+      Cross-sectional Area A₀ = b × a = <strong id="areaCalc">37.5 mm²</strong> &nbsp;|&nbsp; Standard L₀ = 5.65 × √A₀ = <strong id="stdL0">34.6 mm</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Specimen diagram</div>
+    <div class="spec-container">
+      <svg id="specimenSVG" width="520" height="85" viewBox="0 0 520 85">
+        <rect x="0" y="14" width="105" height="52" rx="2" fill="#555" opacity=".75"/>
+        <rect x="415" y="14" width="105" height="52" rx="2" fill="#555" opacity=".75"/>
+        <line x1="18" y1="14" x2="18" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="32" y1="14" x2="32" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="46" y1="14" x2="46" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="60" y1="14" x2="60" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="74" y1="14" x2="74" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="88" y1="14" x2="88" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="432" y1="14" x2="432" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="446" y1="14" x2="446" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="460" y1="14" x2="460" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="474" y1="14" x2="474" y2="66" stroke="#888" stroke-width="1"/>
+        <line x1="488" y1="14" x2="488" y2="66" stroke="#888" stroke-width="1"/>
+        <path id="specPath" d="M 105,14 Q 135,14 145,27 L 375,27 Q 385,14 415,14 L 415,66 Q 385,66 375,53 L 145,53 Q 135,66 105,66 Z" fill="#c0c8c8" stroke="#888" stroke-width="1"/>
+        <line x1="145" y1="6" x2="375" y2="6" stroke="#c8860a" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="145" y1="3" x2="145" y2="9" stroke="#c8860a" stroke-width="1.5"/>
+        <line x1="375" y1="3" x2="375" y2="9" stroke="#c8860a" stroke-width="1.5"/>
+        <text x="260" y="3" text-anchor="middle" fill="#c8860a" font-size="9" font-family="IBM Plex Mono" id="gaugeLbl">L₀ = 50 mm</text>
+        <text x="52" y="80" text-anchor="middle" fill="#888" font-size="8" font-family="IBM Plex Mono">GRIP</text>
+        <text x="468" y="80" text-anchor="middle" fill="#888" font-size="8" font-family="IBM Plex Mono">GRIP</text>
+        <text x="260" y="43" text-anchor="middle" fill="#555" font-size="9" font-family="IBM Plex Mono" id="specDimLabel">b=12.5 · a=3.0 mm</text>
+        <line x1="105" y1="78" x2="260" y2="78" stroke="#c8860a" stroke-width="1" marker-end="none" opacity=".4"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Pre-test checklist</div>
+    <div class="checklist" id="checklistPre">
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Specimen dimensions measured and recorded with digital callipers (3 s.f.)</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Gauge length L₀ marked with centre punch marks</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Specimen surface inspected — no visible notches, corrosion, or surface defects</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Cross-sectional area A₀ calculated and recorded</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Material certificate reviewed — batch/heat number noted</label>
+    </div>
+    <div style="margin-top:1rem">
+      <button class="btn-primary" onclick="completeStage1()">Proceed to Machine Setup →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 2 ══════════ -->
+<div class="stage" id="stage-2">
+  <div class="stage-title">Stage 02 / 05</div>
+  <h2 class="stage-h2">Universal Testing Machine Setup</h2>
+
+  <div class="card">
+    <div class="card-label">Machine configuration</div>
+    <div class="form-row">
+      <label>Crosshead Speed</label>
+      <select id="crossheadSpeed">
+        <option value="1">1 mm/min — Method A slow</option>
+        <option value="2" selected>2 mm/min — Method B standard</option>
+        <option value="5">5 mm/min — Method B fast</option>
+        <option value="10">10 mm/min — rapid screening</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Load Cell Capacity</label>
+      <select id="loadCell">
+        <option value="10">10 kN (small specimens)</option>
+        <option value="50" selected>50 kN (standard)</option>
+        <option value="100">100 kN (large specimens)</option>
+        <option value="250">250 kN (heavy structural)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Data Sample Rate</label>
+      <select id="sampleRate">
+        <option value="5">5 Hz — standard</option>
+        <option value="10" selected>10 Hz — recommended</option>
+        <option value="50">50 Hz — high detail</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Extensometer Type</label>
+      <select id="extensometerType">
+        <option value="clip">Clip-on extensometer (±50mm)</option>
+        <option value="video">Video extensometer (non-contact)</option>
+        <option value="laser">Laser extensometer (high accuracy)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Test Temperature</label>
+      <select id="testTemp">
+        <option value="room">Room temperature (20°C)</option>
+        <option value="cold">Cold (−20°C) — Charpy comparison</option>
+        <option value="elevated">Elevated (300°C)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">UTM schematic — Instron 5982 type</div>
+    <div class="machine-wrap">
+      <svg width="220" height="270" viewBox="0 0 220 270">
+        <!-- Frame columns -->
+        <rect x="8" y="8" width="22" height="254" rx="3" fill="#555"/>
+        <rect x="190" y="8" width="22" height="254" rx="3" fill="#555"/>
+        <!-- Top crosspiece -->
+        <rect x="8" y="8" width="204" height="18" rx="3" fill="#444"/>
+        <!-- Bottom base -->
+        <rect x="4" y="242" width="212" height="20" rx="3" fill="#444"/>
+        <!-- Crosshead (moving) -->
+        <rect id="machCrosshead" x="30" y="38" width="160" height="22" rx="2" fill="#666"/>
+        <text x="110" y="53" text-anchor="middle" fill="#ddd" font-size="9" font-family="IBM Plex Mono">CROSSHEAD ↑</text>
+        <!-- Load cell (amber) -->
+        <rect x="82" y="62" width="56" height="16" rx="2" fill="#c8860a"/>
+        <text x="110" y="74" text-anchor="middle" fill="#fff" font-size="7.5" font-family="IBM Plex Mono">LOAD CELL</text>
+        <!-- Upper grip -->
+        <rect x="72" y="80" width="76" height="20" rx="1" fill="#666"/>
+        <text x="110" y="94" text-anchor="middle" fill="#ddd" font-size="8" font-family="IBM Plex Mono">GRIP ↑</text>
+        <!-- Specimen -->
+        <rect id="machSpec" x="88" y="102" width="44" height="60" rx="1" fill="#c0c8c8" stroke="#888" stroke-width="1"/>
+        <text x="110" y="135" text-anchor="middle" fill="#555" font-size="7" font-family="IBM Plex Mono">SPECIMEN</text>
+        <!-- Extensometer clips -->
+        <rect x="78" y="115" width="10" height="34" rx="1" fill="#1a4a8a" opacity=".8"/>
+        <rect x="132" y="115" width="10" height="34" rx="1" fill="#1a4a8a" opacity=".8"/>
+        <line x1="78" y1="127" x2="68" y2="127" stroke="#1a4a8a" stroke-width="1.5"/>
+        <line x1="142" y1="127" x2="152" y2="127" stroke="#1a4a8a" stroke-width="1.5"/>
+        <text x="58" y="131" text-anchor="middle" fill="#1a4a8a" font-size="6" font-family="IBM Plex Mono">EXT</text>
+        <!-- Lower grip -->
+        <rect x="72" y="164" width="76" height="20" rx="1" fill="#666"/>
+        <text x="110" y="178" text-anchor="middle" fill="#ddd" font-size="8" font-family="IBM Plex Mono">GRIP ↓</text>
+        <!-- Fixed base plate -->
+        <rect x="30" y="186" width="160" height="18" rx="2" fill="#555"/>
+        <text x="110" y="199" text-anchor="middle" fill="#ddd" font-size="8" font-family="IBM Plex Mono">FIXED BASE</text>
+        <!-- Display panel -->
+        <rect x="30" y="208" width="70" height="28" rx="2" fill="#1a1a18" stroke="#444" stroke-width="1"/>
+        <text x="65" y="220" text-anchor="middle" fill="#c8860a" font-size="7" font-family="IBM Plex Mono" id="machDisplay">0.00 kN</text>
+        <text x="65" y="230" text-anchor="middle" fill="#666" font-size="6" font-family="IBM Plex Mono">FORCE</text>
+        <!-- Force arrow up -->
+        <defs><marker id="arrowU" markerWidth="8" markerHeight="8" refX="4" refY="6" orient="auto"><path d="M2,7 L4,3 L6,7" fill="none" stroke="#c8860a" stroke-width="1.5"/></marker></defs>
+        <line x1="110" y1="36" x2="110" y2="18" stroke="#c8860a" stroke-width="2" marker-end="url(#arrowU)"/>
+        <text x="122" y="28" fill="#c8860a" font-size="8" font-family="IBM Plex Mono">F↑</text>
+        <!-- Labels -->
+        <text x="110" y="266" text-anchor="middle" fill="#888" font-size="8" font-family="IBM Plex Mono">Universal Testing Machine</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Machine setup checklist</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Specimen aligned vertically — no lateral offset in grips</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Extensometer zeroed and attached at gauge marks</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Load cell tared to zero with grips fitted</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Load cell capacity checked — does not exceed specimen fracture load estimate</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Data acquisition system running — sample rate confirmed</label>
+      <label class="check-item"><input type="checkbox" onchange="updateChecklist()"> Safety screens closed — personnel clear of loading axis</label>
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:.8rem">
+      <button class="btn-secondary" onclick="goStage(1)">← Back</button>
+      <button class="btn-primary" onclick="completeStage2()">Ready to Test →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 3 ══════════ -->
+<div class="stage" id="stage-3">
+  <div class="stage-title">Stage 03 / 05</div>
+  <h2 class="stage-h2">Tensile Test Execution — Live Simulation</h2>
+
+  <div class="readout-grid">
+    <div class="readout-box"><span class="readout-val" id="rdForce">0.00</span><div class="readout-lbl">Force (kN)</div></div>
+    <div class="readout-box"><span class="readout-val" id="rdStress">0.00</span><div class="readout-lbl">Stress (MPa)</div></div>
+    <div class="readout-box"><span class="readout-val" id="rdStrain">0.0000</span><div class="readout-lbl">Strain (mm/mm)</div></div>
+    <div class="readout-box"><span class="readout-val" id="rdExt">0.000</span><div class="readout-lbl">Extension (mm)</div></div>
+    <div class="readout-box"><span class="readout-val" id="rdYield" style="color:#888">—</span><div class="readout-lbl">Yield Stress (MPa)</div></div>
+    <div class="readout-box"><span class="readout-val" id="rdUTS" style="color:#888">—</span><div class="readout-lbl">UTS (MPa)</div></div>
+  </div>
+
+  <div class="test-progress-wrap"><div class="test-progress-fill" id="testProgress" style="width:0%"></div></div>
+
+  <div class="phase-indicator">
+    <div class="phase-tag" id="phElastic">① Elastic</div>
+    <div class="phase-tag" id="phYield">② Yield</div>
+    <div class="phase-tag" id="phPlastic">③ Plastic / Hardening</div>
+    <div class="phase-tag" id="phNeck">④ Necking</div>
+    <div class="phase-tag" id="phFracture">⑤ Fracture</div>
+  </div>
+
+  <canvas id="liveChart"></canvas>
+
+  <div style="margin-top:.8rem">
+    <div class="card-label">Observation log</div>
+    <div class="obs-log" id="obsLog"><span class="obs-time">[00:00]</span> System ready. Select material and press ▶ Start Test.</div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label">Specimen deformation — live visualisation</div>
+    <div class="spec-container">
+      <svg id="liveSpecSVG" width="520" height="90" viewBox="0 0 520 90">
+        <rect x="0" y="14" width="100" height="52" rx="2" fill="#555" opacity=".75"/>
+        <rect x="420" y="14" width="100" height="52" rx="2" fill="#555" opacity=".75"/>
+        <path id="liveSpecPath" d="M 100,14 Q 125,14 135,27 L 385,27 Q 395,14 420,14 L 420,66 Q 395,66 385,53 L 135,53 Q 125,66 100,66 Z" fill="#c0c8c8" stroke="#888" stroke-width="1"/>
+        <text id="liveSpecLabel" x="260" y="82" text-anchor="middle" fill="#888" font-size="8" font-family="IBM Plex Mono">Phase: Ready — awaiting test start</text>
+      </svg>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:.8rem;margin-top:1rem;flex-wrap:wrap">
+    <button class="btn-primary" id="btnStartTest" onclick="startTest()">▶ Start Test</button>
+    <button class="btn-secondary" id="btnStopTest" onclick="stopTest()" disabled>■ Stop</button>
+    <button class="btn-secondary" onclick="resetTest()">↺ Reset</button>
+    <button class="btn-secondary" onclick="goStage(2)">← Setup</button>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 4 ══════════ -->
+<div class="stage" id="stage-4">
+  <div class="stage-title">Stage 04 / 05</div>
+  <h2 class="stage-h2">Results &amp; Analysis</h2>
+
+  <div class="card">
+    <div class="card-label">Experimental results summary</div>
+    <table class="results-table">
+      <thead><tr><th>Parameter</th><th>Symbol</th><th>Measured Value</th><th>Published Value</th><th>Unit</th></tr></thead>
+      <tbody id="resultsTbody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Stress–Strain curve — final analysis</div>
+    <canvas id="analysisChart"></canvas>
+    <div style="margin-top:.8rem;display:flex;gap:1.4rem;flex-wrap:wrap;font-size:.72rem;font-family:var(--font-mono);color:var(--muted)">
+      <span><span style="color:#2a7a4a">─</span> Elastic region</span>
+      <span><span style="color:#c8860a">─</span> Yield / Plastic</span>
+      <span><span style="color:#c0392b">─</span> Necking / Fracture</span>
+      <span><span style="color:#1a4a8a">- -</span> 0.2% Proof offset</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Derived calculations — show your working</div>
+    <div id="workingOut" style="font-family:var(--font-mono);font-size:.76rem;line-height:2;color:var(--ink);background:var(--bg);padding:1rem;border:1px solid var(--rule);white-space:pre-wrap"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Comparison with published values</div>
+    <div id="comparisonTable"></div>
+    <p style="font-size:.7rem;color:var(--muted);margin-top:.5rem">* Published values from Callister &amp; Rethwisch (2020) and EN 10025-2 / EN 13674-1</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">HS2 Phase One — engineering context</div>
+    <div id="hs2Context" class="hs2-callout"></div>
+  </div>
+
+  <div style="display:flex;gap:.8rem;margin-top:1rem;flex-wrap:wrap">
+    <button class="btn-secondary" onclick="goStage(3)">← Re-run Test</button>
+    <button class="btn-primary" onclick="goStage(5)">Write Lab Report →</button>
+  </div>
+</div>
+
+<!-- ══════════ STAGE 5 ══════════ -->
+<div class="stage" id="stage-5">
+  <div class="stage-title">Stage 05 / 05</div>
+  <h2 class="stage-h2">Laboratory Report</h2>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>1. Title &amp; Author Information</span></div>
+    <div class="report-section-body">
+      <div class="report-field-label">Report title (auto-generated)</div>
+      <div class="auto-filled" id="rTitle">Tensile Testing of [Material] — EG4022 Engineering Materials</div>
+      <div class="report-field-label">Student name</div>
+      <input class="report-field" type="text" placeholder="Enter your full name…" style="display:block;width:100%;border:none;border-bottom:1px solid var(--rule);padding:.4rem 0;background:transparent;font-family:var(--font-body);font-size:.82rem;outline:none;margin-bottom:.6rem">
+      <div class="report-field-label">Student ID</div>
+      <input class="report-field" type="text" placeholder="Enter your student ID…" style="display:block;width:100%;border:none;border-bottom:1px solid var(--rule);padding:.4rem 0;background:transparent;font-family:var(--font-body);font-size:.82rem;outline:none;margin-bottom:.6rem">
+      <div class="report-field-label">Module &amp; Date</div>
+      <div class="auto-filled">EG4022 Engineering Materials · University of East London · Malvern University Partnerships · BS EN ISO 6892-1</div>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>2. Abstract — write your own (≈ 100 words)</span></div>
+    <div class="report-section-body">
+      <div class="report-field-label">Summarise aim, method, key results, and conclusion</div>
+      <textarea class="report-field" rows="4" id="rAbstract" placeholder="This experiment investigated the tensile properties of [material] using a Universal Testing Machine in accordance with BS EN ISO 6892-1. Specimens of standard geometry (L₀ = 50 mm) were loaded to fracture at 2 mm/min crosshead speed. The key mechanical properties obtained were Young's modulus E = ___ GPa, yield strength σy = ___ MPa, UTS = ___ MPa, and elongation at fracture = ___%. These results are compared with published data and discussed in the context of HS2 Phase One material specifications…"></textarea>
+      <div id="rAbstractAuto" style="font-size:.7rem;color:var(--muted);font-family:var(--font-mono);margin-top:-.3rem"></div>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>3. Introduction &amp; Aims</span></div>
+    <div class="report-section-body">
+      <div class="report-field-label">Background, aims, and engineering relevance (≈ 150 words)</div>
+      <textarea class="report-field" rows="6" placeholder="Tensile testing is a fundamental mechanical test used to characterise material behaviour under uniaxial tension. The test produces a stress–strain curve from which key mechanical properties are extracted: Young's modulus (E), yield strength (σy), ultimate tensile strength (UTS), and ductility (% elongation at fracture). These properties are critical in engineering design — for example, the selection of S355 structural steel for HS2 Phase One viaducts is directly governed by its tensile properties as specified in EN 10025-2.&#10;&#10;The aim of this experiment was to…&#10;&#10;The relevance of this investigation to HS2 Phase One is…"></textarea>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>4. Methodology</span></div>
+    <div class="report-section-body">
+      <div class="report-field-label">Equipment &amp; specimen details (auto-filled)</div>
+      <div class="auto-filled" id="rMethodEquip"></div>
+      <div class="report-field-label">Procedure (write in past tense, passive voice)</div>
+      <textarea class="report-field" rows="6" placeholder="The specimen was measured using calibrated digital callipers to determine the width (b), thickness (a), and gauge length (L₀) to three significant figures. The cross-sectional area A₀ was calculated as A₀ = b × a. The specimen was aligned centrally in the grips of the Universal Testing Machine. An extensometer was attached at the gauge marks. The load cell was tared to zero. The test was conducted at a crosshead displacement rate of 2 mm/min in accordance with BS EN ISO 6892-1 Method B. Force–extension data were recorded at 10 Hz until specimen fracture…"></textarea>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>5. Results</span></div>
+    <div class="report-section-body">
+      <div class="report-field-label">Experimental data (auto-filled from simulation)</div>
+      <div id="rResultsTable" class="auto-filled" style="font-family:var(--font-mono);font-size:.73rem;line-height:2"></div>
+      <div class="report-field-label" style="margin-top:.8rem">Describe the stress–strain curve you observed</div>
+      <textarea class="report-field" rows="4" placeholder="The stress–strain curve for [material] shows a clear linear elastic region up to yield at σy = ___ MPa. Beyond this, [describe what happens — plastic flow / strain hardening / brittle fracture]. The UTS of ___ MPa was reached at a strain of ___, after which [necking began / fracture occurred]. The fracture mode was [ductile cup-and-cone / brittle cleavage]. The total elongation at fracture of ___% indicates [high/moderate/low] ductility…"></textarea>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>6. Discussion (≈ 300 words)</span></div>
+    <div class="report-section-body">
+      <div class="report-field-label">Interpret results — theory, published values, HS2 context</div>
+      <textarea class="report-field" rows="8" placeholder="The calculated Young's modulus of E = ___ GPa compares [favourably/unfavourably] with the published value of ___ GPa (Callister & Rethwisch, 2020), a difference of ___%. This discrepancy may be attributed to…&#10;&#10;In the context of HS2 Phase One, the yield strength of ___ MPa [does/does not] meet the design requirement of ___ MPa as specified in EN 10025-2. The ductility of ___% elongation is [sufficient/insufficient] to ensure plastic hinge formation and ductile failure mode under overload conditions, as required by Eurocode 3.&#10;&#10;Sources of experimental error include:&#10;1. Specimen misalignment…&#10;2. Extensometer slip…&#10;3. …"></textarea>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>7. Conclusion (≈ 100 words)</span></div>
+    <div class="report-section-body">
+      <textarea class="report-field" rows="4" placeholder="This experiment successfully determined the tensile mechanical properties of [material] using the Universal Testing Machine. The key properties measured were E = ___ GPa, σy = ___ MPa, UTS = ___ MPa, and elongation = ___%. These results are in [good/reasonable] agreement with published values. The material exhibited [ductile/brittle] fracture behaviour. [For HS2 applications / for structural applications], this material [is/is not] suitable because…"></textarea>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-header"><span>8. References</span></div>
+    <div class="report-section-body">
+      <div class="auto-filled" style="font-size:.73rem;line-height:2">
+        Callister, W.D. &amp; Rethwisch, D.G. (2020). <em>Materials Science and Engineering: An Introduction</em> (10th ed.). John Wiley &amp; Sons.<br/>
+        BS EN ISO 6892-1:2019. <em>Metallic materials — Tensile testing — Part 1: Method of test at room temperature.</em> BSI.<br/>
+        BS EN 10025-2:2019. <em>Hot-rolled products of structural steels — Technical delivery conditions for non-alloy structural steels.</em> BSI.<br/>
+        BS EN 13674-1:2011+A1:2017. <em>Railway applications — Track — Rail — Part 1: Vignole railway rails 46 kg/m and above.</em> BSI.<br/>
+        HS2 Ltd (2023). <em>High Speed Two — Civil Engineering Design Standard</em>. HS2-HS2-CV-STD-000-000001.
+      </div>
+      <div class="report-field-label" style="margin-top:.8rem">Additional references</div>
+      <textarea class="report-field" rows="3" placeholder="Add any additional sources consulted…"></textarea>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:.8rem;margin-top:1.5rem;flex-wrap:wrap">
+    <button class="btn-secondary" onclick="goStage(4)">← Results</button>
+    <button class="btn-primary" onclick="window.print()">🖨 Print / Export PDF</button>
+    <button class="btn-primary" style="background:var(--blue)" onclick="downloadCSV()">⬇ Download Data (.csv)</button>
+  </div>
+</div>
+
+</div><!-- /main-pane -->
+
+<!-- SIDE PANEL -->
+<div class="side-pane">
+  <div class="side-title">Lab Reference Guide</div>
+
+  <div class="info-block">
+    <h4>Key Formulae</h4>
+    <div class="formula-box">
+      σ = F / A₀<br/><span style="color:var(--muted)">Stress = Force / Original area (MPa)</span><br/><br/>
+      ε = ΔL / L₀<br/><span style="color:var(--muted)">Strain = Extension / Gauge length</span><br/><br/>
+      E = σ / ε &nbsp;(elastic region only)<br/><span style="color:var(--muted)">Young's Modulus (GPa)</span><br/><br/>
+      %EL = (Lf − L₀) / L₀ × 100<br/><span style="color:var(--muted)">% Elongation at fracture</span><br/><br/>
+      %RA = (A₀ − Af) / A₀ × 100<br/><span style="color:var(--muted)">% Reduction in area</span><br/><br/>
+      Ut = ∫σ dε ≈ ½ σy εy<br/><span style="color:var(--muted)">Modulus of resilience (MJ/m³)</span>
+    </div>
+  </div>
+
+  <div class="info-block">
+    <h4>Stress–Strain Regions</h4>
+    <p><strong style="color:#2a7a4a">① Elastic:</strong> Linear — Hooke's Law. Fully reversible. Slope = E.</p>
+    <p style="margin-top:.35rem"><strong style="color:#c8860a">② Yield point:</strong> Onset of permanent deformation. Upper → lower yield in mild steel (Cottrell atmosphere dislocation pinning).</p>
+    <p style="margin-top:.35rem"><strong style="color:#e07820">③ Strain hardening:</strong> Dislocation multiplication. Material becomes stronger as it deforms.</p>
+    <p style="margin-top:.35rem"><strong style="color:#c0392b">④ Necking:</strong> Localised cross-section reduction begins at UTS. Engineering stress falls.</p>
+    <p style="margin-top:.35rem"><strong style="color:#c0392b">⑤ Fracture:</strong> Ductile = cup-and-cone. Brittle = flat cleavage face. Energy absorbed = area under curve.</p>
+  </div>
+
+  <div class="info-block">
+    <h4>0.2% Proof Stress</h4>
+    <p>For materials without a clear yield point (aluminium alloys, stainless steel): draw a line parallel to the elastic slope but offset 0.2% strain (ε = 0.002). The intersection with the stress–strain curve is σ₀.₂.</p>
+  </div>
+
+  <div class="info-block">
+    <h4>Selected Material Reference</h4>
+    <div id="sideRefValues" style="font-size:.72rem;font-family:var(--font-mono);line-height:1.9;color:var(--muted);margin-top:.4rem">Select a material to see reference values.</div>
+  </div>
+
+  <div class="info-block">
+    <h4>HS2 Phase One Context</h4>
+    <div style="font-size:.73rem;color:var(--muted);line-height:1.6" id="sideHS2Context">The HS2 Phase One project (London Euston to Birmingham Curzon Street, 225 km) uses a range of structural metals whose tensile properties are critical to safety. Select a material above to see its HS2 context.</div>
+  </div>
+
+  <div class="info-block">
+    <h4>Safety Notes</h4>
+    <p style="color:var(--red);font-size:.75rem">⚠ Always stand clear of the loading axis during testing. Fracture can release stored elastic energy. Safety screens must be closed. Eye protection mandatory. Never exceed the load cell rated capacity.</p>
+  </div>
+
+  <div class="info-block">
+    <h4>BS EN ISO 6892-1</h4>
+    <p style="font-size:.74rem">Gauge length for proportional specimens: L₀ = 5.65√A₀. Report all values to ≥ 3 significant figures. Method A = constant strain rate. Method B = constant crosshead speed. Extensometer must remain attached through the yield region.</p>
+    <div class="formula-box" style="font-size:.7rem;margin-top:.5rem">
+      Standard L₀ = 5.65 × √A₀<br/>
+      <span style="color:var(--muted)" id="sidestdL0">= 5.65 × √37.5 = 34.6 mm</span>
+    </div>
+  </div>
+</div>
+</div><!-- /lab-body -->
+
+<script>
+/* ════════════════════════════ MATERIALS DATABASE ════════════════════════════ */
+const MATERIALS = {
+  s355: {
+    name:'S355 Structural Steel', grade:'EN 10025-2 S355 J2+N',
+    color:'#2a4a7a', specFill:'#7090b8',
+    E:210, sigma_y:355, sigma_uts:500, epsilon_y:355/210e3, epsilon_uts:0.14, epsilon_f:0.22,
+    brittle:false, proofStress:false,
+    published:{E:'210',Ey:'355',UTS:'490',elong:'≥22%'},
+    fracture:'Ductile cup-and-cone. Significant necking before fracture.',
+    note:'S355 is the primary structural steel for HS2 Phase One. Yield strength 355 MPa (t≤16mm) per EN 10025-2.',
+    hs2:'S355 J2+N is used for all primary load-bearing steelwork on HS2 Phase One including the 3.4 km Colne Valley Viaduct beams, portal frames along the M25 corridor, and connection plates at all structural joints. The "J2" sub-grade specifies minimum 27 J Charpy impact toughness at −20°C to prevent brittle fracture in UK winter conditions. "+N" denotes normalised rolling for uniform grain structure. Specified in HS2 Civil Engineering Design Standard HS2-HS2-CV-STD-000-000001.',
+    obsNotes:['Linear elastic behaviour — slope = 210 GPa','Approaching yield — dislocations beginning to move','Upper yield point reached — Cottrell atmosphere unpinning','Lower yield plateau — Lüders band propagation','Strain hardening phase — dislocation density increasing','Approaching UTS — necking imminent','Necking visible — cross-section reducing locally','FRACTURE — cup-and-cone ductile fracture']
+  },
+  mild_steel: {
+    name:'Mild Steel S275', grade:'EN 10025-2 S275 JR',
+    color:'#7a8a8a', specFill:'#c0c8c8',
+    E:200, sigma_y:275, sigma_uts:430, epsilon_y:275/200e3, epsilon_uts:0.20, epsilon_f:0.28,
+    brittle:false, proofStress:false,
+    published:{E:'200',Ey:'275',UTS:'430',elong:'28%'},
+    fracture:'Ductile cup-and-cone fracture. Very pronounced necking.',
+    note:'Mild steel exhibits a sharp upper/lower yield point — characteristic of Cottrell atmosphere dislocation pinning by carbon and nitrogen interstitials.',
+    hs2:'S275 is used for secondary steelwork on HS2, including handrails, maintenance walkways, and non-primary structural elements where the higher strength of S355 is not needed. Its lower carbon equivalent (CE ≤ 0.40) makes it easier to weld than higher-grade steels. The dramatic upper-to-lower yield drop makes it easily identifiable on a stress–strain curve and is a classic teaching example of dislocation theory.',
+    obsNotes:['Linear elastic — Hooke\'s Law applies','Upper yield point approaching — dislocations about to unpin','UPPER YIELD POINT — sharp load drop','Lower yield plateau — Lüders bands crossing gauge length','Strain hardening commencing','Maximum load (UTS) reached','Necking — cross-section localising','FRACTURE — ductile failure with extensive elongation']
+  },
+  rail900: {
+    name:'Rail Steel Grade 900A', grade:'EN 13674-1 Grade 900A',
+    color:'#8a6010', specFill:'#c8a040',
+    E:210, sigma_y:680, sigma_uts:900, epsilon_y:680/210e3, epsilon_uts:0.08, epsilon_f:0.12,
+    brittle:false, proofStress:false,
+    published:{E:'210',Ey:'≥680',UTS:'≥900',elong:'≥10%'},
+    fracture:'Ductile but limited elongation. Harder pearlitic microstructure.',
+    note:'Grade 900A is a pearlitic rail steel with UTS ≥ 900 MPa. Its high hardness and strength resist rolling contact fatigue (RCF) at 360 km/h train speeds.',
+    hs2:'Grade 900A pearlitic steel is specified for the HS2 Phase One high-speed mainline track. The 60E2 rail profile is used on the mainline (60 kg/m). The high UTS (≥900 MPa) and hardness (260–300 HB) resist rolling contact fatigue from train wheel contact stresses exceeding 1,500 MPa at the rail head. Rail sections are welded by alumino-thermic or flash butt welding processes. Fatigue life is assessed using Paris Law crack growth analysis per BS 7910. At 300 trains/day × 120 years ≈ 1.3 × 10¹⁰ load cycles.',
+    obsNotes:['Elastic loading — high-stiffness pearlitic steel','Approaching yield — lamellar pearlite resisting dislocation motion','Yield point reached','Plastic flow — limited strain hardening in pearlite','Approaching UTS — high-strength steel limits elongation','Maximum load (UTS = 900+ MPa) reached','Necking — limited due to high strength','FRACTURE — less ductile than S355, more limited elongation']
+  },
+  aluminium: {
+    name:'Aluminium 6061-T6', grade:'ASTM B209 / EN 573-3',
+    color:'#5a6878', specFill:'#c8d8e0',
+    E:68, sigma_y:276, sigma_uts:310, epsilon_y:276/68e3, epsilon_uts:0.08, epsilon_f:0.17,
+    brittle:false, proofStress:true,
+    published:{E:'68',Ey:'276 (0.2% proof)',UTS:'310',elong:'17%'},
+    fracture:'Ductile, relatively flat fibrous fracture surface. No cup-and-cone.',
+    note:'6061-T6 aluminium has no sharp yield point due to its FCC crystal structure and precipitation-hardened microstructure. The 0.2% proof stress is used as the design limit.',
+    hs2:'Aluminium alloy 6061-T6 is used for overhead line equipment (OLE) masts, catenary wire support brackets, and non-structural cladding on HS2 structures. Its low density (2.7 g/cm³) vs steel (7.8 g/cm³) reduces dead load. Young\'s modulus of 68 GPa is ~3× less than steel — deflections must be checked carefully in design. The absence of a fatigue limit (S-N curve has no flat region) means fatigue life must always be calculated at specific cycle counts for HS2 OLE components.',
+    obsNotes:['Linear elastic — E = 68 GPa (less stiff than steel)','Gradual curvature beginning — no distinct yield','0.2% proof stress region','Continued plastic flow — work hardening','Approaching UTS','Maximum load (UTS = 310 MPa) reached','Necking commencing — fibrous failure developing','FRACTURE — ductile flat fracture, no cup-and-cone']
+  },
+  stainless: {
+    name:'Stainless Steel 316L', grade:'EN 10088-3 / ASTM A276',
+    color:'#909898', specFill:'#d8dce0',
+    E:193, sigma_y:170, sigma_uts:485, epsilon_y:170/193e3, epsilon_uts:0.35, epsilon_f:0.55,
+    brittle:false, proofStress:true,
+    published:{E:'193',Ey:'170 (0.2% proof)',UTS:'485',elong:'40%'},
+    fracture:'Very ductile. FCC structure — no DBTT. Extensive necking and elongation.',
+    note:'Austenitic stainless steel 316L has no ductile-to-brittle transition temperature (DBTT) due to FCC crystal structure — safe at all service temperatures. Low yield but very high work hardening rate.',
+    hs2:'316L stainless steel is used for structural fixings, expansion joints, drainage channels, and architectural cladding fixings on HS2 structures in aggressive environments (e.g. near M25 or in tunnel portals exposed to de-icing salts). Its very high elongation (≥40%) and low yield strength mean structural stainless design is often deflection-governed rather than strength-governed. The molybdenum content (2–3%) provides excellent chloride corrosion resistance in tunnel environments.',
+    obsNotes:['Elastic loading — austenitic FCC microstructure','Gradual transition to plasticity — no Cottrell atmosphere','0.2% proof stress — no sharp yield in austenitic SS','Extensive strain hardening — twin formation in FCC','Strong work hardening — stress rising well past yield','Approaching UTS — very high elongation material','Very pronounced necking — extreme ductility','FRACTURE — highly ductile, extensive deformation before failure']
+  },
+  cast_iron: {
+    name:'Grey Cast Iron', grade:'BS EN 1561 EN-GJL-250',
+    color:'#506060', specFill:'#888898',
+    E:100, sigma_y:180, sigma_uts:200, epsilon_y:0.0018, epsilon_uts:0.0022, epsilon_f:0.003,
+    brittle:true, proofStress:false,
+    published:{E:'100',Ey:'N/A',UTS:'200',elong:'~0.3%'},
+    fracture:'BRITTLE — flat cleavage fracture face. No cup-and-cone. Sudden failure.',
+    note:'Cast iron is brittle in tension due to graphite flake inclusions acting as internal stress-concentration notches. Its compressive strength (~700 MPa) far exceeds tensile strength.',
+    hs2:'Cast iron is NOT used for primary HS2 structural elements — its brittle fracture behaviour under tensile load makes it unsuitable for structural applications where tensile stresses are present. It is shown here as a teaching comparison to illustrate why ductility and fracture toughness (K_IC = 15 MPa√m vs 50–100 MPa√m for S355) are critical material selection criteria. Historical engineering failures (e.g. railway bridge fractures in the 19th century) were often due to brittle cast iron in tension.',
+    obsNotes:['Linear elastic — graphite flakes present but not yet critical','High stress concentration at graphite flake tips','Crack initiation at graphite flakes','Rapid crack propagation — very limited plasticity','IMMINENT FRACTURE — no warning deformation','FRACTURE — sudden brittle failure','Flat cleavage fracture face — no cup-and-cone','K_IC only ~15 MPa√m — catastrophic without warning']
+  },
+  copper: {
+    name:'Copper (Annealed)', grade:'BS EN 1652 / ASTM B152',
+    color:'#b87333', specFill:'#c8a060',
+    E:110, sigma_y:70, sigma_uts:230, epsilon_y:70/110e3, epsilon_uts:0.45, epsilon_f:0.55,
+    brittle:false, proofStress:false,
+    published:{E:'110',Ey:'70',UTS:'230',elong:'45%'},
+    fracture:'Extremely ductile — large elongation. Cup-and-cone with very pronounced neck.',
+    note:'Annealed copper has low yield strength but the highest ductility in this dataset. Very high UTS/yield ratio (~3.3) — significant work hardening capacity. Used as a benchmark for ductile behaviour.',
+    hs2:'Copper electrical conductors are used throughout HS2 for traction power supply systems, catenary wire (contact wire composition 150-CuAg0.1 per EN 50149), and earthing systems. Conductor copper requires controlled tensile properties — too soft and it sags, too hard and it becomes brittle. The tensile strength of 150-CuAg0.1 overhead contact wire must be ≥ 560 MPa with elongation ≥ 1% to withstand the dynamic loading from pantograph contact at 360 km/h.',
+    obsNotes:['Elastic loading — FCC copper, very low work hardening initially','Approaching yield — dislocations beginning on {111} slip planes','Yield point — low σy in fully annealed state','Early strain hardening — dislocation density building','Strong work hardening — classic FCC behaviour','Maximum load (UTS) reached — extensive hardening','Pronounced necking — very high elongation material','FRACTURE — extremely ductile, very deep cup-and-cone']
+  },
+  hdpe: {
+    name:'HDPE Polymer', grade:'ASTM D638 Type I',
+    color:'#a09080', specFill:'#e8e0d0',
+    E:1.2, sigma_y:25, sigma_uts:30, epsilon_y:0.02, epsilon_uts:0.15, epsilon_f:0.5,
+    brittle:false, proofStress:false,
+    published:{E:'~1',Ey:'20–30',UTS:'20–37',elong:'150–1000%'},
+    fracture:'Ductile with cold drawing. Propagating neck (Considère construction). Very large elongation.',
+    note:'HDPE shows a characteristic cold-drawing response — a propagating neck at constant stress (natural draw ratio). Young\'s modulus is ~175× lower than steel — illustrates why polymer structures require very different design approaches.',
+    hs2:'HDPE pipes and liners are used extensively in HS2 for drainage systems, cable conduit, and tunnel sump systems. HDPE\'s high chemical resistance and flexibility suit it for buried drainage beneath tracks and in tunnels. Its very low Young\'s modulus (≈1 GPa) means deflection under load is large — structural HDPE elements must be designed for flexibility, not stiffness. Creep behaviour is also significant for long-term load applications.',
+    obsNotes:['Linear elastic — E ≈ 1.2 GPa (very flexible vs metals)','Viscoelastic behaviour — slight non-linearity','Yield point — polymer chains beginning to align','COLD DRAWING BEGINS — neck propagates at constant stress','Neck propagating along gauge length — chain alignment','Orientation hardening — fully drawn fibres','Approaching fracture — chain pullout and rupture','FRACTURE — ductile fibrous polymer failure']
+  }
+};
+
+/* ════════════════════════════ STATE ════════════════════════════ */
+let currentMat = 's355';
+let testRunning = false, testTimer = null, testProgress = 0;
+let testData = { stress:[], strain:[], force:[], extension:[] };
+let testResults = {};
+let logLines = [];
+let logT = 0;
+
+/* ════════════════════════════ INIT ════════════════════════════ */
+updateDimLabel();
+updateSideRef();
+
+/* ════════════════════════════ STAGE NAVIGATION ════════════════════════════ */
+function goStage(n) {
+  document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.stage-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('stage-'+n).classList.add('active');
+  document.getElementById('btn-s'+n).classList.add('active');
+  if(n===4 && testData.stress.length>0) buildResults();
+  if(n===5) populateReport();
+}
+function completeStage1(){
+  document.getElementById('btn-s1').classList.add('done'); goStage(2);
+}
+function completeStage2(){
+  document.getElementById('btn-s2').classList.add('done'); goStage(3);
+}
+
+/* ════════════════════════════ MATERIAL SELECTION ════════════════════════════ */
+function selectMaterial(key, el) {
+  currentMat = key;
+  document.querySelectorAll('.spec-select-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const m = MATERIALS[key];
+  document.getElementById('specPath').setAttribute('fill', m.specFill);
+  // HS2 callout
+  const callout = document.getElementById('matCallout');
+  callout.innerHTML = `<strong>🚄 HS2 Phase One — ${m.name}</strong>${m.hs2}`;
+  updateSideRef();
+}
+
+function updateSideRef() {
+  const m = MATERIALS[currentMat];
+  document.getElementById('sideRefValues').innerHTML =
+    `<span style="color:var(--ink);font-weight:600">${m.name}</span><br/>
+     E: ${m.published.E} GPa<br/>
+     Yield / Proof: ${m.published.Ey} MPa<br/>
+     UTS: ${m.published.UTS} MPa<br/>
+     Elongation: ${m.published.elong}<br/>
+     Fracture: <span style="font-size:.65rem">${m.fracture}</span><br/><br/>
+     <span style="color:var(--blue);font-size:.66rem">${m.note}</span>`;
+  document.getElementById('sideHS2Context').textContent = m.hs2;
+}
+
+/* ════════════════════════════ DIMENSION LABELS ════════════════════════════ */
+function updateDimLabel() {
+  const b = parseFloat(document.getElementById('specWidth').value)||12.5;
+  const a = parseFloat(document.getElementById('specThick').value)||3.0;
+  const L = parseFloat(document.getElementById('gaugeLen').value)||50;
+  const area = (b*a).toFixed(1);
+  const stdL = (5.65*Math.sqrt(b*a)).toFixed(1);
+  document.getElementById('areaCalc').textContent = area+' mm²';
+  document.getElementById('stdL0').textContent = stdL+' mm';
+  document.getElementById('specDimLabel').textContent = `b=${b} · a=${a} mm`;
+  document.getElementById('gaugeLbl').textContent = `L₀ = ${L} mm`;
+  if(document.getElementById('sidestdL0'))
+    document.getElementById('sidestdL0').textContent = `= 5.65 × √${area} = ${stdL} mm`;
+}
+['specWidth','specThick','gaugeLen'].forEach(id=>document.getElementById(id).addEventListener('input',updateDimLabel));
+
+/* ════════════════════════════ CHECKLIST ════════════════════════════ */
+function updateChecklist() {
+  document.querySelectorAll('.check-item').forEach(item=>{
+    const cb=item.querySelector('input[type=checkbox]');
+    item.classList.toggle('checked',cb&&cb.checked);
+  });
+}
+
+/* ════════════════════════════ LIVE CHART ════════════════════════════ */
+function drawLiveChart() {
+  const c = document.getElementById('liveChart');
+  if(!c.width||c.width<10) { c.width=c.offsetWidth||800; c.height=300; }
+  const ctx = c.getContext('2d');
+  const W=c.width, H=c.height;
+  const pad={l:58,r:24,t:22,b:42};
+  const pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
+  const m = MATERIALS[currentMat];
+  const maxStress = m.sigma_uts*1.22;
+  const maxStrain = m.brittle ? Math.max(m.epsilon_f*2,0.006) : Math.max(m.epsilon_f*1.15, 0.005);
+  ctx.fillStyle='#1a1a18'; ctx.fillRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
+  for(let i=1;i<=5;i++){
+    ctx.beginPath(); ctx.moveTo(pad.l+i*pw/5,pad.t); ctx.lineTo(pad.l+i*pw/5,pad.t+ph); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.l,pad.t+i*ph/5); ctx.lineTo(pad.l+pw,pad.t+i*ph/5); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='#555'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad.l,pad.t); ctx.lineTo(pad.l,pad.t+ph); ctx.lineTo(pad.l+pw,pad.t+ph); ctx.stroke();
+  // labels
+  ctx.fillStyle='#888'; ctx.font='10px IBM Plex Mono';
+  ctx.fillText('Strain ε (mm/mm)',pad.l+pw/2-48,H-6);
+  ctx.save(); ctx.translate(14,pad.t+ph/2+28); ctx.rotate(-Math.PI/2); ctx.fillText('Stress σ (MPa)',0,0); ctx.restore();
+  for(let i=0;i<=5;i++){
+    ctx.fillStyle='#666'; ctx.font='9px IBM Plex Mono'; ctx.textAlign='right';
+    ctx.fillText((maxStress/5*i).toFixed(0),pad.l-3,pad.t+ph-i*ph/5+4);
+    ctx.textAlign='center';
+    ctx.fillText((maxStrain/5*i).toFixed(m.brittle?5:4),pad.l+i*pw/5,pad.t+ph+14);
+  }
+  ctx.textAlign='left';
+  function sx(s){return pad.l+(s/maxStrain)*pw}
+  function sy(s){return pad.t+ph-(s/maxStress)*ph}
+  const n=testData.stress.length;
+  if(n<2) return;
+  ctx.lineWidth=2.5; ctx.lineJoin='round';
+  for(let i=1;i<n;i++){
+    const e=testData.strain[i];
+    const ey=m.epsilon_y, eu=m.epsilon_uts;
+    const col=e<=ey*1.1?'#4caf50':e<=eu?'#c8860a':'#c0392b';
+    ctx.strokeStyle=col;
+    ctx.beginPath();
+    ctx.moveTo(sx(testData.strain[i-1]),sy(testData.stress[i-1]));
+    ctx.lineTo(sx(e),sy(testData.stress[i]));
+    ctx.stroke();
+  }
+  // yield marker
+  if(testResults.yieldStress){
+    ctx.strokeStyle='rgba(76,175,80,.5)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(pad.l,sy(testResults.yieldStress)); ctx.lineTo(sx(m.epsilon_y*1.8),sy(testResults.yieldStress)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#4caf50'; ctx.font='bold 9px IBM Plex Mono';
+    ctx.fillText('σy='+testResults.yieldStress.toFixed(0),pad.l+2,sy(testResults.yieldStress)-4);
+  }
+  // UTS marker
+  if(testResults.UTS){
+    ctx.strokeStyle='rgba(200,134,10,.5)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(pad.l,sy(testResults.UTS)); ctx.lineTo(sx(m.epsilon_uts*1.3),sy(testResults.UTS)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#c8860a'; ctx.font='bold 9px IBM Plex Mono';
+    ctx.fillText('UTS='+testResults.UTS.toFixed(0),pad.l+2,sy(testResults.UTS)-4);
+  }
+  // live dot
+  const lastS=testData.stress[n-1], lastE=testData.strain[n-1];
+  ctx.beginPath(); ctx.arc(sx(lastE),sy(lastS),5,0,Math.PI*2);
+  ctx.fillStyle='#fff'; ctx.fill();
+}
+
+/* ════════════════════════════ DATA GENERATION ════════════════════════════ */
+function generateDataPoint(prog, m) {
+  const ey=m.epsilon_y, eu=m.epsilon_uts, ef=m.epsilon_f;
+  const sy2=m.sigma_y, su=m.sigma_uts;
+  let strain, stress, phase;
+  if(m.brittle) {
+    strain=prog*ef;
+    stress=su*(strain/ef)*Math.max(0,1-Math.pow(strain/ef,6));
+    phase=strain<ef*0.85?'elastic':'neck';
+  } else if(currentMat==='hdpe') {
+    // polymer cold-draw
+    if(prog<0.15)       { strain=prog/0.15*ey; stress=strain/ey*sy2; phase='elastic'; }
+    else if(prog<0.25)  { strain=ey+(prog-0.15)/0.1*(eu-ey)*0.3; stress=sy2+(su-sy2)*((prog-0.15)/0.1)*0.3; phase='yield'; }
+    else if(prog<0.65)  { strain=ey*1.3+(prog-0.25)/0.4*(eu-ey); stress=sy2+(Math.random()-0.5)*1; phase='plastic'; } // cold drawing plateau
+    else if(prog<0.9)   { strain=eu+(prog-0.65)/0.25*(ef-eu)*0.7; stress=sy2+(su-sy2)*(prog-0.65)/0.25; phase='neck'; }
+    else                { strain=ef*(0.9+(prog-0.9)*0.1); stress=su*(1-(prog-0.9)/0.1); phase='neck'; }
+  } else {
+    const hasCottrell=(currentMat==='s355'||currentMat==='mild_steel');
+    if(prog<0.25)      { strain=prog/0.25*ey; stress=strain/ey*sy2; phase='elastic'; }
+    else if(prog<0.35) {
+      const t=(prog-0.25)/0.10;
+      strain=ey+(t*ey*0.4);
+      stress=hasCottrell ? sy2-(sy2*0.05)*Math.sin(t*Math.PI) : sy2+(su-sy2)*Math.pow(t,2)*0.2;
+      phase='yield';
+    }
+    else if(prog<0.72) {
+      const t=(prog-0.35)/0.37;
+      strain=ey*1.4+(t*(eu-ey*1.4));
+      stress=sy2+(su-sy2)*Math.sqrt(Math.max(0,t));
+      phase='plastic';
+    }
+    else if(prog<0.92) {
+      const t=(prog-0.72)/0.20;
+      strain=eu+(t*(ef-eu)*0.7);
+      stress=su-(su-sy2*0.72)*t;
+      phase='neck';
+    }
+    else {
+      strain=ef*(0.87+(prog-0.92)/0.08*0.13);
+      stress=sy2*0.72*(1-(prog-0.92)/0.08*0.9);
+      phase='neck';
+    }
+  }
+  stress+=((Math.random()-0.5)*su*0.004);
+  return {stress:Math.max(0,stress), strain:Math.max(0,strain), phase};
+}
+
+/* ════════════════════════════ SPECIMEN ANIMATION ════════════════════════════ */
+function animateSpecimen(prog, m, phase) {
+  const path=document.getElementById('liveSpecPath');
+  const lbl=document.getElementById('liveSpecLabel');
+  const fill=m.specFill;
+  const CX=520, CY=40;
+  let lg=100, rg=420, ty=27, by=53, neckOffset=0;
+  if(phase==='elastic'){
+    const ext=prog*4*15;
+    lg=100-ext*0.4; rg=420+ext*0.4;
+    ty=27+prog*0.8; by=53-prog*0.8;
+    lbl.textContent=`Phase: Elastic — Extension ≈ ${(prog*m.epsilon_y*50).toFixed(3)} mm`;
+  } else if(phase==='yield'){
+    const t=Math.min((prog-0.25)/0.1,1);
+    lg=100-6-t*12; rg=420+6+t*12;
+    ty=27+t*1.5; by=53-t*1.5;
+    lbl.textContent=`Phase: Yield — Permanent deformation beginning σy=${m.sigma_y} MPa`;
+  } else if(phase==='plastic'){
+    const t=Math.min((prog-0.35)/0.37,1);
+    lg=100-18-t*22; rg=420+18+t*22;
+    ty=27+t*3; by=53-t*3;
+    lbl.textContent=`Phase: Strain Hardening — Dislocation density increasing`;
+  } else if(phase==='neck'){
+    const t=Math.min((prog-0.72)/0.28,1);
+    lg=100-40-t*10; rg=420+40+t*10;
+    ty=27+4; by=53-4;
+    neckOffset=t*13;
+    const neckTopY=ty+neckOffset, neckBotY=by-neckOffset;
+    path.setAttribute('d',
+      `M ${lg},14 Q ${lg+20},14 ${lg+28},${ty}
+       L ${250-40},${ty} Q ${250},${neckTopY} ${250+40},${ty}
+       L ${rg-28},${ty} Q ${rg-20},14 ${rg},14
+       L ${rg},66 Q ${rg-20},66 ${rg-28},${by}
+       L ${250+40},${by} Q ${250},${neckBotY} ${250-40},${by}
+       L ${lg+28},${by} Q ${lg+20},66 ${lg},66 Z`
+    );
+    path.setAttribute('fill',t>0.85?'#c0392b':t>0.5?'#c8860a':fill);
+    lbl.textContent=t>0.85?`Phase: Fracture imminent — Neck depth critical`:
+                    `Phase: Necking — Localised cross-section reduction`;
+    return;
+  }
+  path.setAttribute('d',
+    `M ${lg},14 Q ${lg+22},14 ${lg+30},${ty}
+     L ${rg-30},${ty} Q ${rg-22},14 ${rg},14
+     L ${rg},66 Q ${rg-22},66 ${rg-30},${by}
+     L ${lg+30},${by} Q ${lg+22},66 ${lg},66 Z`
+  );
+  path.setAttribute('fill',fill);
+}
+
+/* ════════════════════════════ TEST ENGINE ════════════════════════════ */
+function startTest() {
+  if(testRunning) return;
+  testRunning=true;
+  testData={stress:[],strain:[],force:[],extension:[]};
+  testResults={};
+  testProgress=0;
+  logLines=[];
+  logT=0;
+  document.getElementById('btnStartTest').disabled=true;
+  document.getElementById('btnStopTest').disabled=false;
+  document.getElementById('labStatus').textContent='RUNNING';
+  document.getElementById('labStatus').className='status-pill running';
+  document.getElementById('rdYield').style.color='#888';
+  document.getElementById('rdYield').textContent='—';
+  document.getElementById('rdUTS').style.color='#888';
+  document.getElementById('rdUTS').textContent='—';
+  const c=document.getElementById('liveChart');
+  c.width=c.offsetWidth||800; c.height=300;
+  const m=MATERIALS[currentMat];
+  const A0=parseFloat(document.getElementById('specWidth').value)*parseFloat(document.getElementById('specThick').value);
+  const L0=parseFloat(document.getElementById('gaugeLen').value);
+  const totalSteps=240;
+  let t=0;
+  let yieldLogged=false,utsLogged=false,neckLogged=false;
+  let obsIdx=0;
+  function addObs(msg,cls='') {
+    const ts=('0'+Math.floor(t*0.25)).slice(-2)+':'+('0'+Math.floor(((t*0.25)%1)*60)).slice(-2);
+    const span=cls?`<span class="${cls}">${msg}</span>`:msg;
+    logLines.push(`<span class="obs-time">[${ts}]</span> ${span}`);
+    if(logLines.length>14) logLines.shift();
+    document.getElementById('obsLog').innerHTML=logLines.join('<br/>');
+    document.getElementById('obsLog').scrollTop=9999;
+  }
+  function setPhase(p) {
+    ['Elastic','Yield','Plastic','Neck','Fracture'].forEach(x=>{
+      document.getElementById('ph'+x).className='phase-tag';
+    });
+    document.getElementById('ph'+p).className='phase-tag active-'+p.toLowerCase();
+  }
+  addObs(`TEST STARTED — ${m.name} · A₀=${A0.toFixed(1)}mm² · L₀=${L0}mm`,'obs-event');
+  testTimer=setInterval(()=>{
+    t++;
+    const prog=Math.min(t/totalSteps,1);
+    document.getElementById('testProgress').style.width=(prog*100)+'%';
+    const {stress,strain,phase}=generateDataPoint(prog,m);
+    const force=stress*A0/1000;
+    const ext=strain*L0;
+    testData.stress.push(stress); testData.strain.push(strain);
+    testData.force.push(force); testData.extension.push(ext);
+    document.getElementById('rdForce').textContent=force.toFixed(2);
+    document.getElementById('rdStress').textContent=stress.toFixed(1);
+    document.getElementById('rdStrain').textContent=strain.toFixed(5);
+    document.getElementById('rdExt').textContent=ext.toFixed(3);
+    // key values
+    if(!testResults.yieldStress && strain>=m.epsilon_y*0.9){
+      testResults.yieldStress=m.sigma_y+(Math.random()-0.5)*4;
+      testResults.yieldStrain=m.epsilon_y;
+      document.getElementById('rdYield').textContent=testResults.yieldStress.toFixed(0)+' MPa';
+      document.getElementById('rdYield').style.color='#4caf50';
+      if(!yieldLogged){addObs(`Yield — σy = ${testResults.yieldStress.toFixed(0)} MPa`,'obs-warn');yieldLogged=true;}
+    }
+    if(!testResults.UTS && stress>=m.sigma_uts*0.97){
+      testResults.UTS=m.sigma_uts+(Math.random()-0.5)*6;
+      document.getElementById('rdUTS').textContent=testResults.UTS.toFixed(0)+' MPa';
+      document.getElementById('rdUTS').style.color='#c8860a';
+      if(!utsLogged){addObs(`UTS reached — ${testResults.UTS.toFixed(0)} MPa. Necking imminent.`,'obs-warn');utsLogged=true;}
+    }
+    // phase display
+    if(phase==='elastic') setPhase('Elastic');
+    else if(phase==='yield') setPhase('Yield');
+    else if(phase==='plastic') setPhase('Plastic');
+    else if(phase==='neck'){
+      setPhase('Neck');
+      if(!neckLogged){addObs('Necking observed — localised cross-section reduction','obs-event');neckLogged=true;}
+    }
+    // Observation notes at intervals
+    const noteIdx=Math.floor(prog*m.obsNotes.length);
+    if(noteIdx>obsIdx){ obsIdx=noteIdx; addObs(m.obsNotes[Math.min(noteIdx,m.obsNotes.length-1)],'obs-event'); }
+    animateSpecimen(prog,m,phase);
+    drawLiveChart();
+    // Update machine display
+    const md=document.getElementById('machDisplay');
+    if(md) md.textContent=force.toFixed(2)+' kN';
+    // End
+    if(prog>=1){
+      clearInterval(testTimer); testRunning=false;
+      setPhase('Fracture');
+      addObs(`FRACTURE — ${m.fracture}`,'obs-error');
+      testResults.elongPct=(m.epsilon_f*100).toFixed(1);
+      testResults.A0=A0; testResults.L0=L0;
+      testResults.E_calc=(m.sigma_y/m.epsilon_y/1000).toFixed(0);
+      document.getElementById('labStatus').textContent='COMPLETE';
+      document.getElementById('labStatus').className='status-pill complete';
+      document.getElementById('btnStartTest').disabled=false;
+      document.getElementById('btnStopTest').disabled=true;
+      document.getElementById('btn-s3').classList.add('done');
+      setTimeout(()=>{if(confirm('Test complete! View Results & Analysis?')) goStage(4);},400);
+    }
+  },45);
+}
+
+function stopTest(){
+  clearInterval(testTimer); testRunning=false;
+  document.getElementById('btnStartTest').disabled=false;
+  document.getElementById('btnStopTest').disabled=true;
+  document.getElementById('labStatus').textContent='STOPPED';
+  document.getElementById('labStatus').className='status-pill';
+  logLines.push(`<span class="obs-warn">[--:--] Test manually stopped at ${(testData.stress.length/240*100).toFixed(0)}% completion.</span>`);
+  document.getElementById('obsLog').innerHTML=logLines.join('<br/>');
+}
+
+function resetTest(){
+  clearInterval(testTimer); testRunning=false;
+  testData={stress:[],strain:[],force:[],extension:[]}; testResults={}; testProgress=0;
+  document.getElementById('btnStartTest').disabled=false;
+  document.getElementById('btnStopTest').disabled=true;
+  document.getElementById('testProgress').style.width='0%';
+  document.getElementById('labStatus').textContent='STANDBY';
+  document.getElementById('labStatus').className='status-pill';
+  ['rdForce','rdStress','rdExt'].forEach(id=>document.getElementById(id).textContent='0.00');
+  document.getElementById('rdStrain').textContent='0.0000';
+  document.getElementById('rdYield').textContent='—'; document.getElementById('rdYield').style.color='#888';
+  document.getElementById('rdUTS').textContent='—'; document.getElementById('rdUTS').style.color='#888';
+  document.getElementById('obsLog').innerHTML='<span class="obs-time">[00:00]</span> Reset complete. Ready for new test.';
+  ['Elastic','Yield','Plastic','Neck','Fracture'].forEach(p=>document.getElementById('ph'+p).className='phase-tag');
+  const lsp=document.getElementById('liveSpecPath');
+  lsp.setAttribute('d','M 100,14 Q 125,14 135,27 L 385,27 Q 395,14 420,14 L 420,66 Q 395,66 385,53 L 135,53 Q 125,66 100,66 Z');
+  lsp.setAttribute('fill',MATERIALS[currentMat].specFill);
+  document.getElementById('liveSpecLabel').textContent='Phase: Ready — awaiting test start';
+  const c=document.getElementById('liveChart');
+  if(c.getContext){ const ctx=c.getContext('2d'); ctx.fillStyle='#1a1a18'; ctx.fillRect(0,0,c.width,c.height); }
+}
+
+/* ════════════════════════════ RESULTS ════════════════════════════ */
+function buildResults(){
+  const m=MATERIALS[currentMat];
+  const A0=testResults.A0||parseFloat(document.getElementById('specWidth').value)*parseFloat(document.getElementById('specThick').value);
+  const L0=testResults.L0||parseFloat(document.getElementById('gaugeLen').value);
+  const sy=testResults.yieldStress||m.sigma_y;
+  const uts=testResults.UTS||m.sigma_uts;
+  const elong=testResults.elongPct||(m.epsilon_f*100).toFixed(1);
+  const E_exp=(sy/m.epsilon_y/1000).toFixed(0);
+  const rows=[
+    ['Original Area','A₀',A0.toFixed(1),m.grade,'mm²',false],
+    ['Gauge Length','L₀',L0.toFixed(1),'50.0 (standard)','mm',false],
+    ["Young's Modulus",'E',E_exp,m.published.E,'GPa',true],
+    ['Yield / Proof Stress','σy',sy.toFixed(0),m.published.Ey,'MPa',true],
+    ['Ultimate Tensile Strength','UTS',uts.toFixed(0),m.published.UTS,'MPa',true],
+    ['Strain at Yield','εy',m.epsilon_y.toFixed(5),'—','mm/mm',false],
+    ['Strain at UTS','εuts',m.epsilon_uts.toFixed(5),'—','mm/mm',false],
+    ['% Elongation at Fracture','%EL',elong+'%',m.published.elong,'—',true],
+    ['Fracture Mode','—',m.fracture,'—','—',false]
+  ];
+  document.getElementById('resultsTbody').innerHTML=rows.map(r=>
+    `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${r[5]?'highlight':''}">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`
+  ).join('');
+  // working out
+  document.getElementById('workingOut').innerHTML=
+`<span style="color:var(--amber)">// Stress Calculation (at yield):</span>
+σy = F / A₀ = (${(sy*A0/1000).toFixed(2)} kN × 1000) / ${A0.toFixed(1)} mm² = ${sy.toFixed(0)} MPa
+
+<span style="color:var(--amber)">// Strain Calculation (at yield):</span>
+ε = ΔL / L₀ = ${(m.epsilon_y*L0).toFixed(3)} mm / ${L0.toFixed(1)} mm = ${m.epsilon_y.toFixed(5)} mm/mm
+
+<span style="color:var(--amber)">// Young's Modulus:</span>
+E = σy / εy = ${sy.toFixed(0)} / ${m.epsilon_y.toFixed(5)} = ${E_exp} GPa  (published: ${m.published.E} GPa)
+% Error = |${E_exp} − ${m.published.E}| / ${m.published.E} × 100 = ${Math.abs((parseFloat(E_exp)-parseFloat(m.published.E))/parseFloat(m.published.E)*100).toFixed(1)}%
+
+<span style="color:var(--amber)">// % Elongation at Fracture:</span>
+%EL = (Lf − L₀) / L₀ × 100 = (${(L0*(1+m.epsilon_f)).toFixed(1)} − ${L0}) / ${L0} × 100 = ${elong}%
+
+<span style="color:var(--amber)">// Modulus of Resilience (area under elastic region):</span>
+Ur = σy² / (2E) = ${sy.toFixed(0)}² / (2 × ${m.E*1000}) = ${(sy*sy/(2*m.E*1000)).toFixed(3)} MJ/m³
+
+<span style="color:var(--amber)">// HS2 Design Check (Eurocode 3):</span>
+Design yield strength fyd = fyk / γM0 = ${m.sigma_y} / 1.0 = ${m.sigma_y} MPa
+Max design stress = 0.9 × ${m.sigma_y} = ${(0.9*m.sigma_y).toFixed(0)} MPa (allowing 10% margin)`;
+  // comparison table
+  const pE=((parseFloat(E_exp)-parseFloat(m.published.E))/parseFloat(m.published.E)*100).toFixed(1);
+  document.getElementById('comparisonTable').innerHTML=`
+  <table class="results-table">
+    <thead><tr><th>Property</th><th>Experimental</th><th>Published</th><th>% Difference</th></tr></thead>
+    <tbody>
+      <tr><td>Young's Modulus E</td><td>${E_exp} GPa</td><td>${m.published.E} GPa</td><td>${pE}%</td></tr>
+      <tr><td>Yield / Proof Stress</td><td>${sy.toFixed(0)} MPa</td><td>${m.published.Ey} MPa</td><td>${m.published.Ey!=='N/A'&&m.published.Ey!=='—'?Math.abs((sy-parseFloat(m.published.Ey))/parseFloat(m.published.Ey)*100).toFixed(1)+'%':'N/A'}</td></tr>
+      <tr><td>UTS</td><td>${uts.toFixed(0)} MPa</td><td>${m.published.UTS} MPa</td><td>${Math.abs((uts-parseFloat(m.published.UTS))/parseFloat(m.published.UTS)*100).toFixed(1)}%</td></tr>
+      <tr><td>% Elongation</td><td>${elong}%</td><td>${m.published.elong}</td><td>—</td></tr>
+    </tbody>
+  </table>`;
+  // HS2 context
+  document.getElementById('hs2Context').innerHTML=`<strong>🚄 HS2 Phase One — ${m.name}</strong>${m.hs2}`;
+  drawAnalysisChart();
+  document.getElementById('btn-s4').classList.add('done');
+}
+
+function drawAnalysisChart(){
+  const c=document.getElementById('analysisChart');
+  if(!c) return;
+  c.width=c.offsetWidth||700; c.height=380;
+  const ctx=c.getContext('2d');
+  const W=c.width,H=c.height;
+  const pad={l:66,r:28,t:32,b:52};
+  const pw=W-pad.l-pad.r, ph=H-pad.t-pad.b;
+  const m=MATERIALS[currentMat];
+  const maxStress=m.sigma_uts*1.22;
+  const maxStrain=m.brittle?Math.max(m.epsilon_f*2.5,0.006):Math.max(m.epsilon_f*1.2,0.005);
+  ctx.fillStyle='#fdfcf8'; ctx.fillRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='#e8e4dc'; ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    ctx.beginPath(); ctx.moveTo(pad.l+i*pw/5,pad.t); ctx.lineTo(pad.l+i*pw/5,pad.t+ph); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.l,pad.t+i*ph/5); ctx.lineTo(pad.l+pw,pad.t+i*ph/5); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='#333'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l,pad.t); ctx.lineTo(pad.l,pad.t+ph); ctx.lineTo(pad.l+pw,pad.t+ph); ctx.stroke();
+  ctx.fillStyle='#666'; ctx.font='11px IBM Plex Mono';
+  ctx.textAlign='center'; ctx.fillText('Strain ε (mm/mm)',pad.l+pw/2,H-8);
+  ctx.save(); ctx.translate(16,pad.t+ph/2+38); ctx.rotate(-Math.PI/2); ctx.fillText('Stress σ (MPa)',0,0); ctx.restore();
+  for(let i=0;i<=5;i++){
+    ctx.fillStyle='#888'; ctx.font='9px IBM Plex Mono';
+    ctx.textAlign='right'; ctx.fillText((maxStress/5*i).toFixed(0),pad.l-3,pad.t+ph-i*ph/5+4);
+    ctx.textAlign='center'; ctx.fillText((maxStrain/5*i).toFixed(m.brittle?5:4),pad.l+i*pw/5,pad.t+ph+16);
+  }
+  ctx.textAlign='left';
+  function sx(s){return pad.l+(s/maxStrain)*pw}
+  function sy2(s){return pad.t+ph-(s/maxStress)*ph}
+  if(testData.stress.length>0){
+    // shade elastic region
+    ctx.save(); ctx.fillStyle='rgba(76,175,80,.07)';
+    ctx.beginPath(); ctx.moveTo(sx(0),sy2(0));
+    testData.strain.forEach((e,i)=>{if(e<=m.epsilon_y*1.15) ctx.lineTo(sx(e),sy2(testData.stress[i]));});
+    ctx.lineTo(sx(m.epsilon_y),sy2(0)); ctx.closePath(); ctx.fill(); ctx.restore();
+    // draw curve
+    ctx.lineWidth=2.8; ctx.lineJoin='round';
+    for(let i=1;i<testData.stress.length;i++){
+      const e=testData.strain[i];
+      const col=e<=m.epsilon_y*1.1?'#2a7a4a':e<=m.epsilon_uts?'#c8860a':'#c0392b';
+      ctx.strokeStyle=col;
+      ctx.beginPath();
+      ctx.moveTo(sx(testData.strain[i-1]),sy2(testData.stress[i-1]));
+      ctx.lineTo(sx(e),sy2(testData.stress[i])); ctx.stroke();
+    }
+  }
+  // 0.2% proof line
+  if(m.proofStress){
+    const offset=0.002, slope=m.E*1000;
+    ctx.strokeStyle='#1a4a8a'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(sx(offset),sy2(0)); ctx.lineTo(sx(offset+m.sigma_y/slope),sy2(m.sigma_y)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#1a4a8a'; ctx.font='9px IBM Plex Mono';
+    ctx.fillText('0.2% offset',sx(offset)+4,sy2(0)-6);
+  }
+  // key markers
+  [[m.epsilon_y,m.sigma_y,'σy='+m.sigma_y,'#2a7a4a'],
+   [m.epsilon_uts,m.sigma_uts,'UTS='+m.sigma_uts,'#c8860a']].forEach(([e,s,lbl,col])=>{
+    ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(pad.l,sy2(s)); ctx.lineTo(sx(e),sy2(s)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx(e),sy2(s)); ctx.lineTo(sx(e),pad.t+ph); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(sx(e),sy2(s),5,0,Math.PI*2);
+    ctx.fillStyle=col; ctx.fill();
+    ctx.fillStyle=col; ctx.font='bold 9px IBM Plex Mono';
+    ctx.fillText(lbl,sx(e)+6,sy2(s)-4);
+  });
+  ctx.fillStyle='#333'; ctx.font='bold 11px IBM Plex Mono';
+  ctx.fillText(`Stress–Strain Curve — ${m.name}`,pad.l,pad.t-10);
+}
+
+/* ════════════════════════════ REPORT ════════════════════════════ */
+function populateReport(){
+  const m=MATERIALS[currentMat];
+  const A0=testResults.A0||parseFloat(document.getElementById('specWidth').value)*parseFloat(document.getElementById('specThick').value);
+  const L0=testResults.L0||parseFloat(document.getElementById('gaugeLen').value);
+  const sy=testResults.yieldStress||m.sigma_y;
+  const uts=testResults.UTS||m.sigma_uts;
+  const elong=testResults.elongPct||(m.epsilon_f*100).toFixed(1);
+  const E_exp=(sy/m.epsilon_y/1000).toFixed(0);
+  document.getElementById('rTitle').textContent=`Tensile Testing of ${m.name} — EG4022 Engineering Materials · ${m.grade}`;
+  document.getElementById('rMethodEquip').innerHTML=
+    `Material: ${m.name} &nbsp;|&nbsp; Standard: ${m.grade}<br/>
+     Specimen: b = ${document.getElementById('specWidth').value} mm, a = ${document.getElementById('specThick').value} mm, L₀ = ${L0} mm, A₀ = ${A0.toFixed(1)} mm²<br/>
+     Machine: Universal Testing Machine — Instron type &nbsp;|&nbsp; Load cell: ${document.getElementById('loadCell').value} kN<br/>
+     Crosshead speed: ${document.getElementById('crossheadSpeed').value} mm/min &nbsp;|&nbsp; Extensometer: ${document.getElementById('extensometerType').value}<br/>
+     Temperature: ${document.getElementById('testTemp').value} &nbsp;|&nbsp; Standard: BS EN ISO 6892-1:2019`;
+  document.getElementById('rResultsTable').innerHTML=
+    `E = ${E_exp} GPa &nbsp;|&nbsp; σy = ${sy.toFixed(0)} MPa &nbsp;|&nbsp; UTS = ${uts.toFixed(0)} MPa &nbsp;|&nbsp; %EL = ${elong}% &nbsp;|&nbsp; Fracture: ${m.fracture}`;
+  document.getElementById('rAbstractAuto').textContent=
+    `→ Key results: E = ${E_exp} GPa, σy = ${sy.toFixed(0)} MPa, UTS = ${uts.toFixed(0)} MPa, %EL = ${elong}%. Published: E = ${m.published.E} GPa, UTS = ${m.published.UTS} MPa.`;
+  document.getElementById('btn-s5').classList.add('done');
+}
+
+/* ════════════════════════════ CSV DOWNLOAD ════════════════════════════ */
+function downloadCSV(){
+  if(!testData.stress.length){alert('Run the test first to generate data.');return;}
+  let csv='Index,Strain_(mm/mm),Stress_(MPa),Force_(kN),Extension_(mm)\n';
+  testData.stress.forEach((s,i)=>{
+    csv+=`${i},${testData.strain[i].toFixed(6)},${s.toFixed(2)},${testData.force[i].toFixed(3)},${testData.extension[i].toFixed(3)}\n`;
+  });
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`tensile_test_${currentMat}_data.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ════════════════════════════ RESIZE ════════════════════════════ */
+window.addEventListener('resize',()=>{
+  if(testData.stress.length>0) drawAnalysisChart();
+});
+</script>
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>

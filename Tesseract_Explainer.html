@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Tesseract — EG4022 Engineering Materials</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 24px;
+    background: #f5f3ed;
+    color: #2c2c2a;
+    line-height: 1.6;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  .credit-bar {
+    background: linear-gradient(135deg, #0a2540 0%, #0f6e56 100%);
+    color: #fff;
+    padding: 18px 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .credit-bar .module { font-size: 12px; letter-spacing: 1.5px; opacity: 0.85; text-transform: uppercase; }
+  .credit-bar h1 { margin: 6px 0 4px; font-size: 26px; font-weight: 500; }
+  .credit-bar .lecturer { font-size: 13px; opacity: 0.9; }
+  .credit-bar .lecturer strong { font-weight: 500; }
+
+  .tess-wrap { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .tess-header { padding: 16px 20px; background: #f0ede4; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #0f6e56; }
+  .tess-header h2 { font-size: 20px; font-weight: 500; margin: 0 0 4px; color: #0a2540; }
+  .tess-header p { font-size: 13px; color: #5f5e5a; margin: 0; }
+
+  .tess-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tess-tab {
+    padding: 9px 16px; background: #fff; border: 1px solid #d3d1c7;
+    border-radius: 8px; font-size: 13px; cursor: pointer; color: #5f5e5a;
+    transition: all 0.15s; font-family: inherit; font-weight: 500;
+  }
+  .tess-tab:hover { background: #f0ede4; border-color: #0f6e56; }
+  .tess-tab.active { background: #0f6e56; color: #fff; border-color: #0f6e56; }
+
+  .tess-panel { display: none; }
+  .tess-panel.active { display: block; }
+
+  .tess-canvas-wrap {
+    background: #fafaf7; border-radius: 10px; padding: 20px;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 360px; border: 1px solid #ece9df;
+  }
+  canvas { display: block; max-width: 100%; height: auto; }
+
+  .tess-controls {
+    display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+    padding: 12px 16px; background: #f7f5ee; border-radius: 8px;
+  }
+  .tess-controls label { font-size: 13px; color: #444; display: flex; align-items: center; gap: 8px; }
+  .tess-controls input[type=range] { width: 130px; accent-color: #0f6e56; }
+  .tess-controls select {
+    padding: 5px 10px; border-radius: 6px; border: 1px solid #d3d1c7;
+    background: #fff; color: #2c2c2a; font-family: inherit; font-size: 13px;
+  }
+  .tess-btn {
+    padding: 7px 14px; background: #fff; border: 1px solid #d3d1c7;
+    border-radius: 6px; font-size: 13px; cursor: pointer; color: #2c2c2a;
+    font-family: inherit; font-weight: 500; transition: all 0.15s;
+  }
+  .tess-btn:hover { background: #f0ede4; border-color: #0f6e56; }
+  .tess-btn.primary { background: #0f6e56; color: #fff; border-color: #0f6e56; }
+  .tess-btn.primary:hover { background: #0a5642; }
+
+  .dim-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px; margin: 16px 0;
+  }
+  .dim-card {
+    background: #fff; border: 1px solid #ece9df; border-radius: 8px;
+    padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.15s;
+  }
+  .dim-card:hover { border-color: #0f6e56; transform: translateY(-1px); }
+  .dim-card.active { border-color: #0f6e56; border-width: 2px; background: #e1f5ee; }
+  .dim-card .num { font-size: 24px; font-weight: 600; color: #0f6e56; }
+  .dim-card .name { font-size: 13px; font-weight: 500; margin: 4px 0 2px; color: #2c2c2a; }
+  .dim-card .meta { font-size: 11px; color: #5f5e5a; }
+
+  .fact-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px; margin: 14px 0;
+  }
+  .fact-card {
+    background: #f0ede4; padding: 12px 14px; border-radius: 8px;
+    border-left: 3px solid #0f6e56;
+  }
+  .fact-card .label { font-size: 11px; color: #5f5e5a; text-transform: uppercase; letter-spacing: 0.5px; }
+  .fact-card .value { font-size: 22px; font-weight: 600; margin-top: 4px; color: #0f6e56; }
+
+  .real-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 16px 0; }
+  @media (min-width: 600px) {
+    .real-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .real-card {
+    background: #fff; border: 1px solid #ece9df; border-radius: 10px; padding: 16px;
+  }
+  .real-card h3 {
+    font-size: 15px; font-weight: 500; margin: 0 0 8px;
+    display: flex; align-items: center; gap: 8px; color: #0a2540; flex-wrap: wrap;
+  }
+  .real-card .tag {
+    font-size: 10px; padding: 3px 8px; border-radius: 12px;
+    background: #e1f5ee; color: #0f6e56; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .real-card p { font-size: 13px; line-height: 1.6; color: #444; margin: 0; }
+  .real-card strong { color: #0a2540; font-weight: 500; }
+
+  .verdict { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 16px 0; }
+  @media (min-width: 600px) {
+    .verdict { grid-template-columns: 1fr 1fr; }
+  }
+  .verdict-card { padding: 16px; border-radius: 10px; border: 1px solid; }
+  .verdict-card.math { background: #e1f5ee; border-color: #0f6e56; }
+  .verdict-card.physical { background: #faeeda; border-color: #ba7517; }
+  .verdict-card h4 { font-size: 15px; font-weight: 500; margin: 0 0 8px; }
+  .verdict-card.math h4 { color: #0f6e56; }
+  .verdict-card.physical h4 { color: #854f0b; }
+  .verdict-card p { font-size: 13px; line-height: 1.5; margin: 0; }
+  .verdict-card.math p { color: #085041; }
+  .verdict-card.physical p { color: #633806; }
+
+  .bond-info {
+    background: #f7f5ee; padding: 14px 16px; border-radius: 8px;
+    margin-top: 12px; font-size: 13px; color: #444; line-height: 1.6;
+    border-left: 3px solid #0f6e56;
+  }
+  .bond-info strong { color: #0a2540; font-weight: 500; }
+
+  .summary-box {
+    margin-top: 20px; padding: 16px 20px;
+    background: #fff8e7; border-left: 4px solid #ba7517; border-radius: 8px;
+  }
+  .summary-box h4 { margin: 0 0 8px; color: #854f0b; font-size: 15px; font-weight: 500; }
+  .summary-box p { margin: 0; font-size: 13px; color: #5f4a0a; line-height: 1.6; }
+
+  footer {
+    text-align: center; margin-top: 24px; padding: 16px;
+    font-size: 12px; color: #888; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="credit-bar">
+    <div class="module">EG4022 Engineering Materials</div>
+    <h1>The Tesseract — a 4D cube</h1>
+    <div class="lecturer">Module Lead: <strong>Vismay Loliyaniya</strong> · University of East London / Malvern University Partnerships</div>
+  </div>
+
+  <div class="tess-wrap">
+    <div class="tess-header">
+      <h2>Interactive explainer</h2>
+      <p>Understanding higher-dimensional geometry, vertex bonding patterns, and real-world engineering applications</p>
+    </div>
+
+    <div class="tess-tabs">
+      <button class="tess-tab active" data-tab="rotate">Rotating tesseract</button>
+      <button class="tess-tab" data-tab="dims">Dimensions 0–4</button>
+      <button class="tess-tab" data-tab="bonds">Vertices & bonding</button>
+      <button class="tess-tab" data-tab="real">Real or fiction?</button>
+    </div>
+
+    <div class="tess-panel active" id="panel-rotate">
+      <div class="tess-canvas-wrap">
+        <canvas id="rotCanvas" width="640" height="360"></canvas>
+      </div>
+      <div class="tess-controls">
+        <label>XW rotation <input type="range" id="rotXW" min="0" max="100" value="40"></label>
+        <label>YW rotation <input type="range" id="rotYW" min="0" max="100" value="25"></label>
+        <label>ZW rotation <input type="range" id="rotZW" min="0" max="100" value="60"></label>
+        <button class="tess-btn primary" id="playBtn">Pause</button>
+        <button class="tess-btn" id="resetBtn">Reset</button>
+      </div>
+      <div class="bond-info">
+        <strong>What you are seeing:</strong> a 4-dimensional hypercube projected down into 2D on your screen. The inner cube is not really "inside" the outer cube — in 4D they are the same size and same distance apart along the fourth axis (w). What looks like inside/outside is a perspective trick, exactly like how a 3D cube on paper looks like a small square inside a big square.
+      </div>
+    </div>
+
+    <div class="tess-panel" id="panel-dims">
+      <div class="dim-grid" id="dimGrid"></div>
+      <div class="tess-canvas-wrap" style="min-height: 260px;">
+        <canvas id="dimCanvas" width="640" height="260"></canvas>
+      </div>
+      <div class="fact-grid" id="dimStats"></div>
+      <div class="bond-info">
+        <strong>The doubling pattern:</strong> each time you add a dimension, the number of vertices doubles (1 → 2 → 4 → 8 → 16). You "extrude" the previous shape in a new perpendicular direction. The tesseract is what you get when you do that to a cube.
+      </div>
+    </div>
+
+    <div class="tess-panel" id="panel-bonds">
+      <div class="tess-canvas-wrap">
+        <canvas id="bondCanvas" width="640" height="360"></canvas>
+      </div>
+      <div class="tess-controls">
+        <label>Highlight vertex
+          <select id="vertexPick"></select>
+        </label>
+        <button class="tess-btn" id="showAllBonds">Show all 32 edges</button>
+      </div>
+      <div class="bond-info" id="bondText">
+        Every vertex of a tesseract connects to exactly <strong>4 neighbours</strong> — one along each of the four axes (x, y, z, w). This is the same logic as a 3D cube where every vertex connects to 3 neighbours, or a square where every vertex connects to 2. The pattern is what mathematicians and crystallographers call <strong>coordination number = n for an n-cube</strong>.
+      </div>
+      <div class="summary-box">
+        <h4>Materials science connection</h4>
+        <p>This is the same coordination-number logic used to describe atomic packing in crystal lattices: simple cubic = 6, body-centred cubic = 8, face-centred cubic = 12. The tesseract extends this family into a 4th dimension and underpins how we describe quasicrystals and hypercube interconnects.</p>
+      </div>
+    </div>
+
+    <div class="tess-panel" id="panel-real">
+      <div class="verdict">
+        <div class="verdict-card math">
+          <h4>✓ Mathematically — completely real</h4>
+          <p>The tesseract is a well-defined geometric object with exact coordinates, volume formulas, and rotational symmetries. Mathematicians, physicists and crystallographers work with it every day.</p>
+        </div>
+        <div class="verdict-card physical">
+          <h4>✗ Physically — not in our 3D world</h4>
+          <p>Our universe has 3 spatial dimensions, so a real solid tesseract cannot exist here. We can only see <em>shadows</em> or <em>projections</em> of it — like a 3D cube casts a 2D shadow.</p>
+        </div>
+      </div>
+
+      <div class="real-grid">
+        <div class="real-card">
+          <h3>Crystallography & lattices <span class="tag">real engineering use</span></h3>
+          <p>Higher-dimensional lattices (including 4D hypercubic) are used to describe <strong>quasicrystals</strong> — real materials like Al-Cu-Fe alloys whose atomic structure only makes sense as a 3D "slice" through a 4D or 6D periodic lattice. Won Dan Shechtman the 2011 Nobel Prize in Chemistry.</p>
+        </div>
+        <div class="real-card">
+          <h3>4D printing & metamaterials <span class="tag">research</span></h3>
+          <p>Tesseract-based unit cells are used to design <strong>auxetic</strong> and <strong>mechanical metamaterials</strong> — lattice structures that get thicker when stretched. Used in impact-absorbing materials, medical stents, and aerospace panels.</p>
+        </div>
+        <div class="real-card">
+          <h3>Computing & data structures <span class="tag">real</span></h3>
+          <p>The tesseract graph is the topology of the <strong>hypercube interconnect</strong> in parallel supercomputers (e.g. Intel iPSC, Connection Machine). Each processor links to 4 neighbours along 4 axes — exactly like tesseract vertex connectivity.</p>
+        </div>
+        <div class="real-card">
+          <h3>In fiction <span class="tag">popular culture</span></h3>
+          <p><em>Interstellar</em> (2014) shows Cooper inside a tesseract; <em>A Wrinkle in Time</em> uses "tesseract" as a verb for folding space. These are dramatic interpretations — they take the real mathematical object and add fictional physics (time travel, wormholes) on top.</p>
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <h4>Bottom line for engineers</h4>
+        <p>The tesseract itself is mathematics, not science fiction. You will not hold one in your hand, but the geometry shows up in genuine engineering work — quasicrystal alloys, metamaterial design, parallel computing architectures, and crystallographic group theory. Hollywood borrowed the name; engineering borrowed the structure.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    EG4022 Engineering Materials · Interactive educational resource<br>
+    Module Lead: Vismay Loliyaniya · University of East London / Malvern University Partnerships
+  </footer>
+</div>
+
+<script>
+(function(){
+  // ----- Tab switching -----
+  document.querySelectorAll('.tess-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tess-tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.tess-panel').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ----- Tesseract vertices (16 points in 4D) -----
+  function tesseractVerts() {
+    const v = [];
+    for (let i = 0; i < 16; i++) {
+      v.push([
+        (i & 1) ? 1 : -1,
+        (i & 2) ? 1 : -1,
+        (i & 4) ? 1 : -1,
+        (i & 8) ? 1 : -1
+      ]);
+    }
+    return v;
+  }
+
+  // Edges = pairs of vertices differing in exactly one coordinate
+  function tesseractEdges() {
+    const e = [];
+    for (let i = 0; i < 16; i++) {
+      for (let j = i + 1; j < 16; j++) {
+        let diff = 0;
+        for (let k = 0; k < 4; k++) if (((i >> k) & 1) !== ((j >> k) & 1)) diff++;
+        if (diff === 1) e.push([i, j]);
+      }
+    }
+    return e;
+  }
+
+  function rotate4D(p, axA, axB, theta) {
+    const c = Math.cos(theta), s = Math.sin(theta);
+    const r = p.slice();
+    const a = r[axA], b = r[axB];
+    r[axA] = a * c - b * s;
+    r[axB] = a * s + b * c;
+    return r;
+  }
+
+  function project4to2(p, rotXW, rotYW, rotZW, rotXY) {
+    let q = p.slice();
+    q = rotate4D(q, 0, 3, rotXW);
+    q = rotate4D(q, 1, 3, rotYW);
+    q = rotate4D(q, 2, 3, rotZW);
+    q = rotate4D(q, 0, 1, rotXY);
+    const wDist = 2.5;
+    const wScale = 1 / (wDist - q[3]);
+    const x3 = q[0] * wScale * 2.2;
+    const y3 = q[1] * wScale * 2.2;
+    const z3 = q[2] * wScale * 2.2;
+    const zDist = 4;
+    const zScale = 1 / (zDist - z3);
+    return {
+      x: x3 * zScale * 3,
+      y: y3 * zScale * 3,
+      w: q[3]
+    };
+  }
+
+  const verts4D = tesseractVerts();
+  const edges = tesseractEdges();
+
+  // ----- Rotating tesseract canvas -----
+  const rotCanvas = document.getElementById('rotCanvas');
+  const rctx = rotCanvas.getContext('2d');
+  let rotState = { xw: 0, yw: 0, zw: 0, xy: 0 };
+  let playing = true;
+  let lastT = performance.now();
+
+  function drawRotating() {
+    const W = rotCanvas.width, H = rotCanvas.height;
+    rctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+    const scale = 65;
+
+    const projected = verts4D.map(v => project4to2(v, rotState.xw, rotState.yw, rotState.zw, rotState.xy));
+
+    for (const [a, b] of edges) {
+      const pa = projected[a], pb = projected[b];
+      const avgW = (pa.w + pb.w) / 2;
+      const intensity = (avgW + 1.5) / 3;
+      rctx.strokeStyle = `rgba(15, 110, 86, ${0.35 + intensity * 0.55})`;
+      rctx.lineWidth = 1 + intensity * 1.2;
+      rctx.beginPath();
+      rctx.moveTo(cx + pa.x * scale, cy + pa.y * scale);
+      rctx.lineTo(cx + pb.x * scale, cy + pb.y * scale);
+      rctx.stroke();
+    }
+    for (const p of projected) {
+      const intensity = (p.w + 1.5) / 3;
+      rctx.fillStyle = `rgba(232, 89, 60, ${0.5 + intensity * 0.5})`;
+      rctx.beginPath();
+      rctx.arc(cx + p.x * scale, cy + p.y * scale, 2.5 + intensity * 2, 0, Math.PI * 2);
+      rctx.fill();
+    }
+  }
+
+  function rotateFrame(now) {
+    const dt = (now - lastT) / 1000;
+    lastT = now;
+    if (playing) {
+      const sxw = parseFloat(document.getElementById('rotXW').value) / 100;
+      const syw = parseFloat(document.getElementById('rotYW').value) / 100;
+      const szw = parseFloat(document.getElementById('rotZW').value) / 100;
+      rotState.xw += dt * sxw * 0.6;
+      rotState.yw += dt * syw * 0.6;
+      rotState.zw += dt * szw * 0.6;
+    }
+    drawRotating();
+    requestAnimationFrame(rotateFrame);
+  }
+  requestAnimationFrame(rotateFrame);
+
+  document.getElementById('playBtn').addEventListener('click', function() {
+    playing = !playing;
+    this.textContent = playing ? 'Pause' : 'Play';
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    rotState = { xw: 0, yw: 0, zw: 0, xy: 0 };
+  });
+
+  // ----- Dimensions panel -----
+  const dims = [
+    { n: 0, name: 'Point', meta: '0D', verts: 1, edges: 0, faces: 0, cells: 0 },
+    { n: 1, name: 'Line', meta: '1D', verts: 2, edges: 1, faces: 0, cells: 0 },
+    { n: 2, name: 'Square', meta: '2D', verts: 4, edges: 4, faces: 1, cells: 0 },
+    { n: 3, name: 'Cube', meta: '3D', verts: 8, edges: 12, faces: 6, cells: 1 },
+    { n: 4, name: 'Tesseract', meta: '4D', verts: 16, edges: 32, faces: 24, cells: 8 }
+  ];
+
+  const dimGrid = document.getElementById('dimGrid');
+  dims.forEach((d, i) => {
+    const c = document.createElement('div');
+    c.className = 'dim-card' + (i === 4 ? ' active' : '');
+    c.dataset.idx = i;
+    c.innerHTML = `<div class="num">${d.n}D</div><div class="name">${d.name}</div><div class="meta">${d.verts} vertices</div>`;
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.dim-card').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      drawDim(i);
+      updateDimStats(d);
+    });
+    dimGrid.appendChild(c);
+  });
+
+  const dimCanvas = document.getElementById('dimCanvas');
+  const dctx = dimCanvas.getContext('2d');
+
+  function drawDim(idx) {
+    const W = dimCanvas.width, H = dimCanvas.height;
+    dctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+    const s = 55;
+    dctx.strokeStyle = '#0f6e56';
+    dctx.fillStyle = '#e8593c';
+    dctx.lineWidth = 1.8;
+
+    function dot(x, y) {
+      dctx.beginPath();
+      dctx.arc(cx + x, cy + y, 5, 0, Math.PI * 2);
+      dctx.fill();
+    }
+    function line(x1, y1, x2, y2) {
+      dctx.beginPath();
+      dctx.moveTo(cx + x1, cy + y1);
+      dctx.lineTo(cx + x2, cy + y2);
+      dctx.stroke();
+    }
+
+    if (idx === 0) {
+      dot(0, 0);
+    } else if (idx === 1) {
+      line(-s, 0, s, 0);
+      dot(-s, 0); dot(s, 0);
+    } else if (idx === 2) {
+      line(-s, -s, s, -s); line(s, -s, s, s); line(s, s, -s, s); line(-s, s, -s, -s);
+      dot(-s, -s); dot(s, -s); dot(s, s); dot(-s, s);
+    } else if (idx === 3) {
+      const o = s * 0.5;
+      const front = [[-s, -s], [s, -s], [s, s], [-s, s]];
+      const back = front.map(p => [p[0] + o, p[1] - o]);
+      for (let i = 0; i < 4; i++) {
+        line(front[i][0], front[i][1], front[(i + 1) % 4][0], front[(i + 1) % 4][1]);
+        line(back[i][0], back[i][1], back[(i + 1) % 4][0], back[(i + 1) % 4][1]);
+        line(front[i][0], front[i][1], back[i][0], back[i][1]);
+      }
+      [...front, ...back].forEach(p => dot(p[0], p[1]));
+    } else if (idx === 4) {
+      const proj = verts4D.map(v => project4to2(v, 0.5, 0.3, 0.2, 0));
+      const sc = 50;
+      for (const [a, b] of edges) {
+        const pa = proj[a], pb = proj[b];
+        dctx.strokeStyle = '#0f6e56';
+        dctx.lineWidth = 1.3;
+        line(pa.x * sc, pa.y * sc, pb.x * sc, pb.y * sc);
+      }
+      proj.forEach(p => dot(p.x * sc, p.y * sc));
+    }
+  }
+
+  function updateDimStats(d) {
+    const grid = document.getElementById('dimStats');
+    grid.innerHTML = `
+      <div class="fact-card"><div class="label">Vertices (points)</div><div class="value">${d.verts}</div></div>
+      <div class="fact-card"><div class="label">Edges (lines)</div><div class="value">${d.edges}</div></div>
+      <div class="fact-card"><div class="label">Faces (squares)</div><div class="value">${d.faces}</div></div>
+      <div class="fact-card"><div class="label">Cells (cubes)</div><div class="value">${d.cells}</div></div>
+    `;
+  }
+  drawDim(4);
+  updateDimStats(dims[4]);
+
+  // ----- Bonds panel -----
+  const bondCanvas = document.getElementById('bondCanvas');
+  const bctx = bondCanvas.getContext('2d');
+  let highlightVertex = -1;
+  let showAll = true;
+
+  const vertexPick = document.getElementById('vertexPick');
+  for (let i = 0; i < 16; i++) {
+    const coords = [(i & 1) ? '+' : '−', (i & 2) ? '+' : '−', (i & 4) ? '+' : '−', (i & 8) ? '+' : '−'].join('');
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `Vertex ${i} (${coords})`;
+    vertexPick.appendChild(opt);
+  }
+  vertexPick.addEventListener('change', () => {
+    highlightVertex = parseInt(vertexPick.value);
+    showAll = false;
+    drawBonds();
+    updateBondText();
+  });
+  document.getElementById('showAllBonds').addEventListener('click', () => {
+    showAll = true;
+    highlightVertex = -1;
+    drawBonds();
+    updateBondText();
+  });
+
+  function drawBonds() {
+    const W = bondCanvas.width, H = bondCanvas.height;
+    bctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+    const sc = 70;
+    const proj = verts4D.map(v => project4to2(v, 0.6, 0.4, 0.3, 0));
+
+    for (const [a, b] of edges) {
+      let active = showAll || a === highlightVertex || b === highlightVertex;
+      bctx.strokeStyle = active ? '#0f6e56' : 'rgba(150,150,150,0.18)';
+      bctx.lineWidth = active ? 2 : 0.8;
+      const pa = proj[a], pb = proj[b];
+      bctx.beginPath();
+      bctx.moveTo(cx + pa.x * sc, cy + pa.y * sc);
+      bctx.lineTo(cx + pb.x * sc, cy + pb.y * sc);
+      bctx.stroke();
+    }
+    proj.forEach((p, i) => {
+      const isHi = i === highlightVertex;
+      bctx.fillStyle = isHi ? '#e8593c' : '#0f6e56';
+      bctx.beginPath();
+      bctx.arc(cx + p.x * sc, cy + p.y * sc, isHi ? 7 : 4, 0, Math.PI * 2);
+      bctx.fill();
+    });
+  }
+
+  function updateBondText() {
+    const t = document.getElementById('bondText');
+    if (showAll) {
+      t.innerHTML = `Every vertex of a tesseract connects to exactly <strong>4 neighbours</strong> — one along each of the four axes (x, y, z, w). This is the same logic as a 3D cube where every vertex connects to 3 neighbours, or a square where every vertex connects to 2. The pattern is what mathematicians and crystallographers call <strong>coordination number = n for an n-cube</strong>.`;
+    } else {
+      const v = verts4D[highlightVertex];
+      const coords = `(${v.map(c => c > 0 ? '+1' : '−1').join(', ')})`;
+      const neighbours = [];
+      for (const [a, b] of edges) {
+        if (a === highlightVertex) neighbours.push(b);
+        else if (b === highlightVertex) neighbours.push(a);
+      }
+      t.innerHTML = `<strong>Vertex ${highlightVertex}</strong> at coordinates ${coords} bonds to <strong>${neighbours.length} neighbours</strong>: vertices ${neighbours.join(', ')}. Each bond changes exactly one coordinate from +1 to −1 (or vice versa) — that is the definition of an edge in any n-dimensional cube.`;
+    }
+  }
+  drawBonds();
+})();
+</script>
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>

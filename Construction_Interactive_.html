@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 — Building Construction Process | Interactive Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;600&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --steel:#1a2332;
+    --concrete:#3a4555;
+    --rebar:#ff6b35;
+    --safety:#ffc94a;
+    --blueprint:#0a558c;
+    --cement:#e8e4dd;
+    --paper:#f5f1ea;
+    --line:#d8d1c4;
+    --ok:#2d9a5e;
+    --no:#c8362d;
+    --shadow:0 10px 30px rgba(26,35,50,.15);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;
+    /* BLOCK COPY/PASTE/SELECTION on everything */
+    -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+    -webkit-touch-callout:none;
+  }
+  html,body{
+    background:var(--paper);
+    color:var(--steel);
+    font-family:'Fraunces',Georgia,serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;
+    background-image:
+      linear-gradient(rgba(26,35,50,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(26,35,50,.04) 1px,transparent 1px);
+    background-size:32px 32px;
+    pointer-events:none;z-index:0;
+  }
+  /* HEADER */
+  header{
+    position:relative;z-index:5;
+    padding:28px 36px 18px;
+    border-bottom:2px solid var(--steel);
+    background:var(--paper);
+    display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:18px;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .logo{
+    width:54px;height:54px;background:var(--steel);
+    display:grid;place-items:center;color:var(--safety);
+    font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;
+    transform:rotate(-3deg);box-shadow:4px 4px 0 var(--rebar);
+  }
+  .brand h1{font-family:'Bricolage Grotesque';font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1;}
+  .brand p{font-family:'JetBrains Mono';font-size:11px;color:var(--concrete);margin-top:4px;letter-spacing:1px;text-transform:uppercase;}
+  .progress-wrap{display:flex;align-items:center;gap:14px;}
+  .xp-label{font-family:'JetBrains Mono';font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--concrete);}
+  .xp-bar{width:220px;height:14px;border:2px solid var(--steel);background:#fff;position:relative;}
+  .xp-fill{height:100%;background:linear-gradient(90deg,var(--rebar),var(--safety));width:0%;transition:width .6s cubic-bezier(.2,1,.3,1);}
+  .xp-num{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:var(--rebar);min-width:40px;text-align:right;}
+
+  /* NAV TABS */
+  nav.tabs{
+    position:relative;z-index:5;
+    display:flex;gap:0;padding:0 36px;border-bottom:1px solid var(--line);
+    background:var(--paper);overflow-x:auto;
+  }
+  .tab{
+    padding:18px 22px;font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;
+    background:none;border:none;color:var(--concrete);cursor:pointer;
+    border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;
+    display:flex;align-items:center;gap:8px;
+  }
+  .tab:hover{color:var(--steel);}
+  .tab.active{color:var(--steel);border-bottom-color:var(--rebar);}
+  .tab .badge{font-family:'JetBrains Mono';font-size:9px;background:var(--steel);color:var(--safety);padding:2px 6px;border-radius:2px;}
+
+  /* MAIN AREAS */
+  main{position:relative;z-index:2;padding:32px 36px 80px;max-width:1300px;margin:0 auto;}
+  .panel{display:none;animation:fadeIn .5s ease-out;}
+  .panel.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  .panel-title{font-family:'Bricolage Grotesque';font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin-bottom:8px;}
+  .panel-sub{font-family:'JetBrains Mono';font-size:12px;color:var(--concrete);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px;}
+
+  /* HOME PANEL */
+  .hero{
+    background:var(--steel);color:var(--cement);
+    padding:48px 40px;border-radius:0;
+    position:relative;overflow:hidden;
+    box-shadow:8px 8px 0 var(--rebar);
+  }
+  .hero::before{
+    content:"";position:absolute;top:0;right:0;width:280px;height:100%;
+    background:
+      repeating-linear-gradient(45deg,transparent 0 14px,rgba(255,201,74,.08) 14px 16px);
+  }
+  .hero h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:56px;line-height:.95;letter-spacing:-2px;margin-bottom:14px;position:relative;}
+  .hero h2 em{font-family:'Fraunces';font-style:italic;font-weight:400;color:var(--safety);}
+  .hero p{font-size:17px;max-width:620px;line-height:1.5;opacity:.85;position:relative;}
+  .hero .meta{display:flex;gap:32px;margin-top:28px;position:relative;flex-wrap:wrap;}
+  .hero .meta div{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:1.5px;}
+  .hero .meta b{display:block;font-family:'Bricolage Grotesque';font-size:28px;color:var(--safety);margin-top:4px;letter-spacing:-.5px;}
+
+  .game-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:36px;}
+  .game-card{
+    background:#fff;border:2px solid var(--steel);
+    padding:24px;cursor:pointer;transition:all .25s;
+    position:relative;
+  }
+  .game-card:hover{transform:translate(-4px,-4px);box-shadow:6px 6px 0 var(--rebar);}
+  .game-card .icon{
+    width:48px;height:48px;display:grid;place-items:center;
+    background:var(--safety);font-size:24px;margin-bottom:14px;
+  }
+  .game-card h3{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;letter-spacing:-.5px;}
+  .game-card .desc{font-size:14px;color:var(--concrete);margin-top:6px;line-height:1.4;}
+  .game-card .play{
+    margin-top:14px;font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;
+    color:var(--rebar);font-weight:600;letter-spacing:1px;
+  }
+
+  /* LEARN PANEL */
+  .stages-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:24px;}
+  .stage-card{
+    background:#fff;border:2px solid var(--steel);padding:24px 20px;
+    position:relative;cursor:pointer;transition:all .25s;
+  }
+  .stage-card:not(:last-child)::after{
+    content:"→";position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+    z-index:3;background:var(--rebar);color:#fff;width:28px;height:28px;
+    display:grid;place-items:center;font-weight:700;font-family:'Bricolage Grotesque';
+  }
+  .stage-card:hover{background:var(--safety);}
+  .stage-num{font-family:'JetBrains Mono';font-size:11px;color:var(--rebar);letter-spacing:2px;font-weight:600;}
+  .stage-emoji{font-size:36px;margin:8px 0;}
+  .stage-card h4{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;letter-spacing:-.5px;}
+  .stage-detail{
+    margin-top:24px;background:#fff;border:2px solid var(--steel);padding:28px;
+    display:none;
+  }
+  .stage-detail.show{display:block;animation:fadeIn .4s;}
+  .stage-detail h3{font-family:'Bricolage Grotesque';font-size:28px;letter-spacing:-1px;margin-bottom:14px;}
+  .stage-detail ul{list-style:none;padding:0;}
+  .stage-detail li{
+    padding:10px 0 10px 32px;border-bottom:1px dashed var(--line);
+    position:relative;font-size:15px;line-height:1.5;
+  }
+  .stage-detail li::before{
+    content:"▸";position:absolute;left:8px;color:var(--rebar);font-weight:700;
+  }
+
+  /* PROFESSIONALS */
+  .pros-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:24px;}
+  .pro-card{
+    background:#fff;border:2px solid var(--steel);padding:18px;
+    perspective:800px;cursor:pointer;height:180px;position:relative;
+  }
+  .pro-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d;}
+  .pro-card.flipped .pro-inner{transform:rotateY(180deg);}
+  .pro-front,.pro-back{
+    position:absolute;inset:0;backface-visibility:hidden;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .pro-front .ico{font-size:32px;margin-bottom:8px;}
+  .pro-front h4{font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;line-height:1.1;letter-spacing:-.3px;}
+  .pro-front .tap{font-family:'JetBrains Mono';font-size:10px;color:var(--concrete);letter-spacing:1px;margin-top:8px;text-transform:uppercase;}
+  .pro-back{transform:rotateY(180deg);background:var(--steel);color:var(--cement);padding:14px;margin:-18px;}
+  .pro-back p{font-size:13px;line-height:1.45;}
+
+  /* QUIZ */
+  .quiz-shell{background:#fff;border:2px solid var(--steel);padding:32px;margin-top:24px;box-shadow:6px 6px 0 var(--steel);}
+  .quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--steel);}
+  .quiz-q-num{font-family:'JetBrains Mono';font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--concrete);}
+  .quiz-score{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;}
+  .quiz-score b{color:var(--rebar);}
+  .quiz-question{font-family:'Fraunces';font-size:24px;line-height:1.3;margin-bottom:24px;font-weight:400;}
+  .quiz-question b{font-weight:700;color:var(--blueprint);}
+  .quiz-opts{display:grid;gap:10px;}
+  .opt{
+    text-align:left;padding:16px 18px;border:2px solid var(--steel);background:#fff;
+    cursor:pointer;font-family:'Fraunces';font-size:15px;transition:all .2s;
+    display:flex;align-items:center;gap:14px;
+  }
+  .opt:hover:not(:disabled){background:var(--cement);}
+  .opt .opt-letter{
+    font-family:'JetBrains Mono';font-weight:600;font-size:13px;
+    width:28px;height:28px;background:var(--steel);color:var(--cement);
+    display:grid;place-items:center;flex-shrink:0;
+  }
+  .opt.correct{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .opt.correct .opt-letter{background:#fff;color:var(--ok);}
+  .opt.wrong{background:var(--no);color:#fff;border-color:var(--no);}
+  .opt.wrong .opt-letter{background:#fff;color:var(--no);}
+  .opt:disabled{cursor:default;}
+  .quiz-feedback{
+    margin-top:18px;padding:16px;background:var(--cement);border-left:4px solid var(--rebar);
+    font-size:14px;line-height:1.5;display:none;
+  }
+  .quiz-feedback.show{display:block;animation:fadeIn .3s;}
+  .quiz-feedback b{font-family:'Bricolage Grotesque';display:block;margin-bottom:4px;}
+  .quiz-next{
+    margin-top:20px;padding:14px 28px;background:var(--steel);color:var(--cement);
+    border:none;cursor:pointer;font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;
+    letter-spacing:1px;text-transform:uppercase;display:none;
+  }
+  .quiz-next.show{display:inline-block;}
+  .quiz-next:hover{background:var(--rebar);}
+  .quiz-final{text-align:center;padding:40px 20px;}
+  .quiz-final h2{font-family:'Bricolage Grotesque';font-size:48px;letter-spacing:-1.5px;margin-bottom:8px;}
+  .quiz-final .score-big{font-family:'Bricolage Grotesque';font-weight:800;font-size:96px;color:var(--rebar);line-height:1;margin:20px 0;}
+  .quiz-final .grade{font-family:'JetBrains Mono';font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--concrete);}
+  .quiz-final button{
+    margin-top:24px;padding:14px 32px;background:var(--rebar);color:#fff;border:none;
+    cursor:pointer;font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;
+    letter-spacing:1px;text-transform:uppercase;
+  }
+
+  /* MATCH GAME */
+  .match-shell{margin-top:24px;}
+  .match-instr{background:var(--safety);padding:14px 18px;border-left:4px solid var(--steel);margin-bottom:18px;font-size:14px;}
+  .match-board{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .match-col h4{font-family:'Bricolage Grotesque';font-size:14px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;color:var(--concrete);}
+  .match-item{
+    background:#fff;border:2px solid var(--steel);padding:14px 16px;margin-bottom:10px;
+    cursor:pointer;font-size:14px;line-height:1.4;transition:all .2s;
+    display:flex;align-items:center;gap:12px;
+  }
+  .match-item.selected{background:var(--blueprint);color:#fff;border-color:var(--blueprint);}
+  .match-item.matched{background:var(--ok);color:#fff;border-color:var(--ok);cursor:default;opacity:.6;}
+  .match-item.shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+  .match-status{margin-top:16px;font-family:'JetBrains Mono';font-size:13px;color:var(--concrete);}
+
+  /* BUILD SIMULATION */
+  .build-shell{background:#fff;border:2px solid var(--steel);padding:24px;margin-top:24px;}
+  .build-instr{font-size:14px;margin-bottom:20px;color:var(--concrete);line-height:1.5;}
+  .build-area{display:grid;grid-template-columns:380px 1fr;gap:28px;}
+  .build-bank{background:var(--cement);padding:18px;border:2px dashed var(--steel);}
+  .build-bank h4{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;color:var(--steel);}
+  .build-item{
+    background:#fff;border:2px solid var(--steel);padding:12px 14px;margin-bottom:8px;
+    cursor:grab;font-size:13px;display:flex;align-items:center;gap:10px;
+    transition:all .15s;
+  }
+  .build-item:active{cursor:grabbing;}
+  .build-item.dragging{opacity:.4;}
+  .build-item.placed{display:none;}
+  .build-item .ord{font-family:'JetBrains Mono';font-size:10px;color:var(--rebar);font-weight:700;}
+  .build-canvas{position:relative;min-height:520px;background:linear-gradient(to bottom,#cde7f5 0%,#cde7f5 70%,#8a6e4d 70%,#8a6e4d 100%);border:2px solid var(--steel);overflow:hidden;}
+  .build-slot{
+    position:absolute;border:2px dashed rgba(26,35,50,.4);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono';font-size:11px;color:var(--steel);
+    background:rgba(255,255,255,.4);text-align:center;padding:4px;
+    transition:all .2s;
+  }
+  .build-slot.over{background:var(--safety);border-style:solid;}
+  .build-slot.filled{background:var(--steel);color:var(--safety);border-style:solid;border-color:var(--rebar);}
+  .build-progress{margin-top:18px;display:flex;justify-content:space-between;align-items:center;}
+  .build-msg{font-family:'JetBrains Mono';font-size:12px;color:var(--concrete);}
+  .build-reset{padding:10px 18px;background:var(--steel);color:#fff;border:none;font-family:'Bricolage Grotesque';font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;}
+
+  /* BREEAM */
+  .breeam-shell{background:#fff;border:2px solid var(--steel);padding:24px;margin-top:24px;}
+  .breeam-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;}
+  .breeam-cats h4{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;color:var(--concrete);}
+  .breeam-cat{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 16px;background:var(--cement);margin-bottom:8px;border-left:4px solid var(--rebar);
+  }
+  .breeam-cat-name{font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .breeam-slider{width:140px;}
+  input[type=range]{
+    -webkit-appearance:none;width:100%;height:6px;background:#fff;border:1px solid var(--steel);outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:18px;height:18px;background:var(--rebar);cursor:pointer;border:2px solid var(--steel);
+  }
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--rebar);cursor:pointer;border:2px solid var(--steel);}
+  .breeam-result{background:var(--steel);color:var(--cement);padding:28px;text-align:center;}
+  .breeam-result h4{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--safety);margin-bottom:12px;}
+  .breeam-pct{font-family:'Bricolage Grotesque';font-weight:800;font-size:84px;line-height:1;color:var(--safety);transition:all .3s;}
+  .breeam-rating{font-family:'Bricolage Grotesque';font-size:34px;letter-spacing:-1px;margin-top:8px;transition:all .3s;}
+  .breeam-scale{margin-top:20px;display:flex;gap:4px;}
+  .scale-tier{flex:1;height:8px;background:rgba(255,255,255,.15);}
+  .scale-tier.lit{background:var(--safety);}
+  .scale-labels{display:flex;justify-content:space-between;margin-top:6px;font-family:'JetBrains Mono';font-size:9px;color:var(--cement);opacity:.7;letter-spacing:.5px;}
+
+  /* SECTORS */
+  .sector-shell{margin-top:24px;}
+  .sector-tabs{display:flex;gap:0;margin-bottom:0;}
+  .sec-tab{
+    flex:1;padding:18px;background:#fff;border:2px solid var(--steel);
+    cursor:pointer;font-family:'Bricolage Grotesque';font-weight:600;
+    border-right:none;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .sec-tab:last-child{border-right:2px solid var(--steel);}
+  .sec-tab.active{background:var(--steel);color:var(--cement);}
+  .sec-tab .ico{font-size:28px;}
+  .sec-tab .nm{font-size:14px;}
+  .sec-content{background:#fff;border:2px solid var(--steel);border-top:none;padding:32px;}
+  .sec-content h3{font-family:'Bricolage Grotesque';font-size:32px;letter-spacing:-1px;margin-bottom:8px;}
+  .sec-content .ex{font-style:italic;color:var(--concrete);margin-bottom:20px;}
+  .sec-priorities{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+  .priority-chip{background:var(--safety);padding:14px;border-left:4px solid var(--rebar);font-size:14px;font-weight:600;}
+
+  /* SCENARIO */
+  .scenario-shell{background:#fff;border:2px solid var(--steel);padding:32px;margin-top:24px;}
+  .scenario-card{background:var(--cement);padding:24px;border-left:6px solid var(--no);margin-bottom:24px;}
+  .scenario-card .tag{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--no);font-weight:600;margin-bottom:8px;}
+  .scenario-card p{font-family:'Fraunces';font-size:18px;line-height:1.4;}
+  .scenario-q{font-family:'Bricolage Grotesque';font-weight:600;font-size:16px;margin-bottom:14px;}
+  .scenario-check{display:grid;gap:8px;margin-bottom:20px;}
+  .scenario-check label{
+    display:flex;align-items:center;gap:12px;padding:12px;background:var(--cement);
+    cursor:pointer;font-size:14px;border:2px solid transparent;transition:all .2s;
+  }
+  .scenario-check label:hover{border-color:var(--steel);}
+  .scenario-check input{width:18px;height:18px;accent-color:var(--rebar);cursor:pointer;}
+  .scenario-check label.right{background:rgba(45,154,94,.15);border-color:var(--ok);}
+  .scenario-check label.miss{background:rgba(200,54,45,.1);border-color:var(--no);}
+  .scenario-submit{padding:14px 28px;background:var(--rebar);color:#fff;border:none;cursor:pointer;font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase;}
+  .scenario-result{margin-top:20px;padding:18px;background:var(--steel);color:var(--cement);display:none;}
+  .scenario-result.show{display:block;animation:fadeIn .3s;}
+  .scenario-result h4{font-family:'Bricolage Grotesque';color:var(--safety);margin-bottom:8px;}
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;right:24px;background:var(--steel);color:var(--cement);
+    padding:16px 22px;border-left:4px solid var(--safety);z-index:100;
+    font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;
+    transform:translateY(120%);transition:transform .35s cubic-bezier(.2,1,.3,1);
+    box-shadow:var(--shadow);
+  }
+  .toast.show{transform:translateY(0);}
+  .toast .xp{color:var(--safety);font-family:'JetBrains Mono';font-size:13px;}
+
+  /* COPY GUARD OVERLAY */
+  .copy-block{
+    position:fixed;inset:0;background:rgba(26,35,50,.92);z-index:9999;
+    display:none;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--cement);text-align:center;padding:40px;
+  }
+  .copy-block.show{display:flex;animation:fadeIn .3s;}
+  .copy-block svg{width:80px;height:80px;margin-bottom:24px;}
+  .copy-block h2{font-family:'Bricolage Grotesque';font-size:36px;letter-spacing:-1px;margin-bottom:12px;color:var(--safety);}
+  .copy-block p{font-family:'Fraunces';font-size:18px;max-width:520px;line-height:1.4;opacity:.85;}
+  .copy-block button{margin-top:24px;padding:12px 28px;background:var(--rebar);color:#fff;border:none;cursor:pointer;font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase;}
+
+  /* ========= CROSSRAIL CASE ========= */
+  .cr-hero{background:linear-gradient(135deg,#7b1fa2 0%,#4a148c 100%);color:#fff;padding:36px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:8px 8px 0 var(--steel);}
+  .cr-hero::after{content:"";position:absolute;top:-20px;right:-20px;width:200px;height:200px;border:3px solid rgba(255,255,255,.15);border-radius:50%;}
+  .cr-hero h3{font-family:'Bricolage Grotesque';font-size:42px;letter-spacing:-1.5px;line-height:1;margin-bottom:10px;}
+  .cr-hero h3 em{font-style:italic;font-family:'Fraunces';font-weight:400;color:#ffd54a;}
+  .cr-hero p{font-size:16px;line-height:1.5;max-width:680px;opacity:.92;position:relative;}
+  .cr-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:24px;}
+  .cr-stat{background:#fff;border:2px solid var(--steel);padding:18px;text-align:center;transition:all .2s;}
+  .cr-stat:hover{transform:translateY(-4px);box-shadow:4px 4px 0 var(--rebar);}
+  .cr-stat .big{font-family:'Bricolage Grotesque';font-weight:800;font-size:32px;color:var(--rebar);letter-spacing:-1px;line-height:1;}
+  .cr-stat .lbl{font-family:'JetBrains Mono';font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--concrete);margin-top:6px;}
+  .cr-sections{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+  .cr-box{background:#fff;border:2px solid var(--steel);padding:24px;}
+  .cr-box h4{font-family:'Bricolage Grotesque';font-size:20px;letter-spacing:-.5px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .cr-box ul{list-style:none;padding:0;}
+  .cr-box li{padding:8px 0 8px 24px;position:relative;font-size:14px;line-height:1.5;border-bottom:1px dashed var(--line);}
+  .cr-box li:last-child{border-bottom:none;}
+  .cr-box li::before{content:"●";position:absolute;left:6px;color:var(--rebar);}
+  .cr-box li b{color:var(--blueprint);}
+  .cr-lesson{background:var(--safety);padding:20px 24px;margin-top:18px;border-left:6px solid var(--steel);font-size:15px;line-height:1.5;}
+  .cr-lesson b{font-family:'Bricolage Grotesque';display:block;margin-bottom:6px;font-size:14px;letter-spacing:1px;text-transform:uppercase;}
+  .tbm-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:14px;}
+  .tbm-card{background:var(--cement);border:2px solid var(--steel);padding:12px;text-align:center;font-size:13px;cursor:pointer;transition:all .2s;}
+  .tbm-card:hover{background:var(--safety);}
+  .tbm-card .n{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;color:var(--rebar);}
+  .tbm-card .d{font-family:'JetBrains Mono';font-size:10px;color:var(--concrete);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+
+  /* ========= WRITING ESSAY ========= */
+  .write-shell{background:#fff;border:2px solid var(--steel);padding:28px;margin-top:24px;box-shadow:6px 6px 0 var(--blueprint);}
+  .write-brief{background:var(--cement);padding:20px;border-left:6px solid var(--blueprint);margin-bottom:24px;}
+  .write-brief h4{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--blueprint);margin-bottom:8px;font-weight:600;}
+  .write-brief p{font-size:15px;line-height:1.5;}
+  .write-prompts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:18px 0;}
+  .prompt-chip{background:#fff;border:2px dashed var(--blueprint);padding:12px 14px;font-size:13px;line-height:1.4;cursor:pointer;transition:all .2s;}
+  .prompt-chip:hover{background:var(--blueprint);color:#fff;border-style:solid;}
+  .prompt-chip.selected{background:var(--blueprint);color:#fff;border-style:solid;}
+  .essay-title-row{display:flex;gap:10px;margin-bottom:14px;align-items:center;}
+  .essay-title-input{
+    flex:1;padding:14px 16px;font-family:'Bricolage Grotesque';font-weight:600;font-size:18px;
+    border:2px solid var(--steel);background:#fff;
+    -webkit-user-select:text;user-select:text;
+  }
+  .essay-area{
+    width:100%;min-height:380px;padding:20px 24px;
+    font-family:'Fraunces',Georgia,serif;font-size:16px;line-height:1.7;
+    border:2px solid var(--steel);background:#fcfaf6;resize:vertical;
+    -webkit-user-select:text;user-select:text;
+    outline:none;color:var(--steel);
+  }
+  .essay-area:focus{border-color:var(--rebar);background:#fff;}
+  .essay-stats{display:flex;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap;gap:12px;}
+  .essay-meter{display:flex;gap:18px;font-family:'JetBrains Mono';font-size:12px;color:var(--concrete);}
+  .essay-meter b{color:var(--steel);font-size:14px;}
+  .essay-meter span.good{color:var(--ok);}
+  .essay-meter span.warn{color:var(--no);}
+  .essay-actions{display:flex;gap:10px;}
+  .essay-btn{padding:12px 22px;font-family:'Bricolage Grotesque';font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:2px solid var(--steel);background:#fff;color:var(--steel);}
+  .essay-btn.primary{background:var(--blueprint);color:#fff;border-color:var(--blueprint);}
+  .essay-btn:hover{background:var(--rebar);color:#fff;border-color:var(--rebar);}
+  .essay-warning{background:var(--no);color:#fff;padding:12px 16px;margin-top:12px;font-size:13px;display:none;animation:fadeIn .3s;}
+  .essay-warning.show{display:block;}
+  .essay-feedback{margin-top:18px;background:var(--steel);color:var(--cement);padding:24px;display:none;}
+  .essay-feedback.show{display:block;animation:fadeIn .3s;}
+  .essay-feedback h4{font-family:'Bricolage Grotesque';font-size:20px;color:var(--safety);margin-bottom:10px;}
+  .essay-feedback .check{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px;}
+  .essay-feedback .check b{color:var(--safety);font-family:'JetBrains Mono';font-size:13px;}
+
+  /* ========= BUDGET GAME ========= */
+  .budget-shell{background:#fff;border:2px solid var(--steel);padding:28px;margin-top:24px;}
+  .budget-bar{background:var(--steel);color:var(--cement);padding:18px 24px;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:14px;}
+  .budget-bar .lbl{font-family:'JetBrains Mono';font-size:11px;letter-spacing:1.5px;text-transform:uppercase;}
+  .budget-bar .amt{font-family:'Bricolage Grotesque';font-weight:800;font-size:28px;color:var(--safety);}
+  .budget-bar .amt.danger{color:var(--no);}
+  .budget-list{display:grid;gap:12px;}
+  .budget-row{background:var(--cement);padding:14px 18px;display:grid;grid-template-columns:1fr 200px 100px;gap:14px;align-items:center;border-left:5px solid var(--rebar);}
+  .budget-row .name{font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;}
+  .budget-row .name small{display:block;font-family:'Fraunces';font-size:12px;color:var(--concrete);font-weight:400;margin-top:2px;font-style:italic;}
+  .budget-row input[type=range]{width:100%;}
+  .budget-row .val{font-family:'JetBrains Mono';font-weight:600;font-size:14px;text-align:right;}
+  .budget-result{margin-top:20px;padding:24px;background:var(--cement);text-align:center;display:none;}
+  .budget-result.show{display:block;animation:fadeIn .3s;}
+  .budget-result h4{font-family:'Bricolage Grotesque';font-size:24px;margin-bottom:8px;letter-spacing:-.5px;}
+  .budget-result .verdict{font-family:'Fraunces';font-size:16px;line-height:1.4;margin-bottom:12px;}
+
+  /* ========= MEMORY GAME ========= */
+  .mem-shell{background:#fff;border:2px solid var(--steel);padding:24px;margin-top:24px;}
+  .mem-stats{display:flex;justify-content:space-between;margin-bottom:18px;font-family:'JetBrains Mono';font-size:13px;}
+  .mem-stats b{color:var(--rebar);font-family:'Bricolage Grotesque';font-size:18px;}
+  .mem-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:780px;margin:0 auto;}
+  .mem-card{aspect-ratio:1;cursor:pointer;perspective:600px;}
+  .mem-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .mem-card.flipped .mem-inner{transform:rotateY(180deg);}
+  .mem-card.matched .mem-inner{transform:rotateY(180deg);}
+  .mem-front,.mem-back{position:absolute;inset:0;backface-visibility:hidden;display:grid;place-items:center;border:2px solid var(--steel);font-family:'Bricolage Grotesque';font-weight:800;}
+  .mem-front{background:var(--steel);color:var(--safety);font-size:24px;}
+  .mem-back{background:#fff;transform:rotateY(180deg);font-size:13px;text-align:center;padding:6px;line-height:1.2;}
+  .mem-back .em{font-size:30px;display:block;}
+  .mem-card.matched .mem-back{background:var(--ok);color:#fff;border-color:var(--ok);}
+
+  /* ========= HANGMAN / TERM BUILDER ========= */
+  .hang-shell{background:#fff;border:2px solid var(--steel);padding:28px;margin-top:24px;}
+  .hang-top{display:grid;grid-template-columns:1fr 220px;gap:24px;align-items:center;margin-bottom:18px;}
+  .hang-hint{background:var(--cement);padding:18px;border-left:5px solid var(--rebar);font-size:15px;line-height:1.4;}
+  .hang-hint .tag{font-family:'JetBrains Mono';font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--concrete);display:block;margin-bottom:4px;}
+  .crane-svg{width:100%;height:180px;display:block;}
+  .word-display{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:24px 0;}
+  .letter-slot{width:38px;height:48px;border-bottom:3px solid var(--steel);display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:26px;color:var(--steel);}
+  .letter-slot.space{border:none;width:18px;}
+  .keyboard{display:grid;grid-template-columns:repeat(13,1fr);gap:6px;max-width:780px;margin:0 auto;}
+  .key{aspect-ratio:1;background:#fff;border:2px solid var(--steel);font-family:'Bricolage Grotesque';font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;}
+  .key:hover:not(:disabled){background:var(--safety);}
+  .key.right{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .key.wrong{background:var(--no);color:#fff;border-color:var(--no);text-decoration:line-through;}
+  .key:disabled{cursor:default;}
+  .hang-msg{text-align:center;margin-top:16px;font-family:'Bricolage Grotesque';font-size:18px;letter-spacing:-.3px;min-height:30px;}
+
+  /* ========= TIMELINE SORT ========= */
+  .tl-shell{background:#fff;border:2px solid var(--steel);padding:24px;margin-top:24px;}
+  .tl-bank{background:var(--cement);padding:18px;border:2px dashed var(--steel);margin-bottom:18px;min-height:80px;}
+  .tl-bank h4,.tl-track h4{font-family:'JetBrains Mono';font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--steel);margin-bottom:12px;}
+  .tl-event{background:#fff;border:2px solid var(--steel);padding:12px 16px;margin:6px;display:inline-block;cursor:grab;font-size:13px;font-family:'Bricolage Grotesque';font-weight:600;}
+  .tl-event:active{cursor:grabbing;}
+  .tl-event.dragging{opacity:.4;}
+  .tl-track{background:#fff;border:2px solid var(--steel);padding:18px;}
+  .tl-slots{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+  .tl-slot{min-height:90px;background:var(--cement);border:2px dashed var(--steel);padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:11px;transition:all .2s;}
+  .tl-slot.over{background:var(--safety);border-style:solid;}
+  .tl-slot.filled{background:var(--steel);color:var(--safety);border-style:solid;}
+  .tl-slot.correct{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .tl-slot.wrong{background:var(--no);color:#fff;border-color:var(--no);}
+  .tl-slot .year{font-family:'JetBrains Mono';font-size:14px;font-weight:600;letter-spacing:1px;}
+  .tl-slot .ev{font-family:'Bricolage Grotesque';font-weight:600;font-size:11px;margin-top:4px;line-height:1.2;}
+  .tl-check{margin-top:18px;display:flex;gap:10px;justify-content:center;}
+
+  @media (max-width:900px){
+    .stages-flow{grid-template-columns:1fr 1fr;}
+    .stage-card:nth-child(2)::after{display:none;}
+    .build-area{grid-template-columns:1fr;}
+    .breeam-grid{grid-template-columns:1fr;}
+    .sector-tabs{flex-wrap:wrap;}
+    .sec-tab{flex-basis:50%;border-right:2px solid var(--steel);}
+    .hero h2{font-size:36px;}
+    .cr-sections{grid-template-columns:1fr;}
+    .budget-row{grid-template-columns:1fr;}
+    .mem-grid{grid-template-columns:repeat(4,1fr);}
+    .tl-slots{grid-template-columns:repeat(3,1fr);}
+    .hang-top{grid-template-columns:1fr;}
+    .keyboard{grid-template-columns:repeat(7,1fr);}
+  }
+</style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;">
+
+<!-- ANTI-COPY OVERLAY -->
+<div class="copy-block" id="copyBlock">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <circle cx="12" cy="12" r="10" stroke="#ffc94a"/>
+    <line x1="6" y1="6" x2="18" y2="18" stroke="#ff6b35" stroke-width="2"/>
+  </svg>
+  <h2>Hold on — learn it, don't copy it.</h2>
+  <p>This learning module blocks copying, right-click, and text selection. The point is to think it through, not transcribe it. Close this notice and keep building your understanding.</p>
+  <button onclick="document.getElementById('copyBlock').classList.remove('show')">Got it — back to learning</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <div class="logo">W3</div>
+    <div>
+      <h1>Building Construction Process</h1>
+      <p>Week 3 · Learning Engineering · Built Environment</p>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <span class="xp-label">Site Foreman XP</span>
+    <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+    <span class="xp-num" id="xpNum">0</span>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab active" data-panel="home">🏠 Home</button>
+  <button class="tab" data-panel="learn">📚 Learn the Stages</button>
+  <button class="tab" data-panel="pros">👷 Who's Who</button>
+  <button class="tab" data-panel="quiz">🎯 Quiz Game <span class="badge">12 Q</span></button>
+  <button class="tab" data-panel="match">🔗 Match-Up</button>
+  <button class="tab" data-panel="build">🏗️ Build It!</button>
+  <button class="tab" data-panel="breeam">🌱 BREEAM Sim</button>
+  <button class="tab" data-panel="sectors">🏢 Sectors</button>
+  <button class="tab" data-panel="scenario">⚠️ Site Scenario</button>
+  <button class="tab" data-panel="crossrail">🚇 Crossrail Case <span class="badge">NEW</span></button>
+  <button class="tab" data-panel="budget">💰 Budget Game <span class="badge">NEW</span></button>
+  <button class="tab" data-panel="memory">🧠 Memory Match <span class="badge">NEW</span></button>
+  <button class="tab" data-panel="hangman">🔤 Term Builder <span class="badge">NEW</span></button>
+  <button class="tab" data-panel="timeline">📅 Timeline Sort <span class="badge">NEW</span></button>
+  <button class="tab" data-panel="writing">✍️ Research Essay <span class="badge">WRITE</span></button>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="panel active" id="home">
+  <div class="hero">
+    <h2>Design. Plan. <em>Build.</em></h2>
+    <p>Welcome to your Week 3 interactive learning hub. Explore the three stages of construction, meet the team, solve scenarios, and rate sustainability — all while earning XP. No notes to copy — your brain does the building.</p>
+    <div class="meta">
+      <div>Topic<b>Construction Process</b></div>
+      <div>Stages<b>3 + Handover</b></div>
+      <div>Mini-Games<b>7</b></div>
+      <div>Module Leader<b>V. Loliyaniya</b></div>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Bricolage Grotesque';font-size:24px;margin-top:40px;margin-bottom:14px;letter-spacing:-.5px;">Pick a game to play</h3>
+  <div class="game-grid">
+    <div class="game-card" data-go="learn">
+      <div class="icon">📚</div>
+      <h3>The Three Stages</h3>
+      <div class="desc">Walk through Design → Pre-Construction → Construction → Handover.</div>
+      <div class="play">Open ↗</div>
+    </div>
+    <div class="game-card" data-go="pros">
+      <div class="icon">👷</div>
+      <h3>Who's Who on Site</h3>
+      <div class="desc">Flip cards to discover what each construction professional really does.</div>
+      <div class="play">Flip ↗</div>
+    </div>
+    <div class="game-card" data-go="quiz">
+      <div class="icon">🎯</div>
+      <h3>12-Question Quiz</h3>
+      <div class="desc">Test your knowledge. Earn 10 XP per correct answer. Get instant feedback.</div>
+      <div class="play">Play ↗</div>
+    </div>
+    <div class="game-card" data-go="match">
+      <div class="icon">🔗</div>
+      <h3>Match-Up Challenge</h3>
+      <div class="desc">Match roles to responsibilities and procurement routes to definitions.</div>
+      <div class="play">Match ↗</div>
+    </div>
+    <div class="game-card" data-go="build">
+      <div class="icon">🏗️</div>
+      <h3>Build It! Drag-Drop</h3>
+      <div class="desc">Stack the construction phases in the right order on the building.</div>
+      <div class="play">Build ↗</div>
+    </div>
+    <div class="game-card" data-go="breeam">
+      <div class="icon">🌱</div>
+      <h3>BREEAM Simulator</h3>
+      <div class="desc">Tweak sustainability sliders and watch your rating climb from Pass to Outstanding.</div>
+      <div class="play">Simulate ↗</div>
+    </div>
+    <div class="game-card" data-go="sectors">
+      <div class="icon">🏢</div>
+      <h3>Sector Explorer</h3>
+      <div class="desc">Residential, Commercial, Public, Infrastructure — see what each client wants.</div>
+      <div class="play">Explore ↗</div>
+    </div>
+    <div class="game-card" data-go="scenario">
+      <div class="icon">⚠️</div>
+      <h3>Site Safety Scenario</h3>
+      <div class="desc">A worker is about to start excavation without PPE. What do you do?</div>
+      <div class="play">Decide ↗</div>
+    </div>
+    <div class="game-card" data-go="crossrail" style="border-color:var(--rebar);border-width:3px;">
+      <div class="icon" style="background:var(--rebar);color:#fff;">🚇</div>
+      <h3>Crossrail Case Study</h3>
+      <div class="desc">Britain's biggest construction project: £18.8bn, 42km tunnels, 8 TBMs, 10 new stations. Explore it all.</div>
+      <div class="play">Study ↗</div>
+    </div>
+    <div class="game-card" data-go="budget">
+      <div class="icon">💰</div>
+      <h3>Budget Balancer</h3>
+      <div class="desc">You're the Quantity Surveyor on a £10m project. Allocate the budget — don't go bust!</div>
+      <div class="play">Allocate ↗</div>
+    </div>
+    <div class="game-card" data-go="memory">
+      <div class="icon">🧠</div>
+      <h3>Memory Match</h3>
+      <div class="desc">Classic flip-and-match card game with construction icons & terms. Beat your best time.</div>
+      <div class="play">Flip ↗</div>
+    </div>
+    <div class="game-card" data-go="hangman">
+      <div class="icon">🔤</div>
+      <h3>Term Builder</h3>
+      <div class="desc">Guess construction terms letter-by-letter before the crane drops. Hangman-style.</div>
+      <div class="play">Guess ↗</div>
+    </div>
+    <div class="game-card" data-go="timeline">
+      <div class="icon">📅</div>
+      <h3>Crossrail Timeline Sort</h3>
+      <div class="desc">Drag the milestones into chronological order: 2009 ground-breaking to 2023 completion.</div>
+      <div class="play">Sort ↗</div>
+    </div>
+    <div class="game-card" data-go="writing" style="border-color:var(--blueprint);border-width:3px;">
+      <div class="icon" style="background:var(--blueprint);color:#fff;">✍️</div>
+      <h3>Research Essay</h3>
+      <div class="desc">Type your own 500-word research piece on Crossrail. Copy-paste is blocked — your words only.</div>
+      <div class="play">Write ↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section class="panel" id="learn">
+  <div class="panel-sub">Module 01 — Process Overview</div>
+  <h2 class="panel-title">The Construction Journey</h2>
+  <p style="max-width:700px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">Every project follows the same backbone. Click any stage to expand its detail. Each stage you open earns you 5 XP.</p>
+
+  <div class="stages-flow">
+    <div class="stage-card" data-stage="design">
+      <div class="stage-num">STAGE 01</div>
+      <div class="stage-emoji">✏️</div>
+      <h4>Design</h4>
+    </div>
+    <div class="stage-card" data-stage="pre">
+      <div class="stage-num">STAGE 02</div>
+      <div class="stage-emoji">📋</div>
+      <h4>Pre-Construction</h4>
+    </div>
+    <div class="stage-card" data-stage="cons">
+      <div class="stage-num">STAGE 03</div>
+      <div class="stage-emoji">🏗️</div>
+      <h4>Construction</h4>
+    </div>
+    <div class="stage-card" data-stage="hand">
+      <div class="stage-num">STAGE 04</div>
+      <div class="stage-emoji">🔑</div>
+      <h4>Handover &amp; Use</h4>
+    </div>
+  </div>
+
+  <div class="stage-detail" id="stageDetail">
+    <h3 id="detailTitle">Click a stage above</h3>
+    <p id="detailIntro" style="font-style:italic;color:var(--concrete);margin-bottom:18px;line-height:1.5;"></p>
+    <ul id="detailList"></ul>
+  </div>
+</section>
+
+<!-- ============ PROFESSIONALS ============ -->
+<section class="panel" id="pros">
+  <div class="panel-sub">Module 02 — Roles &amp; Responsibilities</div>
+  <h2 class="panel-title">Who Builds the Building?</h2>
+  <p style="max-width:700px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">Ten core roles run a construction project. Tap any card to flip it and reveal what they do. Flip all 10 to earn 20 XP.</p>
+  <div class="pros-grid" id="prosGrid"></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="panel" id="quiz">
+  <div class="panel-sub">Module 03 — Knowledge Check</div>
+  <h2 class="panel-title">Quiz Game</h2>
+  <div class="quiz-shell" id="quizShell">
+    <div class="quiz-header">
+      <span class="quiz-q-num" id="qNum">Question 1 of 12</span>
+      <span class="quiz-score">Score: <b id="qScore">0</b> / 12</span>
+    </div>
+    <div class="quiz-question" id="qText"></div>
+    <div class="quiz-opts" id="qOpts"></div>
+    <div class="quiz-feedback" id="qFeedback"></div>
+    <button class="quiz-next" id="qNext">Next Question →</button>
+  </div>
+</section>
+
+<!-- ============ MATCH ============ -->
+<section class="panel" id="match">
+  <div class="panel-sub">Module 04 — Memory Match</div>
+  <h2 class="panel-title">Match-Up Challenge</h2>
+  <div class="match-shell">
+    <div class="match-instr">📌 <b>How to play:</b> Click one item on the LEFT, then the matching item on the RIGHT. Correct matches turn green and earn 8 XP each.</div>
+    <div style="display:flex;gap:16px;margin-bottom:18px;flex-wrap:wrap;">
+      <button class="quiz-next show" id="matchModeRoles" style="background:var(--rebar);">👷 Roles ↔ Duties</button>
+      <button class="quiz-next show" id="matchModeProc" style="background:var(--steel);">📜 Procurement Routes</button>
+    </div>
+    <div class="match-board">
+      <div class="match-col">
+        <h4 id="leftHead">ROLES</h4>
+        <div id="matchLeft"></div>
+      </div>
+      <div class="match-col">
+        <h4 id="rightHead">RESPONSIBILITIES</h4>
+        <div id="matchRight"></div>
+      </div>
+    </div>
+    <div class="match-status" id="matchStatus">Matches: 0 / 0</div>
+  </div>
+</section>
+
+<!-- ============ BUILD ============ -->
+<section class="panel" id="build">
+  <div class="panel-sub">Module 05 — Sequencing Simulation</div>
+  <h2 class="panel-title">Build It! Drag &amp; Drop</h2>
+  <div class="build-shell">
+    <div class="build-instr">🏗️ <b>Mission:</b> Drag each construction phase from the bank onto the correct slot on the building. Phases must be placed in the right structural order (foundations first!). Each correct placement = 10 XP.</div>
+    <div class="build-area">
+      <div class="build-bank" id="bank">
+        <h4>📦 PHASE BANK · Drag these</h4>
+      </div>
+      <div>
+        <div class="build-canvas" id="canvas"></div>
+        <div class="build-progress">
+          <span class="build-msg" id="buildMsg">Drag phases onto the building →</span>
+          <button class="build-reset" onclick="initBuild()">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BREEAM ============ -->
+<section class="panel" id="breeam">
+  <div class="panel-sub">Module 06 — Sustainability Simulator</div>
+  <h2 class="panel-title">BREEAM Rating Simulator</h2>
+  <p style="max-width:700px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">BREEAM (Building Research Establishment Environmental Assessment Method) rates buildings on sustainability. Adjust the sliders for your imaginary building project and watch your overall rating change in real time.</p>
+  <div class="breeam-shell">
+    <div class="breeam-grid">
+      <div class="breeam-cats" id="breeamCats"></div>
+      <div class="breeam-result">
+        <h4>OVERALL SCORE</h4>
+        <div class="breeam-pct" id="breeamPct">0%</div>
+        <div class="breeam-rating" id="breeamRating">Not Rated</div>
+        <div class="breeam-scale">
+          <div class="scale-tier" data-tier="0"></div>
+          <div class="scale-tier" data-tier="1"></div>
+          <div class="scale-tier" data-tier="2"></div>
+          <div class="scale-tier" data-tier="3"></div>
+          <div class="scale-tier" data-tier="4"></div>
+        </div>
+        <div class="scale-labels">
+          <span>Pass</span><span>Good</span><span>V.Good</span><span>Excellent</span><span>Outstanding</span>
+        </div>
+        <div style="margin-top:24px;font-size:13px;line-height:1.5;font-family:'Fraunces';font-style:italic;opacity:.85;" id="breeamTip">
+          Move sliders to start improving your sustainability score.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTORS ============ -->
+<section class="panel" id="sectors">
+  <div class="panel-sub">Module 07 — Client Priorities</div>
+  <h2 class="panel-title">Sectoral Variations</h2>
+  <p style="max-width:700px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">Different sectors = different drivers. A hospital client and a hotel developer want very different things. Click each sector to explore what matters most.</p>
+  <div class="sector-shell">
+    <div class="sector-tabs">
+      <div class="sec-tab active" data-sec="res"><span class="ico">🏠</span><span class="nm">Residential</span></div>
+      <div class="sec-tab" data-sec="com"><span class="ico">🏢</span><span class="nm">Commercial</span></div>
+      <div class="sec-tab" data-sec="soc"><span class="ico">🏥</span><span class="nm">Public/Social</span></div>
+      <div class="sec-tab" data-sec="inf"><span class="ico">🛣️</span><span class="nm">Infrastructure</span></div>
+    </div>
+    <div class="sec-content" id="secContent"></div>
+  </div>
+</section>
+
+<!-- ============ SCENARIO ============ -->
+<section class="panel" id="scenario">
+  <div class="panel-sub">Module 08 — Real-World Decision</div>
+  <h2 class="panel-title">Site Safety Scenario</h2>
+  <div class="scenario-shell">
+    <div class="scenario-card">
+      <div class="tag">⚠️ SCENARIO BRIEFING</div>
+      <p>A site worker is about to start <b>excavation work</b> on a new foundation trench. You notice they have <b>no shoring</b> in place, are <b>not wearing PPE</b> (no hard hat, no high-vis), and there is <b>no permit-to-work</b> visible. You are the Site Supervisor. The trench is over 1.2m deep.</p>
+    </div>
+    <div class="scenario-q">✅ Select <b>all</b> the correct actions a Site Supervisor should take:</div>
+    <div class="scenario-check" id="scOpts"></div>
+    <button class="scenario-submit" onclick="checkScenario()">Submit My Decision</button>
+    <div class="scenario-result" id="scResult"></div>
+  </div>
+</section>
+
+<!-- ============ CROSSRAIL CASE STUDY ============ -->
+<section class="panel" id="crossrail">
+  <div class="panel-sub">Module 09 — Real-World Megaproject</div>
+  <h2 class="panel-title">The Crossrail Case Study</h2>
+
+  <div class="cr-hero">
+    <h3>The <em>Elizabeth Line</em> — Britain's biggest construction project</h3>
+    <p>Crossrail is the textbook case study for every stage you've learned this week. Design challenges, pre-construction planning, procurement complexity, megaproject construction, and a famous overrun on both time and budget. Every concept in the module is visible here in real life.</p>
+    <div class="cr-stats">
+      <div class="cr-stat"><div class="big">£18.8bn</div><div class="lbl">Final Cost</div></div>
+      <div class="cr-stat"><div class="big">42 km</div><div class="lbl">Tunnels Bored</div></div>
+      <div class="cr-stat"><div class="big">8</div><div class="lbl">Tunnel Boring Machines</div></div>
+      <div class="cr-stat"><div class="big">10</div><div class="lbl">New Stations</div></div>
+      <div class="cr-stat"><div class="big">13 yrs</div><div class="lbl">Construction Duration</div></div>
+      <div class="cr-stat"><div class="big">700k</div><div class="lbl">Daily Passengers</div></div>
+    </div>
+  </div>
+
+  <div class="cr-sections">
+    <div class="cr-box">
+      <h4>✏️ STAGE 1 — Design Challenges</h4>
+      <ul>
+        <li><b>Brownfield site:</b> Threading 13 miles of new tunnel beneath one of the world's oldest cities — under the Thames, beside live tube lines, past Victorian foundations.</li>
+        <li><b>10 new stations</b> designed by different architects — Bond Street, Tottenham Court Road, Liverpool Street, Whitechapel, Canary Wharf, Farringdon, Paddington, Custom House, Woolwich, Abbey Wood.</li>
+        <li><b>BIM integration:</b> First UK megaproject to use a fully integrated 3D model across every discipline — civils, MEP, signalling.</li>
+        <li><b>BREEAM:</b> The project pioneered the use of BREEAM for <i>underground stations</i> — a new benchmark for the industry.</li>
+      </ul>
+    </div>
+
+    <div class="cr-box">
+      <h4>📋 STAGE 2 — Pre-Construction</h4>
+      <ul>
+        <li><b>Procurement:</b> Used a mix of <i>Management Contracting</i> and <i>Construction Management</i> routes — 36 main works contracts, each with its own tender.</li>
+        <li><b>Geotechnical surveys:</b> London clay, sands, gravels, wet chalk under the Thames — different soil = different TBM type.</li>
+        <li><b>Contracts:</b> NEC-family contracts used throughout, with target-cost pain/gain mechanisms.</li>
+        <li><b>Risk planning:</b> Live tube tunnels within metres of works; vibration, settlement and noise monitored continuously.</li>
+      </ul>
+    </div>
+
+    <div class="cr-box">
+      <h4>🏗️ STAGE 3 — Construction</h4>
+      <ul>
+        <li><b>8 TBMs</b> bored 42 km of 6.2m-diameter tunnels: 6 Earth Pressure Balance machines for clay, 2 Slurry machines for wet chalk under the Thames.</li>
+        <li><b>Tunnel lining:</b> Over <b>220,000 concrete segments</b>, each weighing 3.4 tonnes.</li>
+        <li><b>One TBM dug 72m in a single day</b> — a record-breaking pace.</li>
+        <li><b>Mined stations:</b> Bond Street, Tottenham Court Road, Liverpool Street and Whitechapel were excavated <i>below ground</i> rather than dug from the surface.</li>
+      </ul>
+    </div>
+
+    <div class="cr-box">
+      <h4>🔑 STAGE 4 — Handover &amp; Lessons</h4>
+      <ul>
+        <li><b>Opened May 2022</b> — 3.5 years late vs. the original December 2018 target.</li>
+        <li><b>Original budget:</b> £14.8bn (2010). <b>Final cost:</b> £18.8bn — a 28% overrun.</li>
+        <li><b>Systems integration failure:</b> The biggest cause of delay wasn't civil engineering — it was integrating three different signalling systems.</li>
+        <li><b>Economic benefit:</b> Estimated £42bn boost to the UK economy. Supports 55,000 new homes.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cr-box" style="margin-top:18px;">
+    <h4>🛠️ The Tunnel Boring Machines</h4>
+    <p style="font-size:14px;color:var(--concrete);margin-bottom:8px;line-height:1.5;">Each TBM was 148m long — about the length of <b>14 London buses end-to-end</b> — and weighed 980 tonnes. By tradition every British TBM is given a female name. Click each one:</p>
+    <div class="tbm-gallery" id="tbmGallery"></div>
+    <div id="tbmInfo" style="margin-top:14px;padding:14px;background:var(--cement);border-left:4px solid var(--rebar);font-size:14px;line-height:1.5;display:none;"></div>
+  </div>
+
+  <div class="cr-lesson">
+    <b>Key takeaway for your studies</b>
+    Crossrail proves that <b>design</b> can be brilliant, <b>pre-construction</b> can be thorough, and <b>construction</b> can still be on time — but if <b>integration and testing</b> are underestimated, the whole programme slips. The lesson the industry took from Crossrail: never assume "systems integration" is something that just happens at the end.
+  </div>
+</section>
+
+<!-- ============ BUDGET BALANCER ============ -->
+<section class="panel" id="budget">
+  <div class="panel-sub">Module 10 — Quantity Surveyor Sim</div>
+  <h2 class="panel-title">Budget Balancer</h2>
+  <p style="max-width:720px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">You are the <b>Quantity Surveyor</b> on a £10 million commercial office project (a scaled-down Crossrail station, if you like). Allocate your budget across the 8 categories below. Each category has a minimum and recommended spend — go too low and you'll fail; go too high overall and you're over budget.</p>
+  <div class="budget-shell">
+    <div class="budget-bar">
+      <div><div class="lbl">TOTAL BUDGET</div><div class="amt">£10,000,000</div></div>
+      <div><div class="lbl">ALLOCATED</div><div class="amt" id="budgetAlloc">£0</div></div>
+      <div><div class="lbl">REMAINING</div><div class="amt" id="budgetRem">£10,000,000</div></div>
+    </div>
+    <div class="budget-list" id="budgetList"></div>
+    <button class="essay-btn primary" style="margin-top:20px;" onclick="checkBudget()">Submit Budget for Review</button>
+    <div class="budget-result" id="budgetResult"></div>
+  </div>
+</section>
+
+<!-- ============ MEMORY MATCH ============ -->
+<section class="panel" id="memory">
+  <div class="panel-sub">Module 11 — Flip &amp; Match</div>
+  <h2 class="panel-title">Memory Match Game</h2>
+  <p style="max-width:720px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">Flip two cards at a time to match construction icons with their terms. All 12 pairs must be found. Track your moves — lower is better. Each match earns 5 XP, perfect game bonus +20.</p>
+  <div class="mem-shell">
+    <div class="mem-stats">
+      <div>Moves: <b id="memMoves">0</b></div>
+      <div>Matched: <b id="memMatched">0</b> / 12</div>
+      <div>Time: <b id="memTime">00:00</b></div>
+      <button class="essay-btn" onclick="initMemory()">↻ New Game</button>
+    </div>
+    <div class="mem-grid" id="memGrid"></div>
+  </div>
+</section>
+
+<!-- ============ HANGMAN / TERM BUILDER ============ -->
+<section class="panel" id="hangman">
+  <div class="panel-sub">Module 12 — Vocabulary Builder</div>
+  <h2 class="panel-title">Term Builder</h2>
+  <p style="max-width:720px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">Guess the construction term letter-by-letter. Each wrong guess builds the crane. Get the word before the crane is complete to earn 15 XP.</p>
+  <div class="hang-shell">
+    <div class="hang-top">
+      <div class="hang-hint">
+        <span class="tag">DEFINITION</span>
+        <div id="hangHint">Loading...</div>
+      </div>
+      <svg class="crane-svg" viewBox="0 0 200 180" id="craneSvg">
+        <line x1="20" y1="170" x2="180" y2="170" stroke="#1a2332" stroke-width="3"/>
+        <line class="hang-step" id="hs1" x1="60" y1="170" x2="60" y2="20" stroke="#1a2332" stroke-width="4" style="display:none"/>
+        <line class="hang-step" id="hs2" x1="60" y1="20" x2="140" y2="20" stroke="#1a2332" stroke-width="3" style="display:none"/>
+        <line class="hang-step" id="hs3" x1="140" y1="20" x2="140" y2="40" stroke="#1a2332" stroke-width="2" style="display:none"/>
+        <circle class="hang-step" id="hs4" cx="140" cy="50" r="10" fill="none" stroke="#c8362d" stroke-width="3" style="display:none"/>
+        <line class="hang-step" id="hs5" x1="140" y1="60" x2="140" y2="95" stroke="#c8362d" stroke-width="3" style="display:none"/>
+        <line class="hang-step" id="hs6" x1="140" y1="95" x2="125" y2="115" stroke="#c8362d" stroke-width="3" style="display:none"/>
+      </svg>
+    </div>
+    <div class="word-display" id="wordDisplay"></div>
+    <div class="keyboard" id="keyboard"></div>
+    <div class="hang-msg" id="hangMsg"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="essay-btn" onclick="newHangmanWord()">↻ New Word</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE SORT ============ -->
+<section class="panel" id="timeline">
+  <div class="panel-sub">Module 13 — Crossrail Chronology</div>
+  <h2 class="panel-title">Timeline Sort Challenge</h2>
+  <p style="max-width:720px;line-height:1.5;color:var(--concrete);margin-bottom:24px;">Drag the 6 Crossrail milestones from the bank into the correct chronological order. When you're confident, hit "Check Order" — correct slots glow green, wrong ones glow red. Perfect order = 30 XP.</p>
+  <div class="tl-shell">
+    <div class="tl-bank">
+      <h4>📦 EVENT BANK · drag to timeline below</h4>
+      <div id="tlBank"></div>
+    </div>
+    <div class="tl-track">
+      <h4>📅 TIMELINE · oldest → newest</h4>
+      <div class="tl-slots" id="tlSlots"></div>
+    </div>
+    <div class="tl-check">
+      <button class="essay-btn primary" onclick="checkTimeline()">✓ Check Order</button>
+      <button class="essay-btn" onclick="initTimeline()">↻ Reset</button>
+    </div>
+    <div id="tlResult" style="margin-top:16px;text-align:center;font-family:'Bricolage Grotesque';font-size:16px;"></div>
+  </div>
+</section>
+
+<!-- ============ WRITING / RESEARCH ESSAY ============ -->
+<section class="panel" id="writing">
+  <div class="panel-sub">Module 14 — Original Research Writing</div>
+  <h2 class="panel-title">Research &amp; Essay: Crossrail</h2>
+  <div class="write-shell">
+    <div class="write-brief">
+      <h4>📋 ASSIGNMENT BRIEF</h4>
+      <p>Research the <b>Crossrail (Elizabeth Line)</b> project and write a <b>500–800 word</b> response to one of the prompts below. Use what you have learned this week about the design, pre-construction, and construction stages.</p>
+      <p style="margin-top:10px;font-size:13px;font-style:italic;color:var(--concrete);">
+        ⛔ <b>Copy-paste is disabled</b> across this entire page — including this text box. You must type your answer in your own words. The system tracks your word count, paragraph count, and key-term usage. Attempting to paste will trigger a warning and may flag your submission.
+      </p>
+    </div>
+
+    <div class="write-prompts" id="writePrompts">
+      <div class="prompt-chip" data-p="1">📝 <b>Prompt 1:</b> Analyse why Crossrail finished 3.5 years late and £4bn over budget. Which construction stages failed, and what should have been done differently?</div>
+      <div class="prompt-chip" data-p="2">📝 <b>Prompt 2:</b> Compare the procurement and contracting approach used on Crossrail with the four standard procurement routes you learned in Week 3.</div>
+      <div class="prompt-chip" data-p="3">📝 <b>Prompt 3:</b> Crossrail used BREEAM in underground stations for the first time. Evaluate how the project balanced sustainability with cost and schedule pressure.</div>
+      <div class="prompt-chip" data-p="4">📝 <b>Prompt 4:</b> As a Project Manager, what risk management lessons from Crossrail would you apply to a future infrastructure megaproject?</div>
+    </div>
+
+    <div class="essay-title-row">
+      <input type="text" class="essay-title-input" id="essayTitle" placeholder="Type your essay title here..." maxlength="120">
+    </div>
+
+    <textarea class="essay-area" id="essayArea" placeholder="Start typing your essay here. Aim for 500–800 words. Copy and paste are blocked — your ideas, your words. Use specific facts from the Crossrail Case Study tab to support your argument.
+
+A strong essay will:
+• Open with a clear thesis statement
+• Use at least 3 stage-specific terms (design, procurement, BIM, BREEAM, etc.)
+• Reference specific Crossrail facts (£18.8bn cost, 42km tunnels, 2022 opening, etc.)
+• End with your own evaluative conclusion"></textarea>
+
+    <div class="essay-warning" id="essayWarning">⛔ Pasting is blocked. Please type your own words.</div>
+
+    <div class="essay-stats">
+      <div class="essay-meter">
+        <div>Words: <b id="wcCount">0</b> <span id="wcStatus"></span></div>
+        <div>Paragraphs: <b id="parCount">0</b></div>
+        <div>Key terms used: <b id="termCount">0</b> / 8</div>
+        <div>Time on essay: <b id="essayTime">00:00</b></div>
+      </div>
+      <div class="essay-actions">
+        <button class="essay-btn" onclick="downloadEssay()">⬇ Download .txt</button>
+        <button class="essay-btn primary" onclick="submitEssay()">✓ Submit Essay</button>
+      </div>
+    </div>
+
+    <div class="essay-feedback" id="essayFeedback"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ANTI COPY/PASTE — block selection, right-click, key shortcuts
+============================================================ */
+(function blockCopy(){
+  const block = document.getElementById('copyBlock');
+  const showBlock = () => block.classList.add('show');
+  // helper: is this event inside the essay area?
+  const inEssay = (e) => {
+    const tgt = e.target;
+    return tgt && (tgt.id==='essayArea' || tgt.id==='essayTitle');
+  };
+  document.addEventListener('copy',e=>{
+    if(inEssay(e)) return; // allow copying own essay back
+    e.preventDefault();showBlock();
+  });
+  document.addEventListener('cut',e=>{
+    if(inEssay(e)) return;
+    e.preventDefault();showBlock();
+  });
+  // paste is blocked everywhere (essay paste is handled separately with its own warning)
+  document.addEventListener('paste',e=>{
+    if(inEssay(e)) return; // essay-level handler shows its own warning
+    e.preventDefault();
+  });
+  document.addEventListener('contextmenu',e=>{
+    if(inEssay(e)) return;
+    e.preventDefault();showBlock();
+  });
+  document.addEventListener('selectstart',e=>{
+    if(inEssay(e)) return;
+    e.preventDefault();
+  });
+  document.addEventListener('dragstart',e=>{e.preventDefault();});
+  document.addEventListener('keydown',e=>{
+    const k = e.key.toLowerCase();
+    // allow normal typing shortcuts INSIDE the essay
+    if(inEssay(e)){
+      // still block paste shortcut at the keydown level — input-level handler does the rest
+      if((e.ctrlKey||e.metaKey) && k==='v'){
+        // let the input-level paste handler handle it (it's already attached)
+        return;
+      }
+      return;
+    }
+    if((e.ctrlKey||e.metaKey) && ['c','x','v','a','s','p','u'].includes(k)){
+      e.preventDefault();showBlock();
+    }
+    if(e.key==='F12'){e.preventDefault();showBlock();}
+    if((e.ctrlKey||e.metaKey) && e.shiftKey && ['i','j','c'].includes(k)){
+      e.preventDefault();showBlock();
+    }
+  });
+})();
+
+/* ============================================================
+   XP & TOAST
+============================================================ */
+let xp = 0;
+const xpEarned = new Set();
+function addXP(amount, label, key){
+  if(key && xpEarned.has(key)) return;
+  if(key) xpEarned.add(key);
+  xp += amount;
+  document.getElementById('xpNum').textContent = xp;
+  const pct = Math.min(100, (xp/500)*100);
+  document.getElementById('xpFill').style.width = pct + '%';
+  toast(`+${amount} XP · ${label}`);
+}
+let toastTO;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.innerHTML = `<span class="xp">★</span> ${msg}`;
+  t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+/* ============================================================
+   TAB NAVIGATION
+============================================================ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>switchPanel(tab.dataset.panel));
+});
+document.querySelectorAll('[data-go]').forEach(el=>{
+  el.addEventListener('click',()=>switchPanel(el.dataset.go));
+});
+function switchPanel(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.panel===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   STAGE DETAILS (Learn panel)
+============================================================ */
+const stages = {
+  design: {
+    title:'Stage 01 — Design ✏️',
+    intro:'Transform the client\'s vision into a realistic, buildable plan. The "what to build" stage.',
+    items:[
+      'Client Brief — identify function, size, style, sustainability goals',
+      'Feasibility Study — is the project achievable? Budget, site, regulations',
+      'Concept &amp; Schematic Design — sketches, layouts, building massing',
+      'Detailed Design — architectural, structural, MEP, BIM models, specs',
+      'Planning Permission — local authority approves size, use, appearance',
+      'Building Regulations — fire, insulation, accessibility, structural standards',
+      'CDM 2015 compliance — safe design and legal sign-off'
+    ]
+  },
+  pre: {
+    title:'Stage 02 — Pre-Construction 📋',
+    intro:'Plan how the project will be built safely, on time, and within budget. The "how to build" stage.',
+    items:[
+      'Site Investigation — geotechnical, topographical, environmental surveys',
+      'Budgeting &amp; Cost Estimation — Quantity Surveyor prepares cost plans',
+      'Procurement Route — Traditional, Design &amp; Build, or Management Contracting',
+      'Tendering — Open, Selective, or Negotiated bids from contractors',
+      'Contracts — JCT, NEC, FIDIC. Risk allocation, payment, disputes',
+      'Scheduling — Gantt charts, Primavera P6, Critical Path Analysis',
+      'Health &amp; Safety — RAMS, CDM, PPE, welfare facilities planning'
+    ]
+  },
+  cons: {
+    title:'Stage 03 — Construction 🏗️',
+    intro:'Physically build the project as planned. The most resource-intensive stage.',
+    items:[
+      'Site Preparation — clearing, grading, excavation, temporary works',
+      'Substructure — foundations (strip, pad, raft, piled), DPC, basements',
+      'Superstructure — frame, walls, columns, floors, roof',
+      'Building Services — electrical, plumbing, HVAC, fire safety',
+      'Finishes &amp; Fit-Out — plastering, painting, flooring, fixtures',
+      'External Works — landscaping, façade, paving, drainage',
+      'Snagging — fix defects as they\'re spotted'
+    ]
+  },
+  hand: {
+    title:'Stage 04 — Handover &amp; Use 🔑',
+    intro:'Final inspections, defect resolution, and transfer to the client.',
+    items:[
+      'Final Inspections &amp; Testing — services commissioned, systems verified',
+      'Snagging List — defects logged and resolved by the contractor',
+      'Handover to Client — keys, O&amp;M manuals, warranties, as-built drawings',
+      'Building begins occupation and use',
+      'Defects Liability Period — usually 12 months for hidden faults',
+      'Post-Occupancy Evaluation — does the building actually perform?'
+    ]
+  }
+};
+document.querySelectorAll('.stage-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const s = stages[card.dataset.stage];
+    document.getElementById('detailTitle').innerHTML = s.title;
+    document.getElementById('detailIntro').textContent = s.intro;
+    document.getElementById('detailList').innerHTML = s.items.map(i=>`<li>${i}</li>`).join('');
+    document.getElementById('stageDetail').classList.add('show');
+    addXP(5, 'Stage opened', 'stage-'+card.dataset.stage);
+  });
+});
+
+/* ============================================================
+   PROFESSIONALS — flip cards
+============================================================ */
+const pros = [
+  {icon:'🧭', name:'Project Manager', role:'Oversees the entire project from planning to completion. Manages budgets, timelines, and coordinates all team members.'},
+  {icon:'🛠️', name:'Construction Manager', role:'Handles on-site management. Works closely with contractors and labourers. Ensures safety, quality, and schedules on-site.'},
+  {icon:'📐', name:'Architect', role:'Designs blueprints. Oversees aesthetic and functional aspects. Translates the client\'s vision into drawings.'},
+  {icon:'🏛️', name:'Structural Engineer', role:'Ensures the building won\'t fall down. Designs the frame, foundations, and load-bearing systems.'},
+  {icon:'🌍', name:'Civil Engineer', role:'Manages infrastructure: foundations, site planning, drainage, roads. Ensures structural soundness and regulatory compliance.'},
+  {icon:'💰', name:'Quantity Surveyor', role:'The "money manager". Prepares cost plans, measures quantities, monitors expenses, ensures financial goals are met.'},
+  {icon:'👀', name:'Site Supervisor', role:'Day-to-day on-site boss. Supervises work quality, coordinates subcontractors, ensures site safety protocols are followed.'},
+  {icon:'🦺', name:'Health & Safety Officer', role:'Implements safety protocols. Performs regular inspections. Minimizes risks to keep the construction site accident-free.'},
+  {icon:'📅', name:'Planning Engineer', role:'The scheduler. Develops the project programme, tracks progress, adjusts timelines to meet milestones.'},
+  {icon:'📦', name:'Procurement Manager', role:'Sources and purchases materials, equipment, services. Ensures timely delivery within budget.'},
+  {icon:'🖥️', name:'BIM Specialist', role:'Uses Revit and similar tools to build 3D digital models. Enhances visualisation and prevents design conflicts before they reach site.'}
+];
+const grid = document.getElementById('prosGrid');
+pros.forEach((p,i)=>{
+  const card = document.createElement('div');
+  card.className = 'pro-card';
+  card.innerHTML = `
+    <div class="pro-inner">
+      <div class="pro-front">
+        <div class="ico">${p.icon}</div>
+        <h4>${p.name}</h4>
+        <div class="tap">tap to flip</div>
+      </div>
+      <div class="pro-back">
+        <p>${p.role}</p>
+      </div>
+    </div>`;
+  card.addEventListener('click',()=>{
+    card.classList.toggle('flipped');
+    if(card.classList.contains('flipped')){
+      addXP(3, p.name+' learned', 'pro-'+i);
+    }
+  });
+  grid.appendChild(card);
+});
+
+/* ============================================================
+   QUIZ
+============================================================ */
+const quizQs = [
+  {q:'What are the THREE main stages of a construction project (excluding handover)?',
+   opts:['Design, Pre-Construction, Construction','Tender, Build, Sell','Plan, Excavate, Paint','Sketch, Budget, Demolish'],
+   a:0, why:'The classic three stages are Design (what to build), Pre-Construction (how to build), and Construction (physically build it). Handover is sometimes counted separately as Stage 4.'},
+  {q:'Which professional is primarily responsible for managing the project <b>budget and cost estimates</b>?',
+   opts:['Architect','Quantity Surveyor','Site Supervisor','BIM Specialist'],
+   a:1, why:'The Quantity Surveyor (QS) is the "money manager" — measuring quantities, preparing cost plans, and monitoring expenses throughout the project.'},
+  {q:'In the <b>Design & Build</b> procurement route, who is responsible for both design AND construction?',
+   opts:['The client','Two separate firms','A single contractor','The local authority'],
+   a:2, why:'In Design & Build (D&B), one contractor handles both design and construction. This gives the client a single point of responsibility and cost certainty, but less design control.'},
+  {q:'BREEAM stands for...',
+   opts:['British Renewable Energy Environmental Assessment Method','Building Research Establishment Environmental Assessment Method','Built Environment Energy Assessment Method','British Real Estate Energy Audit Method'],
+   a:1, why:'BREEAM = Building Research Establishment Environmental Assessment Method. Launched in the UK in 1990, it was the world\'s first sustainability assessment method for buildings.'},
+  {q:'What is the MINIMUM BREEAM score required to achieve an <b>Outstanding</b> rating?',
+   opts:['55%','70%','85%','100%'],
+   a:2, why:'BREEAM ratings: Pass ≥30%, Good ≥45%, Very Good ≥55%, Excellent ≥70%, Outstanding ≥85%.'},
+  {q:'During the <b>Substructure</b> phase, which of the following is built?',
+   opts:['Roof trusses','Foundations and DPC','Painting and decoration','Window installation'],
+   a:1, why:'Substructure = below ground. This includes foundations (strip, pad, raft, piled), basements, retaining walls, and the Damp-Proof Course (DPC).'},
+  {q:'A hospital client\'s TOP priority would most likely be...',
+   opts:['Speed of delivery and ROI','Safety, accessibility, durability','Cheapest possible build','Marketability to tenants'],
+   a:1, why:'Public/Social sector (hospitals, schools) prioritises user safety, accessibility, long-term durability, and inclusivity. Speed and ROI are commercial priorities.'},
+  {q:'Which procurement method has the CLIENT holding contracts directly with each trade contractor?',
+   opts:['Traditional (Design-Bid-Build)','Design & Build','Construction Management','Tendering'],
+   a:2, why:'In Construction Management, the client holds trade contracts directly. The construction manager only advises. This gives high client control — but also high client risk.'},
+  {q:'CDM 2015 in UK construction primarily covers...',
+   opts:['Sustainability ratings','Health, safety, and welfare during design and construction','Procurement contracts','Tax treatment of building projects'],
+   a:1, why:'The Construction (Design and Management) Regulations 2015 cover health, safety, and welfare across the entire project lifecycle, requiring a Principal Designer and Principal Contractor.'},
+  {q:'A <b>Geotechnical Survey</b> investigates...',
+   opts:['Building aesthetics','Soil conditions for foundation design','Property prices in the area','Cultural heritage of the site'],
+   a:1, why:'Geotechnical surveys test the soil to design appropriate foundations. Findings directly influence foundation type, cost, and safety measures.'},
+  {q:'What does the <b>Critical Path Analysis</b> identify on a project programme?',
+   opts:['The cheapest tasks','The tasks the client cares about most','The key tasks that control total project duration','Tasks done by subcontractors only'],
+   a:2, why:'The Critical Path is the sequence of tasks that determines the shortest possible project duration. Any delay on a critical task delays the whole project.'},
+  {q:'Which JCT/NEC/FIDIC are examples of?',
+   opts:['BIM software','UK Local Authorities','Standard construction contracts','Procurement routes'],
+   a:2, why:'JCT (Joint Contracts Tribunal), NEC (New Engineering Contract), and FIDIC are families of standard-form construction contracts widely used in the UK and internationally.'}
+];
+let qIdx=0, qScore=0, qAnswered=false;
+function renderQ(){
+  const q = quizQs[qIdx];
+  document.getElementById('qNum').textContent = `Question ${qIdx+1} of ${quizQs.length}`;
+  document.getElementById('qScore').textContent = qScore;
+  document.getElementById('qText').innerHTML = q.q;
+  const optsBox = document.getElementById('qOpts');
+  optsBox.innerHTML = '';
+  q.opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span> <span>${opt}</span>`;
+    b.addEventListener('click',()=>answerQ(i,b));
+    optsBox.appendChild(b);
+  });
+  document.getElementById('qFeedback').classList.remove('show');
+  document.getElementById('qNext').classList.remove('show');
+  qAnswered = false;
+}
+function answerQ(i, btn){
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizQs[qIdx];
+  const btns = document.querySelectorAll('#qOpts .opt');
+  btns.forEach(b=>b.disabled=true);
+  const fb = document.getElementById('qFeedback');
+  if(i===q.a){
+    btn.classList.add('correct');
+    qScore++;
+    fb.innerHTML = `<b>✓ Correct!</b> ${q.why}`;
+    addXP(10, 'Quiz correct', 'q-'+qIdx);
+  } else {
+    btn.classList.add('wrong');
+    btns[q.a].classList.add('correct');
+    fb.innerHTML = `<b>✗ Not quite.</b> ${q.why}`;
+  }
+  document.getElementById('qScore').textContent = qScore;
+  fb.classList.add('show');
+  const nxt = document.getElementById('qNext');
+  nxt.textContent = qIdx<quizQs.length-1 ? 'Next Question →' : 'See Final Score →';
+  nxt.classList.add('show');
+}
+document.getElementById('qNext').addEventListener('click',()=>{
+  if(qIdx<quizQs.length-1){ qIdx++; renderQ(); }
+  else finishQuiz();
+});
+function finishQuiz(){
+  const pct = Math.round((qScore/quizQs.length)*100);
+  let grade='Apprentice', col='var(--no)';
+  if(pct>=85){grade='Master Builder'; col='var(--ok)';}
+  else if(pct>=70){grade='Site Foreman'; col='var(--ok)';}
+  else if(pct>=55){grade='Skilled Tradesperson'; col='var(--safety)';}
+  else if(pct>=40){grade='Trainee'; col='var(--safety)';}
+  document.getElementById('quizShell').innerHTML = `
+    <div class="quiz-final">
+      <h2>Quiz Complete!</h2>
+      <div class="grade">${grade}</div>
+      <div class="score-big" style="color:${col};">${qScore}/${quizQs.length}</div>
+      <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--concrete);">${pct}% accuracy</div>
+      <button onclick="restartQuiz()">↻ Try Again</button>
+    </div>`;
+}
+function restartQuiz(){
+  qIdx=0; qScore=0;
+  document.getElementById('quizShell').innerHTML = `
+    <div class="quiz-header">
+      <span class="quiz-q-num" id="qNum"></span>
+      <span class="quiz-score">Score: <b id="qScore">0</b> / 12</span>
+    </div>
+    <div class="quiz-question" id="qText"></div>
+    <div class="quiz-opts" id="qOpts"></div>
+    <div class="quiz-feedback" id="qFeedback"></div>
+    <button class="quiz-next" id="qNext">Next Question →</button>`;
+  document.getElementById('qNext').addEventListener('click',()=>{
+    if(qIdx<quizQs.length-1){ qIdx++; renderQ(); } else finishQuiz();
+  });
+  renderQ();
+}
+renderQ();
+
+/* ============================================================
+   MATCH GAME
+============================================================ */
+const matchSets = {
+  roles: {
+    leftHead:'ROLES',
+    rightHead:'WHAT THEY DO',
+    pairs:[
+      ['Project Manager','Oversees the whole project, budget & timeline'],
+      ['Quantity Surveyor','Manages costs and measures quantities'],
+      ['Architect','Designs blueprints and visual concepts'],
+      ['Health & Safety Officer','Runs site inspections and safety protocols'],
+      ['BIM Specialist','Builds 3D digital models in Revit'],
+      ['Procurement Manager','Sources materials and equipment']
+    ]
+  },
+  proc: {
+    leftHead:'PROCUREMENT ROUTE',
+    rightHead:'DEFINITION',
+    pairs:[
+      ['Traditional (Design-Bid-Build)','Client appoints designers, then contractors bid to build'],
+      ['Design & Build','One contractor handles both design and construction'],
+      ['Management Contracting','A management contractor hires and coordinates trade contractors'],
+      ['Construction Management','Client holds all trade contracts; CM only advises'],
+      ['Open Tendering','Anyone can bid; transparent but time-consuming'],
+      ['Negotiated Tendering','Directly negotiate with one chosen contractor']
+    ]
+  }
+};
+let matchMode='roles', matchSelLeft=null, matchSelRight=null, matchedCount=0, totalPairs=0;
+function loadMatch(mode){
+  matchMode = mode;
+  matchSelLeft = null; matchSelRight = null; matchedCount = 0;
+  const set = matchSets[mode];
+  document.getElementById('leftHead').textContent = set.leftHead;
+  document.getElementById('rightHead').textContent = set.rightHead;
+  const leftBox = document.getElementById('matchLeft');
+  const rightBox = document.getElementById('matchRight');
+  leftBox.innerHTML = '';
+  rightBox.innerHTML = '';
+  totalPairs = set.pairs.length;
+  // shuffle
+  const shuffled = [...set.pairs].sort(()=>Math.random()-.5);
+  const rightShuffled = [...set.pairs].sort(()=>Math.random()-.5);
+  shuffled.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className = 'match-item';
+    div.textContent = p[0];
+    div.dataset.id = set.pairs.indexOf(p);
+    div.addEventListener('click',()=>selectMatch(div,'L'));
+    leftBox.appendChild(div);
+  });
+  rightShuffled.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className = 'match-item';
+    div.textContent = p[1];
+    div.dataset.id = set.pairs.indexOf(p);
+    div.addEventListener('click',()=>selectMatch(div,'R'));
+    rightBox.appendChild(div);
+  });
+  document.getElementById('matchStatus').textContent = `Matches: 0 / ${totalPairs}`;
+  document.getElementById('matchModeRoles').style.background = mode==='roles' ? 'var(--rebar)' : 'var(--steel)';
+  document.getElementById('matchModeProc').style.background = mode==='proc' ? 'var(--rebar)' : 'var(--steel)';
+}
+function selectMatch(el, side){
+  if(el.classList.contains('matched')) return;
+  if(side==='L'){
+    if(matchSelLeft) matchSelLeft.classList.remove('selected');
+    matchSelLeft = el;
+    el.classList.add('selected');
+  } else {
+    if(matchSelRight) matchSelRight.classList.remove('selected');
+    matchSelRight = el;
+    el.classList.add('selected');
+  }
+  if(matchSelLeft && matchSelRight){
+    const same = matchSelLeft.dataset.id === matchSelRight.dataset.id;
+    if(same){
+      matchSelLeft.classList.remove('selected');
+      matchSelRight.classList.remove('selected');
+      matchSelLeft.classList.add('matched');
+      matchSelRight.classList.add('matched');
+      matchedCount++;
+      addXP(8, 'Matched!', `match-${matchMode}-${matchSelLeft.dataset.id}`);
+      document.getElementById('matchStatus').textContent = `Matches: ${matchedCount} / ${totalPairs}`;
+      matchSelLeft = null; matchSelRight = null;
+      if(matchedCount===totalPairs){
+        document.getElementById('matchStatus').innerHTML = `🎉 All matched! Switch mode or try again.`;
+      }
+    } else {
+      const L=matchSelLeft, R=matchSelRight;
+      L.classList.add('shake'); R.classList.add('shake');
+      setTimeout(()=>{
+        L.classList.remove('selected','shake');
+        R.classList.remove('selected','shake');
+      },420);
+      matchSelLeft = null; matchSelRight = null;
+    }
+  }
+}
+document.getElementById('matchModeRoles').addEventListener('click',()=>loadMatch('roles'));
+document.getElementById('matchModeProc').addEventListener('click',()=>loadMatch('proc'));
+loadMatch('roles');
+
+/* ============================================================
+   BUILD IT! — drag & drop sequence game
+============================================================ */
+const phases = [
+  {id:'p1', label:'1. Site Preparation', emoji:'🚜', order:1, top:78, left:8, w:84, h:42},
+  {id:'p2', label:'2. Foundations',     emoji:'🧱', order:2, top:62, left:8, w:84, h:42},
+  {id:'p3', label:'3. Superstructure',  emoji:'🏛️', order:3, top:38, left:18, w:64, h:96},
+  {id:'p4', label:'4. Building Services',emoji:'⚡', order:4, top:18, left:18, w:64, h:42},
+  {id:'p5', label:'5. Finishes & Fit-Out',emoji:'🎨', order:5, top:3, left:18, w:64, h:34},
+];
+let nextExpected = 1;
+function initBuild(){
+  nextExpected = 1;
+  const bank = document.getElementById('bank');
+  const canvas = document.getElementById('canvas');
+  bank.innerHTML = '<h4>📦 PHASE BANK · Drag these</h4>';
+  canvas.innerHTML = '';
+  // shuffled bank items
+  const shuffled = [...phases].sort(()=>Math.random()-.5);
+  shuffled.forEach(p=>{
+    const div = document.createElement('div');
+    div.className = 'build-item';
+    div.draggable = true;
+    div.dataset.id = p.id;
+    div.dataset.order = p.order;
+    div.innerHTML = `<span class="ord">#${p.order}</span><span style="font-size:18px;">${p.emoji}</span><span>${p.label.replace(/^\d+\.\s*/,'')}</span>`;
+    div.addEventListener('dragstart',e=>{
+      e.dataTransfer.setData('text/plain', p.id);
+      div.classList.add('dragging');
+    });
+    div.addEventListener('dragend',()=>div.classList.remove('dragging'));
+    bank.appendChild(div);
+  });
+  // slots on canvas
+  phases.forEach(p=>{
+    const slot = document.createElement('div');
+    slot.className = 'build-slot';
+    slot.dataset.order = p.order;
+    slot.dataset.id = p.id;
+    slot.style.top = p.top+'%';
+    slot.style.left = p.left+'%';
+    slot.style.width = p.w+'%';
+    slot.style.height = p.h+'%';
+    slot.textContent = `Slot ${p.order}`;
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();
+      slot.classList.remove('over');
+      const id = e.dataTransfer.getData('text/plain');
+      const item = document.querySelector(`.build-item[data-id="${id}"]`);
+      if(!item || slot.classList.contains('filled')) return;
+      const ord = parseInt(item.dataset.order);
+      const slotOrd = parseInt(slot.dataset.order);
+      if(ord === slotOrd && ord === nextExpected){
+        slot.classList.add('filled');
+        slot.textContent = item.querySelector('span:nth-child(3)').textContent;
+        item.classList.add('placed');
+        nextExpected++;
+        addXP(10, item.textContent.trim(), 'build-'+id);
+        if(nextExpected > phases.length){
+          document.getElementById('buildMsg').innerHTML = '🎉 <b>Building complete!</b> Perfect construction sequence.';
+        } else {
+          document.getElementById('buildMsg').textContent = `✓ Correct! Next: place phase #${nextExpected}.`;
+        }
+      } else if(ord === slotOrd){
+        document.getElementById('buildMsg').innerHTML = `⚠️ Right slot, wrong order. Place phase #${nextExpected} first.`;
+      } else {
+        document.getElementById('buildMsg').innerHTML = `⚠️ Wrong slot for "${item.querySelector('span:nth-child(3)').textContent}". Try another.`;
+      }
+    });
+    canvas.appendChild(slot);
+  });
+  // sun
+  const sun = document.createElement('div');
+  sun.style.cssText = 'position:absolute;top:8%;right:6%;width:54px;height:54px;background:#ffd54a;border-radius:50%;box-shadow:0 0 30px rgba(255,213,74,.6);';
+  canvas.appendChild(sun);
+  // crane silhouette
+  const crane = document.createElement('div');
+  crane.style.cssText = 'position:absolute;top:0;left:0;width:6px;height:80%;background:var(--steel);';
+  canvas.appendChild(crane);
+  const arm = document.createElement('div');
+  arm.style.cssText = 'position:absolute;top:8%;left:0;width:35%;height:5px;background:var(--steel);';
+  canvas.appendChild(arm);
+  document.getElementById('buildMsg').textContent = 'Drag phases onto the building in the correct order →';
+}
+initBuild();
+
+/* ============================================================
+   BREEAM SIMULATOR
+============================================================ */
+const breeamCats = [
+  {key:'energy', name:'⚡ Energy Efficiency', max:20},
+  {key:'water', name:'💧 Water Use', max:10},
+  {key:'materials', name:'🧱 Materials', max:15},
+  {key:'health', name:'🌞 Health & Wellbeing', max:15},
+  {key:'pollution', name:'🌫️ Pollution', max:10},
+  {key:'transport', name:'🚲 Transport', max:10},
+  {key:'land', name:'🌳 Land Use & Ecology', max:10},
+  {key:'mgmt', name:'📋 Management', max:10}
+];
+const breeamState = {};
+const breeamBox = document.getElementById('breeamCats');
+breeamCats.forEach(c=>{
+  breeamState[c.key]=0;
+  const row = document.createElement('div');
+  row.className='breeam-cat';
+  row.innerHTML = `
+    <span class="breeam-cat-name">${c.name}</span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <input type="range" class="breeam-slider" min="0" max="${c.max}" value="0" data-key="${c.key}" data-max="${c.max}">
+      <span style="font-family:'JetBrains Mono';font-size:11px;min-width:42px;text-align:right;color:var(--steel);" id="val-${c.key}">0/${c.max}</span>
+    </div>`;
+  breeamBox.appendChild(row);
+});
+document.querySelectorAll('.breeam-slider').forEach(s=>{
+  s.addEventListener('input',()=>{
+    const k = s.dataset.key;
+    const max = parseInt(s.dataset.max);
+    breeamState[k] = parseInt(s.value);
+    document.getElementById('val-'+k).textContent = `${s.value}/${max}`;
+    updateBreeam();
+  });
+});
+function updateBreeam(){
+  const total = Object.values(breeamState).reduce((a,b)=>a+b,0);
+  const maxTotal = breeamCats.reduce((a,c)=>a+c.max,0);
+  const pct = Math.round((total/maxTotal)*100);
+  document.getElementById('breeamPct').textContent = pct + '%';
+  let rating='Not Yet Rated', tier=-1, tip='';
+  if(pct>=85){rating='⭐ OUTSTANDING'; tier=4; tip='World-class sustainability. Sets the benchmark for innovation in the built environment.';}
+  else if(pct>=70){rating='Excellent'; tier=3; tip='Best practice. Buildings here are highly attractive to investors and tenants.';}
+  else if(pct>=55){rating='Very Good'; tier=2; tip='Strong performance. A solid achievement representing advanced good practice.';}
+  else if(pct>=45){rating='Good'; tier=1; tip='Above average. Demonstrates good practice in sustainability.';}
+  else if(pct>=30){rating='Pass'; tier=0; tip='You meet the minimum threshold. Push the sliders to unlock higher tiers.';}
+  else {tip='Below the Pass threshold (30%). Increase your scores in any category to begin earning a rating.';}
+  document.getElementById('breeamRating').textContent = rating;
+  document.getElementById('breeamTip').textContent = tip;
+  document.querySelectorAll('.scale-tier').forEach((t,i)=>{
+    t.classList.toggle('lit', i<=tier);
+  });
+  if(pct>=85) addXP(15, 'BREEAM Outstanding!', 'breeam-out');
+  else if(pct>=70) addXP(10, 'BREEAM Excellent', 'breeam-exc');
+  else if(pct>=55) addXP(5, 'BREEAM Very Good', 'breeam-vg');
+}
+updateBreeam();
+
+/* ============================================================
+   SECTORS
+============================================================ */
+const sectors = {
+  res: {
+    title:'🏠 Residential',
+    example:'Example: A new housing estate of 80 family homes in a suburban area.',
+    priorities:['Affordability','Comfort & Aesthetics','Energy Efficiency','Sustainability','Long-term Liveability'],
+    detail:'Residential clients want homes people will love to live in — without bankrupting them. Energy bills, kerb appeal, and warm dry rooms matter more than razor-fast delivery.'
+  },
+  com: {
+    title:'🏢 Commercial',
+    example:'Example: A 12-storey city-centre office building for a corporate tenant.',
+    priorities:['Speed of Delivery','Flexible Space','Return on Investment','Cost-effective Operation','Tenant Appeal'],
+    detail:'Commercial clients are running spreadsheets. Time = rent collected. They want the building open and let as fast as possible, with floor plates that can be reconfigured for different tenants.'
+  },
+  soc: {
+    title:'🏥 Social / Public (Institutional)',
+    example:'Example: A new NHS hospital wing or a state primary school.',
+    priorities:['Safety','Accessibility','Long-term Durability','Sustainability','Inclusivity'],
+    detail:'Public sector clients answer to taxpayers and to vulnerable users. The building must last 50+ years, be safe for children and patients, and be fully accessible. Aesthetics matter less than function.'
+  },
+  inf: {
+    title:'🛣️ Infrastructure',
+    example:'Example: A new motorway bridge or a section of railway track.',
+    priorities:['Durability','Resilience','Public Safety','Minimal Disruption','Low Maintenance'],
+    detail:'Infrastructure clients (Highways England, Network Rail) need projects that survive decades of weather and heavy use, with minimal disruption during construction. Aesthetics? Last on the list.'
+  }
+};
+function renderSector(key){
+  const s = sectors[key];
+  document.getElementById('secContent').innerHTML = `
+    <h3>${s.title}</h3>
+    <div class="ex">${s.example}</div>
+    <p style="margin-bottom:20px;line-height:1.55;font-size:15px;">${s.detail}</p>
+    <h4 style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:2px;color:var(--concrete);text-transform:uppercase;margin-bottom:12px;">Top Priorities for this client:</h4>
+    <div class="sec-priorities">
+      ${s.priorities.map(p=>`<div class="priority-chip">${p}</div>`).join('')}
+    </div>`;
+}
+document.querySelectorAll('.sec-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.sec-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    renderSector(tab.dataset.sec);
+    addXP(5, sectors[tab.dataset.sec].title.replace(/[🏠🏢🏥🛣️]/g,'').trim()+' explored', 'sec-'+tab.dataset.sec);
+  });
+});
+renderSector('res');
+
+/* ============================================================
+   SCENARIO
+============================================================ */
+const scOptions = [
+  {t:'Immediately STOP the work and remove the worker from the trench.', correct:true},
+  {t:'Issue PPE (hard hat, hi-vis, safety boots) before any restart.', correct:true},
+  {t:'Let them carry on — it\'s only a short job and the soil looks firm.', correct:false},
+  {t:'Install proper shoring/trench support before re-entry.', correct:true},
+  {t:'Issue a Permit-to-Work and ensure a RAMS (Risk Assessment & Method Statement) is in place.', correct:true},
+  {t:'Report the near-miss in the site safety log under CDM 2015 procedures.', correct:true},
+  {t:'Ignore it — it\'s the worker\'s own responsibility to bring PPE.', correct:false},
+  {t:'Brief the worker on safe excavation procedure before they restart.', correct:true},
+];
+function buildScenario(){
+  const box = document.getElementById('scOpts');
+  box.innerHTML='';
+  scOptions.forEach((o,i)=>{
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type="checkbox" data-i="${i}"> <span>${o.t}</span>`;
+    box.appendChild(lab);
+  });
+}
+buildScenario();
+function checkScenario(){
+  const labels = document.querySelectorAll('#scOpts label');
+  let correct=0, picked=0, missed=0, wrong=0;
+  labels.forEach((lab,i)=>{
+    const cb = lab.querySelector('input');
+    const isPicked = cb.checked;
+    const isRight = scOptions[i].correct;
+    if(isPicked) picked++;
+    if(isRight && isPicked){ correct++; lab.classList.add('right'); }
+    if(isRight && !isPicked){ missed++; lab.classList.add('miss'); }
+    if(!isRight && isPicked){ wrong++; }
+  });
+  const totalCorrect = scOptions.filter(o=>o.correct).length;
+  const score = Math.max(0, correct - wrong);
+  const resBox = document.getElementById('scResult');
+  let verdict = '';
+  if(correct===totalCorrect && wrong===0){
+    verdict = `🏆 <b>Perfect call, Site Supervisor.</b> You identified all ${totalCorrect} correct actions and avoided every wrong one. CDM 2015 compliance achieved.`;
+    addXP(30, 'Scenario perfect!', 'sc-perfect');
+  } else if(wrong===0){
+    verdict = `✅ <b>Good thinking.</b> You picked ${correct} of ${totalCorrect} correct actions and avoided the wrong ones. You missed ${missed} action(s) shown in red.`;
+    addXP(15, 'Scenario solid', 'sc-good');
+  } else {
+    verdict = `⚠️ <b>Re-check your safety thinking.</b> You ticked ${wrong} action(s) that would put workers at risk. You also caught ${correct}/${totalCorrect} correct actions. On a real site, this would be a serious HSE breach.`;
+    addXP(5, 'Scenario attempted', 'sc-att');
+  }
+  resBox.innerHTML = `<h4>Site Supervisor Debrief</h4><p style="font-size:14px;line-height:1.55;">${verdict}</p>
+    <p style="margin-top:14px;font-size:13px;line-height:1.5;opacity:.85;">
+      <b>The HSE rule:</b> Under CDM 2015, the Principal Contractor and Site Supervisor have a legal duty to stop unsafe work. Trenches over 1.2m deep require shoring. PPE is non-negotiable. A permit-to-work and RAMS must be in place before any excavation begins.
+    </p>`;
+  resBox.classList.add('show');
+}
+
+/* ============================================================
+   CROSSRAIL TBM GALLERY
+============================================================ */
+const tbms = [
+  {n:'Phyllis', d:'Drive X · West', info:'Named after Phyllis Pearsall, creator of the London A–Z map. Bored the western tunnels from Royal Oak towards Farringdon. Faced Victorian-era Lord Hill\'s Bridge and the live Northern Line.'},
+  {n:'Ada', d:'Drive X · West', info:'Named after Ada Lovelace, the world\'s first computer programmer. Worked alongside Phyllis on the western drive, passing within 4 metres of Lord Hill\'s Bridge.'},
+  {n:'Victoria', d:'Drive Y · East', info:'Named after Queen Victoria. One of the eastern Earth Pressure Balance machines, tunnelling from Limmo Peninsula towards Farringdon through the heart of the City.'},
+  {n:'Elizabeth', d:'Drive Y · East', info:'Named after Queen Elizabeth II (now the line\'s namesake). Worked the eastern drive in tandem with Victoria.'},
+  {n:'Mary', d:'Thames Slurry', info:'A 110m mixed-shield slurry TBM, designed for wet chalk and flint. Tunnelled under the River Thames between North Woolwich and Plumstead.'},
+  {n:'Sophia', d:'Thames Slurry', info:'Mary\'s twin slurry machine. Both used a slurry-airlock system instead of a conveyor to manage the very wet chalk under the Thames.'},
+  {n:'Jessica', d:'Drive Z · East', info:'Named after Olympian Jessica Ennis-Hill. Launched from Pudding Mill Lane portal, tunnelling westwards through London Clay and Lambeth Group strata.'},
+  {n:'Ellie', d:'Drive Z · East', info:'Named after Olympian Ellie Simmonds. Jessica\'s twin on Drive Z. Together they completed the eastern running tunnels to Stepney Green.'}
+];
+const tbmGal = document.getElementById('tbmGallery');
+tbms.forEach((t,i)=>{
+  const card = document.createElement('div');
+  card.className = 'tbm-card';
+  card.innerHTML = `<div class="n">${t.n}</div><div class="d">${t.d}</div>`;
+  card.addEventListener('click',()=>{
+    const info = document.getElementById('tbmInfo');
+    info.innerHTML = `<b>${t.n}</b> — ${t.info}`;
+    info.style.display = 'block';
+    addXP(2, t.n+' TBM', 'tbm-'+i);
+  });
+  tbmGal.appendChild(card);
+});
+
+/* ============================================================
+   BUDGET BALANCER
+============================================================ */
+const budgetCats = [
+  {key:'design', name:'Design & Architecture', note:'RIBA fees, drawings, BIM modelling', min:600000, ideal:[700000,900000]},
+  {key:'land', name:'Site Acquisition & Surveys', note:'Geotechnical, topographical, environmental', min:200000, ideal:[300000,500000]},
+  {key:'sub', name:'Substructure & Foundations', note:'Piling, basement, DPC', min:1000000, ideal:[1200000,1500000]},
+  {key:'super', name:'Superstructure', note:'Frame, walls, floors, roof', min:2500000, ideal:[2800000,3300000]},
+  {key:'mep', name:'MEP / Building Services', note:'Electrical, plumbing, HVAC, fire safety', min:1200000, ideal:[1400000,1700000]},
+  {key:'fin', name:'Finishes & Fit-Out', note:'Plastering, flooring, painting, fixtures', min:600000, ideal:[800000,1000000]},
+  {key:'safe', name:'Health & Safety / CDM', note:'PPE, RAMS, welfare, principal contractor', min:200000, ideal:[300000,400000]},
+  {key:'cont', name:'Contingency', note:'5–10% recommended for surprises', min:500000, ideal:[700000,1000000]}
+];
+const budgetState = {};
+const budgetList = document.getElementById('budgetList');
+budgetCats.forEach(c=>{
+  budgetState[c.key] = 0;
+  const row = document.createElement('div');
+  row.className = 'budget-row';
+  row.innerHTML = `
+    <div class="name">${c.name}<small>${c.note}</small></div>
+    <input type="range" min="0" max="3500000" step="50000" value="0" data-key="${c.key}">
+    <div class="val" id="bval-${c.key}">£0</div>`;
+  budgetList.appendChild(row);
+});
+function fmtMoney(n){return '£'+n.toLocaleString();}
+document.querySelectorAll('#budgetList input[type=range]').forEach(s=>{
+  s.addEventListener('input',()=>{
+    const k = s.dataset.key;
+    budgetState[k] = parseInt(s.value);
+    document.getElementById('bval-'+k).textContent = fmtMoney(parseInt(s.value));
+    updateBudgetBar();
+  });
+});
+function updateBudgetBar(){
+  const allocated = Object.values(budgetState).reduce((a,b)=>a+b,0);
+  const remaining = 10000000 - allocated;
+  document.getElementById('budgetAlloc').textContent = fmtMoney(allocated);
+  document.getElementById('budgetRem').textContent = fmtMoney(remaining);
+  document.getElementById('budgetRem').classList.toggle('danger', remaining<0);
+}
+function checkBudget(){
+  const allocated = Object.values(budgetState).reduce((a,b)=>a+b,0);
+  let issues = [], wins = [];
+  budgetCats.forEach(c=>{
+    const v = budgetState[c.key];
+    if(v < c.min) issues.push(`Under-funded <b>${c.name}</b> (min ${fmtMoney(c.min)})`);
+    else if(v >= c.ideal[0] && v <= c.ideal[1]) wins.push(c.name);
+    else if(v > c.ideal[1]*1.4) issues.push(`Over-spending on <b>${c.name}</b>`);
+  });
+  if(allocated > 10000000) issues.unshift(`🔴 OVER BUDGET by ${fmtMoney(allocated-10000000)}`);
+  if(allocated < 9000000) issues.push(`Under-utilised: ${fmtMoney(10000000-allocated)} left unallocated`);
+  const resBox = document.getElementById('budgetResult');
+  let title='', verdict='', xpEarned=0;
+  if(issues.length===0){
+    title='🏆 Excellent QS work!';
+    verdict=`You delivered a balanced budget. Every category is funded at or above its minimum, you're within the £10m envelope, and you allocated to ${wins.length} categories within the optimal range.`;
+    xpEarned=40;
+  } else if(allocated<=10000000 && wins.length>=4){
+    title='✅ Acceptable budget — with notes';
+    verdict=`Your budget is workable but has gaps:<br>• ${issues.slice(0,3).join('<br>• ')}`;
+    xpEarned=20;
+  } else {
+    title='⚠️ Budget rejected by the client';
+    verdict=`Issues found:<br>• ${issues.slice(0,4).join('<br>• ')}<br><br>Revise your allocations and try again.`;
+    xpEarned=5;
+  }
+  resBox.innerHTML = `<h4>${title}</h4><div class="verdict">${verdict}</div>`;
+  resBox.classList.add('show');
+  addXP(xpEarned, 'Budget submitted', 'budget-'+Date.now());
+}
+updateBudgetBar();
+
+/* ============================================================
+   MEMORY MATCH
+============================================================ */
+const memPairs = [
+  {em:'✏️',t:'Design'},{em:'🏗️',t:'Construction'},
+  {em:'💰',t:'Quantity Surveyor'},{em:'📐',t:'Architect'},
+  {em:'🦺',t:'H&S Officer'},{em:'🖥️',t:'BIM Specialist'},
+  {em:'🚜',t:'Excavation'},{em:'🧱',t:'Foundations'},
+  {em:'⚡',t:'MEP'},{em:'🌱',t:'BREEAM'},
+  {em:'📦',t:'Procurement'},{em:'📅',t:'Programme'}
+];
+let memFlipped=[], memMatched=0, memMoves=0, memStart=null, memTimer=null, memLock=false;
+function initMemory(){
+  memFlipped=[]; memMatched=0; memMoves=0; memStart=Date.now(); memLock=false;
+  clearInterval(memTimer);
+  memTimer = setInterval(()=>{
+    const e = Math.floor((Date.now()-memStart)/1000);
+    const m = String(Math.floor(e/60)).padStart(2,'0');
+    const s = String(e%60).padStart(2,'0');
+    const t = document.getElementById('memTime');
+    if(t) t.textContent = `${m}:${s}`;
+  }, 500);
+  document.getElementById('memMoves').textContent='0';
+  document.getElementById('memMatched').textContent='0';
+  // build deck — each pair as two card types
+  const deck = [];
+  memPairs.forEach((p,i)=>{
+    deck.push({id:i,face:'em',v:p.em});
+    deck.push({id:i,face:'txt',v:p.t});
+  });
+  deck.sort(()=>Math.random()-.5);
+  const grid = document.getElementById('memGrid');
+  grid.innerHTML='';
+  deck.forEach((c,idx)=>{
+    const card = document.createElement('div');
+    card.className='mem-card';
+    card.dataset.id=c.id;
+    card.dataset.idx=idx;
+    card.innerHTML = `<div class="mem-inner">
+      <div class="mem-front">?</div>
+      <div class="mem-back">${c.face==='em'?'<span class="em">'+c.v+'</span>':c.v}</div>
+    </div>`;
+    card.addEventListener('click',()=>memFlip(card,c));
+    grid.appendChild(card);
+  });
+}
+function memFlip(card, data){
+  if(memLock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  card.classList.add('flipped');
+  memFlipped.push({card, data});
+  if(memFlipped.length===2){
+    memMoves++;
+    document.getElementById('memMoves').textContent = memMoves;
+    memLock = true;
+    const [a,b] = memFlipped;
+    if(a.data.id === b.data.id && a.data.face !== b.data.face){
+      setTimeout(()=>{
+        a.card.classList.add('matched');
+        b.card.classList.add('matched');
+        memMatched++;
+        document.getElementById('memMatched').textContent = memMatched;
+        addXP(5, 'Pair matched', 'mem-'+a.data.id);
+        memFlipped=[]; memLock=false;
+        if(memMatched===memPairs.length){
+          clearInterval(memTimer);
+          const moves = memMoves;
+          let bonus = 0;
+          if(moves<=16) bonus=30; else if(moves<=22) bonus=15;
+          if(bonus) addXP(bonus, `Perfect! ${moves} moves`, 'mem-perfect-'+Date.now());
+          setTimeout(()=>{
+            const t = document.getElementById('memTime').textContent;
+            toast(`🎉 Won in ${moves} moves · ${t}`);
+          }, 400);
+        }
+      }, 300);
+    } else {
+      setTimeout(()=>{
+        a.card.classList.remove('flipped');
+        b.card.classList.remove('flipped');
+        memFlipped=[]; memLock=false;
+      }, 900);
+    }
+  }
+}
+initMemory();
+
+/* ============================================================
+   HANGMAN / TERM BUILDER
+============================================================ */
+const hangWords = [
+  {w:'FOUNDATION', h:'The substructure element that transfers building loads safely into the ground.'},
+  {w:'PROCUREMENT', h:'The process of selecting the method and team to deliver a construction project.'},
+  {w:'BREEAM', h:'The UK\'s sustainability assessment method for buildings, launched in 1990.'},
+  {w:'TENDERING', h:'The formal process of inviting bids from contractors or suppliers.'},
+  {w:'SUBSTRUCTURE', h:'Everything built below ground level — foundations, basements, DPC.'},
+  {w:'SUPERSTRUCTURE', h:'The visible structure above ground — frame, walls, floors, roof.'},
+  {w:'SCAFFOLDING', h:'Temporary works structure used to support workers and materials at height.'},
+  {w:'GANTT', h:'A type of bar chart used for scheduling and tracking project programmes.'},
+  {w:'CROSSRAIL', h:'The £18.8bn megaproject now known as the Elizabeth Line.'},
+  {w:'BLUEPRINT', h:'Traditional name for an architectural or engineering technical drawing.'},
+  {w:'CONTRACTOR', h:'The party legally responsible for carrying out the construction works.'},
+  {w:'EXCAVATION', h:'Digging out soil or rock to form foundations, trenches or basements.'},
+  {w:'SNAGGING', h:'Identifying and fixing minor defects in a building before final handover.'},
+  {w:'HANDOVER', h:'The moment when the completed building is formally given to the client.'},
+  {w:'GEOTECHNICAL', h:'The branch of engineering dealing with soil and ground conditions.'}
+];
+let hangCurrent=null, hangGuessed=[], hangWrong=0, hangMax=6;
+function newHangmanWord(){
+  hangCurrent = hangWords[Math.floor(Math.random()*hangWords.length)];
+  hangGuessed = []; hangWrong = 0;
+  document.getElementById('hangHint').textContent = hangCurrent.h;
+  document.getElementById('hangMsg').textContent = '';
+  // hide crane parts
+  for(let i=1;i<=6;i++) document.getElementById('hs'+i).style.display='none';
+  // render word
+  renderHangWord();
+  // build keyboard
+  const kb = document.getElementById('keyboard');
+  kb.innerHTML='';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(L=>{
+    const b = document.createElement('button');
+    b.className='key';
+    b.textContent=L;
+    b.addEventListener('click',()=>guessLetter(L,b));
+    kb.appendChild(b);
+  });
+}
+function renderHangWord(){
+  const disp = document.getElementById('wordDisplay');
+  disp.innerHTML='';
+  hangCurrent.w.split('').forEach(ch=>{
+    const slot = document.createElement('div');
+    if(ch===' '){slot.className='letter-slot space';}
+    else {
+      slot.className='letter-slot';
+      slot.textContent = hangGuessed.includes(ch) ? ch : '';
+    }
+    disp.appendChild(slot);
+  });
+}
+function guessLetter(L, btn){
+  if(btn.disabled) return;
+  btn.disabled = true;
+  if(hangCurrent.w.includes(L)){
+    hangGuessed.push(L);
+    btn.classList.add('right');
+    renderHangWord();
+    // check win
+    const complete = hangCurrent.w.split('').every(ch => ch===' ' || hangGuessed.includes(ch));
+    if(complete){
+      document.getElementById('hangMsg').innerHTML = `🎉 <span style="color:var(--ok);">CORRECT! The word was <b>${hangCurrent.w}</b></span>`;
+      addXP(15, 'Word guessed', 'hang-'+hangCurrent.w+'-'+Date.now());
+      document.querySelectorAll('.key').forEach(k=>k.disabled=true);
+    }
+  } else {
+    hangWrong++;
+    btn.classList.add('wrong');
+    document.getElementById('hs'+hangWrong).style.display='block';
+    if(hangWrong>=hangMax){
+      document.getElementById('hangMsg').innerHTML = `❌ <span style="color:var(--no);">The word was <b>${hangCurrent.w}</b>. Try another!</span>`;
+      // reveal the rest
+      hangCurrent.w.split('').forEach(ch=>{if(!hangGuessed.includes(ch)&&ch!==' ')hangGuessed.push(ch);});
+      renderHangWord();
+      document.querySelectorAll('.key').forEach(k=>k.disabled=true);
+    }
+  }
+}
+newHangmanWord();
+
+/* ============================================================
+   TIMELINE SORT (Crossrail chronology)
+============================================================ */
+const tlEvents = [
+  {y:'2008', ev:'Crossrail Act receives Royal Assent', order:1},
+  {y:'2009', ev:'First pile driven at Canary Wharf — ground broken', order:2},
+  {y:'2012', ev:'TBM "Phyllis" begins tunnelling at Royal Oak', order:3},
+  {y:'2015', ev:'All 42km of tunnelling complete', order:4},
+  {y:'2022', ev:'Elizabeth Line opens to passengers (May 2022)', order:5},
+  {y:'2023', ev:'Full Shenfield–Heathrow service begins; project officially complete', order:6}
+];
+let tlPlaced = {};
+function initTimeline(){
+  tlPlaced = {};
+  document.getElementById('tlResult').textContent='';
+  // bank — shuffled
+  const bank = document.getElementById('tlBank');
+  bank.innerHTML='';
+  const shuffled = [...tlEvents].sort(()=>Math.random()-.5);
+  shuffled.forEach(e=>{
+    const div = document.createElement('div');
+    div.className='tl-event';
+    div.draggable = true;
+    div.dataset.order = e.order;
+    div.dataset.year = e.y;
+    div.dataset.ev = e.ev;
+    div.textContent = e.ev;
+    div.addEventListener('dragstart', ev=>{
+      ev.dataTransfer.setData('text/plain', e.order);
+      div.classList.add('dragging');
+    });
+    div.addEventListener('dragend', ()=>div.classList.remove('dragging'));
+    bank.appendChild(div);
+  });
+  // slots
+  const slots = document.getElementById('tlSlots');
+  slots.innerHTML='';
+  for(let i=1;i<=6;i++){
+    const slot = document.createElement('div');
+    slot.className='tl-slot';
+    slot.dataset.pos = i;
+    slot.innerHTML = `<div style="font-family:'JetBrains Mono';font-size:10px;color:var(--concrete);">Position ${i}</div>`;
+    slot.addEventListener('dragover',ev=>{ev.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',ev=>{
+      ev.preventDefault();
+      slot.classList.remove('over');
+      const order = ev.dataTransfer.getData('text/plain');
+      const evtEl = document.querySelector(`.tl-event[data-order="${order}"]`);
+      if(!evtEl) return;
+      // remove from anywhere already
+      Object.keys(tlPlaced).forEach(k=>{
+        if(tlPlaced[k] && tlPlaced[k].order==order) delete tlPlaced[k];
+      });
+      tlPlaced[i] = {order:parseInt(order), year:evtEl.dataset.year, ev:evtEl.dataset.ev};
+      evtEl.remove();
+      slot.classList.add('filled');
+      slot.innerHTML = `<div class="year">${evtEl.dataset.year}</div><div class="ev">${evtEl.dataset.ev}</div>`;
+    });
+    slots.appendChild(slot);
+  }
+}
+function checkTimeline(){
+  let correct=0;
+  document.querySelectorAll('.tl-slot').forEach((slot,i)=>{
+    const pos = i+1;
+    if(tlPlaced[pos] && tlPlaced[pos].order===pos){
+      slot.classList.add('correct');
+      slot.classList.remove('wrong');
+      correct++;
+    } else if(tlPlaced[pos]){
+      slot.classList.add('wrong');
+      slot.classList.remove('correct');
+    }
+  });
+  const res = document.getElementById('tlResult');
+  if(correct===6){
+    res.innerHTML = `🏆 <span style="color:var(--ok);">PERFECT! All 6 events in the right order.</span>`;
+    addXP(30, 'Timeline perfect!', 'tl-perfect-'+Date.now());
+  } else {
+    res.innerHTML = `${correct} of 6 correct. Move the red ones and try again.`;
+    if(correct>=3) addXP(10, 'Timeline progress', 'tl-partial-'+Date.now());
+  }
+}
+initTimeline();
+
+/* ============================================================
+   WRITING / ESSAY MODULE
+============================================================ */
+const essayKeyTerms = ['design','procurement','BIM','BREEAM','tender','contract','foundation','tunnel','TBM','stage','contractor','client','sustainability','schedule','risk','budget','superstructure','substructure','MEP','CDM','Elizabeth','Crossrail','geotechnical','feasibility'];
+let essayStart = null, essayTimer = null;
+const essayArea = document.getElementById('essayArea');
+const essayTitle = document.getElementById('essayTitle');
+
+// allow text selection inside the essay box (but still block paste!)
+[essayArea, essayTitle].forEach(el=>{
+  // block paste
+  el.addEventListener('paste', e=>{
+    e.preventDefault();
+    const w = document.getElementById('essayWarning');
+    w.textContent = '⛔ Pasting is blocked. Please type your own words.';
+    w.classList.add('show');
+    setTimeout(()=>w.classList.remove('show'), 3000);
+  });
+  // block drag & drop of text
+  el.addEventListener('drop', e=>{
+    e.preventDefault();
+    const w = document.getElementById('essayWarning');
+    w.textContent = '⛔ Drag-and-drop text is also blocked. Type only.';
+    w.classList.add('show');
+    setTimeout(()=>w.classList.remove('show'), 3000);
+  });
+  // detect mass insertions (paste via other means)
+  let lastLen = 0;
+  el.addEventListener('input', e=>{
+    const v = el.value || '';
+    if(v.length - lastLen > 25){ // suspicious chunk
+      const w = document.getElementById('essayWarning');
+      w.textContent = '⚠️ Large block of text detected. Please type word-by-word.';
+      w.classList.add('show');
+      setTimeout(()=>w.classList.remove('show'), 3000);
+    }
+    lastLen = v.length;
+    if(el===essayArea) updateEssayStats();
+    if(!essayStart && v.length>5) startEssayTimer();
+  });
+});
+function startEssayTimer(){
+  essayStart = Date.now();
+  essayTimer = setInterval(()=>{
+    const e = Math.floor((Date.now()-essayStart)/1000);
+    const m = String(Math.floor(e/60)).padStart(2,'0');
+    const s = String(e%60).padStart(2,'0');
+    const t = document.getElementById('essayTime');
+    if(t) t.textContent = `${m}:${s}`;
+  }, 1000);
+}
+function updateEssayStats(){
+  const txt = essayArea.value.trim();
+  const words = txt ? txt.split(/\s+/).length : 0;
+  const paras = txt ? txt.split(/\n\s*\n/).filter(p=>p.trim()).length : 0;
+  const lower = txt.toLowerCase();
+  let termsUsed = 0;
+  essayKeyTerms.forEach(t=>{ if(lower.includes(t.toLowerCase())) termsUsed++; });
+  document.getElementById('wcCount').textContent = words;
+  document.getElementById('parCount').textContent = paras;
+  document.getElementById('termCount').textContent = Math.min(termsUsed,8);
+  const status = document.getElementById('wcStatus');
+  if(words<300){ status.textContent=' (keep going)'; status.className='warn'; }
+  else if(words>=500 && words<=800){ status.textContent=' ✓ target met'; status.className='good'; }
+  else if(words>800){ status.textContent=' (over target)'; status.className='warn'; }
+  else { status.textContent=' (nearly there)'; status.className=''; }
+}
+document.querySelectorAll('.prompt-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    document.querySelectorAll('.prompt-chip').forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+  });
+});
+function submitEssay(){
+  const title = essayTitle.value.trim();
+  const txt = essayArea.value.trim();
+  const words = txt ? txt.split(/\s+/).length : 0;
+  const lower = txt.toLowerCase();
+  let termsUsed = 0;
+  essayKeyTerms.forEach(t=>{ if(lower.includes(t.toLowerCase())) termsUsed++; });
+  const hasCrossrail = /crossrail|elizabeth line/i.test(txt);
+  const selectedPrompt = document.querySelector('.prompt-chip.selected');
+  const fb = document.getElementById('essayFeedback');
+  const checks = [
+    {pass: title.length>=5, t:'Title present (5+ chars)'},
+    {pass: selectedPrompt!==null, t:'Prompt selected'},
+    {pass: words>=500, t:`Word count ≥ 500 (you have ${words})`},
+    {pass: words<=900, t:`Word count ≤ 900 (you have ${words})`},
+    {pass: termsUsed>=3, t:`At least 3 key terms used (you used ${termsUsed})`},
+    {pass: hasCrossrail, t:'Mentions Crossrail / Elizabeth Line'},
+    {pass: /\n/.test(txt) || txt.length>800, t:'Multiple paragraphs / sections'},
+  ];
+  const passed = checks.filter(c=>c.pass).length;
+  let grade='', col='var(--no)', xpEarn=0;
+  if(passed===checks.length){grade='A — Distinction'; col='var(--ok)'; xpEarn=80;}
+  else if(passed>=5){grade='B — Merit'; col='var(--ok)'; xpEarn=50;}
+  else if(passed>=3){grade='C — Pass'; col='var(--safety)'; xpEarn=25;}
+  else {grade='Needs more work'; xpEarn=10;}
+  fb.innerHTML = `<h4>Submission Feedback — <span style="color:${col};">${grade}</span></h4>
+    ${checks.map(c=>`<div class="check"><span>${c.pass?'✓':'✗'} ${c.t}</span><b>${c.pass?'PASS':'MISS'}</b></div>`).join('')}
+    <div style="margin-top:14px;font-size:13px;line-height:1.5;font-style:italic;opacity:.85;">
+      ${passed===checks.length ? 'Excellent submission — thorough, well-structured, evidence-rich.' :
+        passed>=5 ? 'Strong essay. Add what\'s missing above to push to top marks.' :
+        passed>=3 ? 'Acceptable but more depth needed. Re-read the Crossrail Case Study tab.' :
+        'Please revise: include more key terms, more words, and reference Crossrail directly.'}
+    </div>`;
+  fb.classList.add('show');
+  addXP(xpEarn, 'Essay submitted', 'essay-'+Date.now());
+}
+function downloadEssay(){
+  const title = essayTitle.value.trim() || 'Untitled Essay';
+  const body = essayArea.value;
+  const blob = new Blob([title+'\n\n'+body], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (title.replace(/[^a-z0-9]+/gi,'_').slice(0,40) || 'essay') + '.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Essay downloaded');
+}
+</script>
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>

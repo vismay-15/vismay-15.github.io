@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EG4022 | Tensile Strength & Fracture Behaviour</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Source+Sans+3:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --navy2: #0f2040;
+  --teal: #00c9b1;
+  --gold: #f5a623;
+  --red: #e84040;
+  --green: #2ecc71;
+  --blue: #3498db;
+  --text: #e8edf5;
+  --muted: #8899aa;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(0,201,177,0.2);
+  --glow: 0 0 24px rgba(0,201,177,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:#060e1c;
+  color:var(--text);
+  font-family:'Source Sans 3',sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  user-select:none;
+  -webkit-user-select:none;
+}
+/* ===== COPY BLOCK ===== */
+*::selection{background:transparent}
+*::-moz-selection{background:transparent}
+
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(135deg,#060e1c 0%,#0a1f3a 50%,#060e1c 100%);
+  border-bottom:2px solid var(--teal);
+  padding:28px 40px 20px;
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(12px);
+}
+.logo-block h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:1.5rem;font-weight:700;
+  color:var(--teal);letter-spacing:3px;text-transform:uppercase;
+}
+.logo-block p{font-size:0.78rem;color:var(--muted);letter-spacing:1px;margin-top:2px}
+.header-right{text-align:right}
+.header-right .badge{
+  background:linear-gradient(135deg,var(--teal),#009e8e);
+  color:#060e1c;font-family:'Rajdhani',sans-serif;
+  font-size:0.75rem;font-weight:700;letter-spacing:2px;
+  padding:4px 12px;border-radius:20px;display:inline-block;
+}
+.header-right p{font-size:0.72rem;color:var(--muted);margin-top:4px}
+
+/* ===== HERO ===== */
+.hero{
+  background:linear-gradient(180deg,#060e1c 0%,#0a1628 100%);
+  padding:60px 40px 40px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,201,177,0.08),transparent);
+}
+.hero h2{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(2rem,5vw,3.5rem);
+  font-weight:700;letter-spacing:2px;
+  background:linear-gradient(135deg,#fff 30%,var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:12px;
+}
+.hero p{font-size:1.05rem;color:var(--muted);max-width:700px;margin:0 auto 24px}
+.hs2-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.4);
+  color:var(--gold);padding:6px 16px;border-radius:4px;
+  font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:600;letter-spacing:2px;
+}
+.hs2-tag::before{content:'🚄';font-size:1rem}
+
+/* ===== NAV TABS ===== */
+.nav-tabs{
+  display:flex;gap:0;border-bottom:2px solid var(--border);
+  background:#060e1c;padding:0 40px;
+  overflow-x:auto;scrollbar-width:none;position:sticky;top:80px;z-index:90;
+}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.88rem;
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:14px 22px;border:none;background:none;
+  color:var(--muted);cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:all .25s;
+}
+.tab-btn:hover{color:var(--teal)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal)}
+
+/* ===== SECTIONS ===== */
+.section{display:none;padding:40px;max-width:1100px;margin:0 auto;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== CARDS ===== */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:28px;margin-bottom:20px;
+  box-shadow:var(--glow);
+}
+.card h3{
+  font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;
+  color:var(--teal);letter-spacing:1px;margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.card h3 .icon{font-size:1.4rem}
+.card p,.card li{color:#c8d4e0;line-height:1.75;margin-bottom:8px}
+.card ul{padding-left:20px}
+
+/* ===== FORMULA BOX ===== */
+.formula{
+  background:rgba(0,201,177,0.06);border-left:3px solid var(--teal);
+  padding:14px 20px;border-radius:0 8px 8px 0;
+  font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+  color:var(--teal);margin:14px 0;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar{
+  background:rgba(255,255,255,0.06);border-radius:4px;height:8px;
+  margin:8px 0;overflow:hidden;
+}
+.progress-fill{height:100%;border-radius:4px;transition:width 1.2s ease;background:linear-gradient(90deg,var(--teal),var(--blue))}
+
+/* ===== HS2 HIGHLIGHT ===== */
+.hs2-box{
+  background:linear-gradient(135deg,rgba(245,166,35,0.06),rgba(245,166,35,0.02));
+  border:1px solid rgba(245,166,35,0.3);border-radius:8px;
+  padding:20px 24px;margin:20px 0;
+}
+.hs2-box h4{color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1px;margin-bottom:8px}
+
+/* ===== BUTTONS ===== */
+.btn{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.9rem;
+  letter-spacing:1.5px;text-transform:uppercase;padding:11px 24px;
+  border:none;border-radius:5px;cursor:pointer;transition:all .2s;display:inline-block;
+}
+.btn-primary{background:linear-gradient(135deg,var(--teal),#009e8e);color:#060e1c}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,201,177,0.3)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#e09010);color:#060e1c}
+.btn-outline{background:none;border:1px solid var(--teal);color:var(--teal)}
+.btn-outline:hover{background:rgba(0,201,177,0.1)}
+.btn-red{background:linear-gradient(135deg,var(--red),#c0392b);color:#fff}
+
+/* ===== GRID ===== */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ===== CANVAS SIM ===== */
+canvas{border-radius:8px;display:block;width:100%}
+
+/* ===== QUIZ ===== */
+.quiz-q{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:24px;margin-bottom:16px;
+}
+.quiz-q p.question{
+  font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;
+  color:#fff;margin-bottom:16px;
+}
+.quiz-options{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{
+  padding:11px 16px;border-radius:5px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.03);
+  cursor:pointer;color:#c8d4e0;transition:all .2s;
+  font-size:0.95rem;
+}
+.quiz-opt:hover{border-color:var(--teal);color:#fff;background:rgba(0,201,177,0.06)}
+.quiz-opt.correct{border-color:var(--green);background:rgba(46,204,113,0.12);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(232,64,64,0.12);color:var(--red)}
+.quiz-opt.disabled{cursor:not-allowed;pointer-events:none}
+.feedback{margin-top:10px;font-size:0.9rem;padding:8px 12px;border-radius:4px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(46,204,113,0.1);color:var(--green);border-left:3px solid var(--green)}
+.feedback.bad{background:rgba(232,64,64,0.1);color:var(--red);border-left:3px solid var(--red)}
+
+/* ===== ANSWER BOX ===== */
+.answer-box-wrap{margin-top:10px}
+.answer-box-wrap textarea{
+  width:100%;background:rgba(10,22,40,0.8);
+  border:1px solid rgba(0,201,177,0.3);
+  color:#e8edf5;border-radius:5px;padding:12px;
+  font-family:'Source Sans 3',sans-serif;font-size:0.93rem;resize:vertical;min-height:80px;
+  -webkit-user-select:text;user-select:text;
+}
+.answer-box-wrap textarea:focus{outline:none;border-color:var(--teal)}
+.answer-box-wrap textarea::placeholder{color:var(--muted)}
+.reveal-btn{margin-top:6px}
+
+/* ===== DRAG DROP ===== */
+.drag-zone{
+  min-height:60px;border:2px dashed var(--border);
+  border-radius:6px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;
+  transition:border-color .2s;
+}
+.drag-zone.over{border-color:var(--teal);background:rgba(0,201,177,0.05)}
+.drag-item{
+  padding:8px 14px;border-radius:4px;cursor:grab;
+  background:rgba(0,201,177,0.1);border:1px solid rgba(0,201,177,0.3);
+  color:var(--teal);font-size:0.88rem;font-family:'JetBrains Mono',monospace;
+  transition:all .2s;user-select:none;
+}
+.drag-item:active{cursor:grabbing;transform:scale(1.05)}
+
+/* ===== MATCHING ===== */
+.match-pair{display:flex;gap:16px;align-items:center;margin-bottom:10px}
+.match-left{flex:1;padding:10px 14px;background:rgba(0,201,177,0.06);border:1px solid var(--border);border-radius:5px;font-size:0.9rem}
+.match-right select{
+  flex:1;background:#0a1628;border:1px solid var(--border);
+  color:var(--text);border-radius:5px;padding:9px 12px;cursor:pointer;font-size:0.9rem;
+  -webkit-user-select:text;user-select:text;
+}
+.match-result{margin-top:4px;font-size:0.82rem;display:none}
+.match-result.show{display:block}
+
+/* ===== SCORE BADGE ===== */
+.score-display{
+  text-align:center;padding:24px;
+  background:linear-gradient(135deg,rgba(0,201,177,0.1),rgba(52,152,219,0.08));
+  border:1px solid var(--teal);border-radius:8px;margin-top:20px;
+}
+.score-display .big-score{
+  font-family:'Rajdhani',sans-serif;font-size:3.5rem;font-weight:700;color:var(--teal);
+}
+
+/* ===== TIMELINE ===== */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--teal);opacity:.3}
+.tl-item{position:relative;margin-bottom:24px;padding-left:20px}
+.tl-item::before{
+  content:'';position:absolute;left:-20px;top:6px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--teal);border:2px solid #060e1c;
+}
+
+/* ===== GAME: SPEED SORT ===== */
+.speed-item{
+  padding:10px 16px;border-radius:5px;background:rgba(0,201,177,0.08);
+  border:1px solid rgba(0,201,177,0.2);color:var(--text);
+  cursor:pointer;transition:all .15s;font-size:0.9rem;
+}
+.speed-item:hover{background:rgba(0,201,177,0.18);border-color:var(--teal)}
+.speed-item.selected{background:rgba(245,166,35,0.2);border-color:var(--gold);color:var(--gold)}
+.speed-item.placed{opacity:.4;pointer-events:none}
+
+/* ===== ANIMATED STRESS STRAIN CANVAS ===== */
+.sim-controls{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.sim-controls label{font-size:0.85rem;color:var(--muted)}
+.sim-controls input[type=range]{accent-color:var(--teal);width:130px}
+.sim-controls select{
+  background:#0a1628;border:1px solid var(--border);color:var(--text);
+  padding:7px 12px;border-radius:5px;font-size:0.87rem;
+}
+
+/* ===== WORD FILL ===== */
+.fill-blank input{
+  background:none;border-bottom:2px solid var(--teal);
+  border-top:none;border-left:none;border-right:none;
+  color:var(--teal);font-size:1rem;width:120px;text-align:center;
+  font-family:'JetBrains Mono',monospace;padding:2px 4px;
+  -webkit-user-select:text;user-select:text;
+}
+.fill-blank input:focus{outline:none;border-bottom-color:var(--gold)}
+
+/* ===== CRACK GAME ===== */
+#crackCanvas{cursor:crosshair}
+
+/* ===== WORD BANK ===== */
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;padding:16px;background:rgba(0,0,0,0.2);border-radius:6px;margin-bottom:16px}
+.word-chip{
+  padding:6px 14px;border-radius:20px;background:rgba(245,166,35,0.12);
+  border:1px solid rgba(245,166,35,0.3);color:var(--gold);
+  font-size:0.84rem;cursor:pointer;transition:all .2s;
+}
+.word-chip:hover{background:rgba(245,166,35,0.25)}
+.word-chip.used{opacity:.3;pointer-events:none}
+
+/* ===== NOTIFICATION ===== */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--navy2);border:1px solid var(--teal);
+  color:#fff;padding:12px 20px;border-radius:6px;
+  font-family:'Rajdhani',sans-serif;font-size:0.95rem;font-weight:600;letter-spacing:1px;
+  transform:translateX(200px);opacity:0;transition:all .3s;pointer-events:none;
+}
+.toast.show{transform:translateX(0);opacity:1}
+
+/* ===== LEADERBOARD ===== */
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:5px;margin-bottom:6px;background:var(--card)}
+.lb-rank{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--teal);width:32px}
+
+/* ===== MATERIAL PROPERTY TABLE ===== */
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th{background:rgba(0,201,177,0.1);color:var(--teal);font-family:'Rajdhani',sans-serif;font-size:0.9rem;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:2px solid var(--teal)}
+td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05);color:#c8d4e0;font-size:0.9rem}
+tr:hover td{background:rgba(0,201,177,0.04)}
+
+/* ===== GLOSSARY ===== */
+.gloss-term{
+  border:1px solid var(--border);border-radius:6px;
+  margin-bottom:8px;overflow:hidden;
+}
+.gloss-header{
+  padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  background:var(--card);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;color:var(--teal);
+  transition:background .2s;
+}
+.gloss-header:hover{background:rgba(0,201,177,0.07)}
+.gloss-body{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s}
+.gloss-body.open{max-height:300px;padding:12px 16px}
+.gloss-body p{color:#c8d4e0;font-size:0.93rem}
+
+/* ===== ANIMATED NUMBER ===== */
+.animated-num{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--teal)}
+
+/* scroll margin */
+[id]{scroll-margin-top:80px}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-block">
+    <h1>EG4022 Engineering Materials</h1>
+    <p>University of East London | Malvern University Partnerships</p>
+  </div>
+  <div class="header-right">
+    <div class="badge">INTERACTIVE LEARNING HUB</div>
+    <p>Lecturer: Vismay Loliyaniya | Module Lead</p>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <h2>Tensile Strength &amp; Fracture Behaviour</h2>
+  <p>Understand how materials behave under load, yield, fracture, and fatigue — and why these properties are critical to HS2 Phase One's structural integrity.</p>
+  <span class="hs2-tag">HS2 Phase One — Core Assessment Context</span>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('theory')">📘 Theory</button>
+  <button class="tab-btn" onclick="showTab('simulator')">⚙️ Simulators</button>
+  <button class="tab-btn" onclick="showTab('games')">🎮 Games</button>
+  <button class="tab-btn" onclick="showTab('hs2')">🚄 HS2 Research</button>
+  <button class="tab-btn" onclick="showTab('quiz')">📝 Quiz</button>
+  <button class="tab-btn" onclick="showTab('glossary')">📖 Glossary</button>
+</div>
+
+<!-- ======================================================= -->
+<!-- THEORY TAB -->
+<!-- ======================================================= -->
+<div class="section active" id="theory">
+
+  <!-- LECTURE PROGRESS INDICATOR -->
+  <div style="background:rgba(0,201,177,0.06);border:1px solid var(--border);border-radius:8px;padding:16px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <p style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--teal);letter-spacing:2px">📚 LECTURE CONTENT — 2 HOURS</p>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:2px">12 topics · Use the section headers to navigate · HS2 context woven throughout</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span style="padding:3px 10px;background:rgba(0,201,177,0.12);border:1px solid rgba(0,201,177,0.3);border-radius:3px;font-size:0.75rem;color:var(--teal);font-family:'Rajdhani',sans-serif;letter-spacing:1px">PART A: TENSILE BEHAVIOUR</span>
+      <span style="padding:3px 10px;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.3);border-radius:3px;font-size:0.75rem;color:var(--gold);font-family:'Rajdhani',sans-serif;letter-spacing:1px">PART B: FRACTURE MECHANICS</span>
+      <span style="padding:3px 10px;background:rgba(232,64,64,0.12);border:1px solid rgba(232,64,64,0.3);border-radius:3px;font-size:0.75rem;color:var(--red);font-family:'Rajdhani',sans-serif;letter-spacing:1px">PART C: FATIGUE & FAILURE</span>
+    </div>
+  </div>
+
+  <!-- Learning Objectives -->
+  <div class="card">
+    <h3><span class="icon">🎯</span> Learning Objectives</h3>
+    <p style="margin-bottom:14px">By the end of this session you should be able to:</p>
+    <div class="grid-2">
+      <ul style="padding-left:18px">
+        <li style="margin-bottom:6px">Define engineering stress and strain and apply their formulae correctly</li>
+        <li style="margin-bottom:6px">Interpret all regions of a stress–strain curve for both ductile and brittle materials</li>
+        <li style="margin-bottom:6px">Distinguish between elastic and plastic deformation at the atomic scale</li>
+        <li style="margin-bottom:6px">Explain yield strength, UTS, proof stress, and ductility with correct units</li>
+        <li style="margin-bottom:6px">Describe the mechanisms of ductile and brittle fracture</li>
+        <li style="margin-bottom:6px">Understand the Griffith crack theory and its engineering significance</li>
+      </ul>
+      <ul style="padding-left:18px">
+        <li style="margin-bottom:6px">Apply the stress intensity factor K and fracture toughness K<sub>IC</sub> to crack problems</li>
+        <li style="margin-bottom:6px">Explain fatigue mechanisms, S-N curves, and the fatigue limit concept</li>
+        <li style="margin-bottom:6px">Use Paris Law to describe crack growth under cyclic loading</li>
+        <li style="margin-bottom:6px">Recognise the role of the Charpy impact test in material selection</li>
+        <li style="margin-bottom:6px">Connect all concepts to HS2 Phase One material specifications</li>
+        <li style="margin-bottom:6px">Critically evaluate material selection decisions using mechanical property data</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ PART A BANNER ============ -->
+  <div style="background:linear-gradient(135deg,rgba(0,201,177,0.12),rgba(0,201,177,0.04));border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:14px 20px;margin:24px 0 12px">
+    <p style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--teal);letter-spacing:2px">PART A — TENSILE BEHAVIOUR</p>
+    <p style="font-size:0.85rem;color:var(--muted)">Topics 1–5 · Approximately 50 minutes</p>
+  </div>
+
+  <!-- TOPIC 1: What is a Tensile Test -->
+  <div class="card">
+    <h3><span class="icon">🧪</span> Topic 1 — The Tensile Test</h3>
+    <p>The tensile test (or uniaxial tension test) is the most fundamental mechanical test in engineering. A standardised specimen is gripped at both ends and pulled apart at a controlled rate while a load cell measures the applied force and an extensometer measures elongation.</p>
+    <div class="grid-2" style="margin-top:16px">
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:16px">
+        <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin-bottom:10px">Standard Specimen Geometry</h4>
+        <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+          <li style="margin-bottom:5px"><strong style="color:#fff">Gauge length (L₀):</strong> the measured portion, typically 50 mm or 80 mm (BS EN ISO 6892-1)</li>
+          <li style="margin-bottom:5px"><strong style="color:#fff">Parallel length:</strong> uniform cross-section where deformation occurs</li>
+          <li style="margin-bottom:5px"><strong style="color:#fff">Grip ends:</strong> wider, threaded or shouldered to prevent grip failure</li>
+          <li style="margin-bottom:5px"><strong style="color:#fff">Cross-section:</strong> circular (round bar) or rectangular (flat plate)</li>
+          <li><strong style="color:#fff">Standard:</strong> BS EN ISO 6892-1 (metals) at room temperature</li>
+        </ul>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:16px">
+        <h4 style="color:var(--gold);font-family:'Rajdhani',sans-serif;margin-bottom:10px">What the Test Measures</h4>
+        <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+          <li style="margin-bottom:5px">Force vs. extension — converted to stress vs. strain</li>
+          <li style="margin-bottom:5px">Elastic modulus (slope of elastic region)</li>
+          <li style="margin-bottom:5px">Yield strength (onset of plastic deformation)</li>
+          <li style="margin-bottom:5px">Ultimate tensile strength (maximum load ÷ original area)</li>
+          <li style="margin-bottom:5px">% Elongation at fracture (ductility measure)</li>
+          <li>% Reduction in area (another ductility measure)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hs2-box" style="margin-top:16px">
+      <h4>🚄 HS2 Quality Control</h4>
+      <p>Every batch of S355 steel delivered to HS2 construction sites (e.g. the Colne Valley Viaduct steelwork) requires tensile test certificates conforming to EN 10025-2. Test pieces are taken from each cast of steel and must demonstrate yield strength ≥355 MPa, UTS 470–630 MPa, and elongation ≥22% at fracture. Failure to meet these values triggers batch rejection.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 2: Stress and Strain Definitions -->
+  <div class="card">
+    <h3><span class="icon">📐</span> Topic 2 — Stress, Strain and Hooke's Law</h3>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:14px 0 8px">2.1 Engineering Stress (σ)</h4>
+    <p>Engineering stress is defined as the applied force divided by the <em>original</em> cross-sectional area. It is a nominal stress — it does not account for the change in cross-section during loading.</p>
+    <div class="formula">σ = F / A₀</div>
+    <p style="font-size:0.85rem;color:var(--muted)">F = applied tensile force (N) · A₀ = original cross-sectional area (m²) · Units: N/m² = Pa, or more commonly MPa (N/mm²)</p>
+    <div style="background:rgba(0,201,177,0.04);border-radius:6px;padding:14px;margin-top:10px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:#fff">Worked Example:</strong> A steel rod of diameter 20 mm carries a tensile load of 90 kN. Calculate the engineering stress.</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.88rem;color:var(--teal);margin-top:8px">A₀ = π(0.020)²/4 = 3.14 × 10⁻⁴ m²<br>σ = 90,000 / 3.14 × 10⁻⁴ = <strong>286.6 MPa</strong></p>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">2.2 Engineering Strain (ε)</h4>
+    <p>Engineering strain is the ratio of the change in gauge length to the original gauge length. It is dimensionless and often expressed as a percentage.</p>
+    <div class="formula">ε = ΔL / L₀ = (L − L₀) / L₀</div>
+    <p style="font-size:0.85rem;color:var(--muted)">ΔL = extension (mm or m) · L₀ = original gauge length · Dimensionless, or expressed as %</p>
+    <div style="background:rgba(0,201,177,0.04);border-radius:6px;padding:14px;margin-top:10px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:#fff">Worked Example:</strong> A 50 mm gauge length specimen extends by 0.15 mm under elastic loading. Calculate the strain.</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.88rem;color:var(--teal);margin-top:8px">ε = 0.15 / 50 = 0.003 = <strong>0.3%</strong></p>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">2.3 Hooke's Law and Young's Modulus</h4>
+    <p>Within the elastic region, stress and strain are proportional. This linear relationship is Hooke's Law, and the proportionality constant is Young's Modulus (E) — a fundamental measure of material stiffness.</p>
+    <div class="formula">σ = E · ε &nbsp;&nbsp; ∴ &nbsp;&nbsp; E = σ / ε</div>
+    <p style="font-size:0.85rem;color:var(--muted)">Units of E: GPa (gigapascals) = 10⁹ Pa</p>
+    <div class="grid-3" style="margin-top:14px">
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px;text-align:center">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--teal)">210 GPa</div>
+        <p style="font-size:0.82rem;color:var(--muted)">Structural steel (S355)</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px;text-align:center">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--gold)">68 GPa</div>
+        <p style="font-size:0.82rem;color:var(--muted)">Aluminium alloy 6061</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px;text-align:center">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:#9b59b6">35 GPa</div>
+        <p style="font-size:0.82rem;color:var(--muted)">C40 concrete</p>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">2.4 True Stress vs Engineering Stress</h4>
+    <p>Engineering stress uses the original area A₀. True stress uses the instantaneous area A, which decreases as the specimen elongates. The difference becomes important after necking begins:</p>
+    <div class="grid-2">
+      <div class="formula" style="font-size:0.9rem">Engineering: σ<sub>eng</sub> = F / A₀</div>
+      <div class="formula" style="font-size:0.9rem">True: σ<sub>true</sub> = F / A<sub>instantaneous</sub></div>
+    </div>
+    <p style="margin-top:10px;color:#c8d4e0;font-size:0.9rem">After necking, engineering stress appears to drop (because A₀ is fixed) while true stress continues to rise until fracture. For structural design we use engineering stress since components are designed not to neck.</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">2.5 Poisson's Ratio (ν)</h4>
+    <p>When a material is stretched longitudinally, it contracts laterally. The ratio of lateral strain to longitudinal strain is Poisson's ratio — a key constant in structural analysis:</p>
+    <div class="formula">ν = −ε<sub>lateral</sub> / ε<sub>longitudinal</sub></div>
+    <p style="font-size:0.85rem;color:var(--muted)">Typical values: steel ν ≈ 0.30 · aluminium ν ≈ 0.33 · concrete ν ≈ 0.20 · rubber ν ≈ 0.50</p>
+    <div class="hs2-box">
+      <h4>🚄 HS2 Stiffness Design</h4>
+      <p>Young's Modulus governs deflection under service loads. HS2 viaduct beams (E = 210 GPa) must limit mid-span deflection to L/800 under train loading to prevent passenger discomfort and maintain OLE (overhead line equipment) geometry. A lower-E material like aluminium (E = 68 GPa) would require three times the cross-sectional area to achieve equivalent stiffness.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 3: Stress-Strain Curve In Depth -->
+  <div class="card">
+    <h3><span class="icon">📈</span> Topic 3 — The Stress–Strain Curve in Depth</h3>
+    <p>The stress–strain curve is the complete mechanical fingerprint of a material. It encodes stiffness, strength, toughness, and ductility in a single diagram. Understanding every region is essential for structural design.</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Region 1 — Proportional Limit</h4>
+    <p>The initial straight-line portion where stress is exactly proportional to strain (Hooke's Law). The slope of this line is Young's Modulus. All deformation here is fully elastic — removing the load returns the specimen to its original dimensions with zero permanent change. At the atomic scale, interatomic bond lengths are stretching reversibly — no bonds are broken.</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Region 2 — Elastic Limit</h4>
+    <p>Slightly beyond the proportional limit, stress and strain are no longer strictly proportional but deformation is still elastic. In practice for most metals the elastic limit and proportional limit are very close and often treated as the same point.</p>
+
+    <h4 style="color:var(--gold);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Region 3 — Yield Point (Upper and Lower)</h4>
+    <p>In low-carbon (mild) structural steels — including S355 used in HS2 — there is a distinct <strong style="color:#fff">upper yield point</strong> followed by a sudden drop to the <strong style="color:#fff">lower yield point</strong>. This drop occurs because dislocations (line defects in the crystal lattice) are suddenly released from their carbon atom "pins" and begin to move freely through the crystal.</p>
+    <div style="background:rgba(245,166,35,0.06);border-radius:6px;padding:14px;margin-top:10px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:var(--gold)">Why does the yield drop occur?</strong> Carbon and nitrogen atoms in mild steel cluster around dislocations (Cottrell atmospheres), locking them in place. The upper yield point is the stress required to unpin these dislocations. Once free, they glide easily — causing the sudden load drop to the lower yield point. This is unique to low-carbon steels and is why S355 has such a well-defined design yield strength of exactly 355 MPa.</p>
+    </div>
+    <p style="margin-top:10px;color:#c8d4e0">For materials without a clear yield point (e.g. aluminium alloys, high-strength steels), a <strong style="color:#fff">0.2% proof stress</strong> is used — the stress that causes 0.2% permanent strain, determined by drawing a line parallel to the elastic slope offset by 0.2% strain.</p>
+    <div class="formula" style="font-size:0.9rem">0.2% Proof Stress: offset strain = 0.002 → draw parallel line → intersection with curve</div>
+
+    <h4 style="color:#9b59b6;font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Region 4 — Strain Hardening (Work Hardening)</h4>
+    <p>After yielding, continued plastic deformation requires increasing stress. This is strain hardening (also called work hardening). As dislocations move through the crystal lattice, they encounter grain boundaries, other dislocations, and precipitates — becoming tangled and unable to move freely. The material becomes progressively stronger and harder.</p>
+    <ul style="padding-left:18px;margin-top:8px;color:#c8d4e0;font-size:0.9rem">
+      <li style="margin-bottom:5px">Dislocation density increases from ~10⁶ cm⁻² (annealed) to ~10¹² cm⁻² (heavily cold-worked)</li>
+      <li style="margin-bottom:5px">The flow stress σ increases approximately as: <span style="font-family:'JetBrains Mono',monospace;color:var(--teal)">σ = σ₀ + kε<sup>n</sup></span> (power-law hardening)</li>
+      <li>This region ends at the ultimate tensile strength (UTS)</li>
+    </ul>
+
+    <h4 style="color:#e67e22;font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Region 5 — Necking (UTS to Fracture)</h4>
+    <p>At the UTS, localised deformation (necking) begins at the weakest cross-section. The engineering stress now falls because the cross-sectional area is reducing rapidly — even though the true stress is still rising. Necking signals imminent failure. The engineering stress at fracture is called the <strong style="color:#fff">fracture stress</strong>, which is lower than the UTS on an engineering curve.</p>
+
+    <h4 style="color:var(--red);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Region 6 — Fracture</h4>
+    <p>Final separation of the specimen. In ductile materials this produces a characteristic cup-and-cone fracture surface. The elongation at fracture and reduction in area are measured and reported as ductility values.</p>
+    <div class="formula">% Elongation = [(L<sub>f</sub> − L₀) / L₀] × 100%</div>
+    <div class="formula">% Reduction in Area = [(A₀ − A<sub>f</sub>) / A₀] × 100%</div>
+
+    <div class="hs2-box">
+      <h4>🚄 Design Significance for HS2</h4>
+      <p>Structural design to Eurocodes uses the <strong>characteristic yield strength</strong> (f<sub>yk</sub>) as the fundamental design parameter. For S355 steel, f<sub>yk</sub> = 355 MPa for t ≤ 16 mm, reducing to 335 MPa for 16 mm &lt; t ≤ 40 mm (EN 10025-2). Safety factors (γ<sub>M0</sub> = 1.0 for yielding; γ<sub>M2</sub> = 1.25 for net section fracture) are then applied in Eurocode 3 calculations. The design yield strength used in calculations is f<sub>yd</sub> = f<sub>yk</sub> / γ<sub>M0</sub> = 355 / 1.0 = 355 MPa.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 4: Elastic and Plastic Deformation at the Atomic Scale -->
+  <div class="card">
+    <h3><span class="icon">⚛️</span> Topic 4 — Deformation at the Atomic Scale</h3>
+    <p>Understanding why materials deform the way they do requires looking at what happens to atoms and crystal structure during loading.</p>
+
+    <div class="grid-2" style="margin-top:14px">
+      <div>
+        <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin-bottom:10px">Elastic Deformation — Bond Stretching</h4>
+        <p style="font-size:0.9rem;color:#c8d4e0">In the elastic region, atoms are pulled slightly apart from their equilibrium positions. The interatomic forces act like springs — when the load is removed, atoms return to equilibrium. No bonds are broken, no atoms move permanently. This is why Young's Modulus is a material constant that depends only on the interatomic bond type (e.g. metallic, covalent, ionic) — not on heat treatment or microstructure.</p>
+        <ul style="padding-left:16px;margin-top:8px;color:#c8d4e0;font-size:0.88rem">
+          <li style="margin-bottom:4px">Covalent bonds (diamond): extremely stiff → very high E</li>
+          <li style="margin-bottom:4px">Metallic bonds (steel): moderately stiff → E ≈ 200 GPa</li>
+          <li>van der Waals (polymers): very flexible → E ≈ 1–3 GPa</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--gold);font-family:'Rajdhani',sans-serif;margin-bottom:10px">Plastic Deformation — Dislocation Motion</h4>
+        <p style="font-size:0.9rem;color:#c8d4e0">Plastic deformation in metals occurs through the movement of <strong style="color:#fff">dislocations</strong> — line defects in the crystal lattice. Dislocations allow slip to occur at stresses far below the theoretical strength of a perfect crystal. The theoretical shear strength of iron is ~32 GPa, but its actual yield stress is ~200 MPa — 160 times lower — because dislocations provide an easy path for atomic movement.</p>
+        <ul style="padding-left:16px;margin-top:8px;color:#c8d4e0;font-size:0.88rem">
+          <li style="margin-bottom:4px">Edge dislocations: extra half-plane of atoms</li>
+          <li style="margin-bottom:4px">Screw dislocations: helical distortion of lattice</li>
+          <li>Slip occurs on close-packed planes in close-packed directions (slip systems)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Strengthening Mechanisms</h4>
+    <p>Engineers can increase yield strength by making dislocation movement more difficult. Four main mechanisms are used:</p>
+    <div class="grid-2" style="margin-top:10px">
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--teal);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">① Solid Solution Strengthening</p>
+        <p style="font-size:0.88rem;color:#c8d4e0">Foreign atoms (e.g. carbon in steel, copper in aluminium) distort the lattice and impede dislocation movement. Manganese in S355 steel contributes to its 355 MPa yield strength.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">② Work Hardening</p>
+        <p style="font-size:0.88rem;color:#c8d4e0">Increasing dislocation density through cold working. Each dislocation impedes others. Cold-drawn rebar (B500B) achieves 500 MPa yield through controlled cold work during wire drawing.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px">
+        <p style="color:#9b59b6;font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">③ Grain Boundary Strengthening</p>
+        <p style="font-size:0.88rem;color:#c8d4e0">Smaller grains = more grain boundaries = more obstacles for dislocations. The Hall-Petch equation: σ<sub>y</sub> = σ₀ + k·d<sup>-½</sup> where d = grain diameter. Normalised (fine-grained) steels are stronger than coarse-grained equivalents.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px">
+        <p style="color:#e67e22;font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">④ Precipitation Hardening</p>
+        <p style="font-size:0.88rem;color:#c8d4e0">Fine particles (precipitates) block dislocation movement. Used in high-strength aluminium alloys (7075-T6 achieves 503 MPa UTS). Not commonly used in structural steels due to weldability concerns.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC 5: Yield Strength, UTS, Ductility -->
+  <div class="card">
+    <h3><span class="icon">💪</span> Topic 5 — Yield Strength, UTS, and Ductility</h3>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin-bottom:10px">5.1 Yield Strength (σ<sub>y</sub> or f<sub>yk</sub>)</h4>
+    <p>The yield strength is the most critical design parameter for structural components loaded in tension or bending. It defines the boundary between safe elastic service behaviour and unacceptable permanent deformation.</p>
+    <table style="margin-top:12px">
+      <tr><th>Steel Grade</th><th>Yield Strength</th><th>UTS</th><th>Typical HS2 Application</th></tr>
+      <tr><td>S275</td><td>275 MPa</td><td>430–580 MPa</td><td>Secondary steelwork, handrails</td></tr>
+      <tr><td>S355</td><td>355 MPa</td><td>470–630 MPa</td><td>Primary viaduct structure, portal frames</td></tr>
+      <tr><td>S460</td><td>460 MPa</td><td>550–720 MPa</td><td>High-load pin connections, splice plates</td></tr>
+      <tr><td>Grade 900A Rail</td><td>≥680 MPa</td><td>≥900 MPa</td><td>High-speed rail track</td></tr>
+      <tr><td>B500B Rebar</td><td>500 MPa</td><td>≥540 MPa</td><td>Reinforced concrete elements</td></tr>
+    </table>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">5.2 Ultimate Tensile Strength (UTS)</h4>
+    <p>The UTS is the maximum engineering stress the material can sustain. It corresponds to the maximum load on the load-extension curve divided by the original cross-sectional area. Beyond this point, necking begins. The UTS is used in fracture-based failure criteria and in determining safety margins.</p>
+    <div style="background:rgba(0,201,177,0.04);border-radius:6px;padding:12px;margin-top:10px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:#fff">Design Note:</strong> Structural connections (bolts, welds) are often designed to the net section fracture limit, which is based on UTS (with γ<sub>M2</sub> = 1.25) rather than yield (γ<sub>M0</sub> = 1.0). This larger safety factor on fracture reflects its catastrophic, unwarned nature compared to ductile yielding.</p>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">5.3 Ductility</h4>
+    <p>Ductility is the ability to undergo substantial plastic deformation before fracture. It is critical for structural safety because it provides:</p>
+    <ul style="padding-left:18px;margin-top:8px;color:#c8d4e0">
+      <li style="margin-bottom:6px"><strong style="color:#fff">Warning:</strong> visible deformation warns of overloading before collapse</li>
+      <li style="margin-bottom:6px"><strong style="color:#fff">Redistribution:</strong> plastic hinges allow moment redistribution in statically indeterminate structures</li>
+      <li style="margin-bottom:6px"><strong style="color:#fff">Energy absorption:</strong> ductile structures absorb seismic and impact energy through plastic deformation (crash zones in vehicles)</li>
+      <li><strong style="color:#fff">Robustness:</strong> prevents progressive collapse if one element fails (Eurocodes require minimum ductility class)</li>
+    </ul>
+    <div class="grid-2" style="margin-top:14px">
+      <div style="background:rgba(46,204,113,0.06);border:1px solid rgba(46,204,113,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">High Ductility Materials</p>
+        <ul style="padding-left:14px;color:#c8d4e0;font-size:0.88rem">
+          <li>Mild steel S275: ~28% elongation</li>
+          <li>S355 structural steel: ≥22% elongation</li>
+          <li>B500B rebar: ≥5% elongation (ductility class B)</li>
+          <li>6061-T6 aluminium: ~17% elongation</li>
+        </ul>
+      </div>
+      <div style="background:rgba(232,64,64,0.06);border:1px solid rgba(232,64,64,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--red);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">Low Ductility (Brittle) Materials</p>
+        <ul style="padding-left:14px;color:#c8d4e0;font-size:0.88rem">
+          <li>Cast iron: ~0.5% elongation</li>
+          <li>Glass: ~0% elongation</li>
+          <li>Plain concrete: ~0.01% strain at fracture</li>
+          <li>Ceramics: typically &lt;1% strain</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hs2-box" style="margin-top:16px">
+      <h4>🚄 HS2 Ductility Requirements</h4>
+      <p>Eurocode 8 (seismic design) and Eurocode 3 require structural steel to meet minimum ductility requirements. For HS2 connections, ductility class S355 J2 is specified — the J2 suffix meaning the steel must achieve a minimum Charpy impact value of 27 J at −20°C, ensuring ductile fracture behaviour even in winter service conditions. Rebar used in HS2 tunnel linings must meet ductility class B (B500B) to ensure ductile reinforced concrete failure modes, giving occupants time to evacuate in any seismic or overload event.</p>
+    </div>
+  </div>
+
+  <!-- ============ PART B BANNER ============ -->
+  <div style="background:linear-gradient(135deg,rgba(245,166,35,0.12),rgba(245,166,35,0.04));border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:14px 20px;margin:28px 0 12px">
+    <p style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:2px">PART B — FRACTURE MECHANICS</p>
+    <p style="font-size:0.85rem;color:var(--muted)">Topics 6–9 · Approximately 40 minutes</p>
+  </div>
+
+  <!-- TOPIC 6: Fracture Modes -->
+  <div class="card">
+    <h3><span class="icon">🔩</span> Topic 6 — Fracture: Ductile vs Brittle</h3>
+
+    <h4 style="color:var(--green);font-family:'Rajdhani',sans-serif;margin-bottom:10px">6.1 Ductile Fracture — Mechanisms</h4>
+    <p>Ductile fracture progresses slowly through three stages:</p>
+    <div class="timeline" style="margin-top:12px">
+      <div class="tl-item">
+        <strong style="color:var(--teal)">Stage 1 — Void Nucleation</strong>
+        <p style="font-size:0.9rem">After the UTS, stress concentrations at inclusions, second-phase particles, and grain boundary triple junctions cause tiny voids to nucleate (typically at MnS or Fe₃C particles in steel).</p>
+      </div>
+      <div class="tl-item">
+        <strong style="color:var(--gold)">Stage 2 — Void Growth</strong>
+        <p style="font-size:0.9rem">Under continued loading, voids grow as the surrounding material deforms plastically. The rate of void growth depends on stress triaxiality — higher triaxiality (as in a thick specimen) accelerates growth.</p>
+      </div>
+      <div class="tl-item">
+        <strong style="color:var(--red)">Stage 3 — Void Coalescence and Fracture</strong>
+        <p style="font-size:0.9rem">Adjacent voids link up (coalescence) to form the fracture surface. The flat central region (fibrous zone) forms by void coalescence; the outer shear lip (conical part of the cup-and-cone) forms by shear stress. Final fracture is typically at 45° to the tensile axis.</p>
+      </div>
+    </div>
+
+    <h4 style="color:var(--red);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">6.2 Brittle Fracture — Mechanisms</h4>
+    <p>Brittle fracture occurs with negligible plastic deformation. It propagates by cleavage — the breaking of atomic bonds along specific crystallographic planes (the cleavage planes, typically the {100} planes in BCC metals like iron).</p>
+    <div class="grid-2" style="margin-top:12px">
+      <div>
+        <h4 style="color:var(--muted);font-family:'Rajdhani',sans-serif;margin-bottom:8px;font-size:0.9rem">KEY FEATURES</h4>
+        <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+          <li style="margin-bottom:5px">Crack propagates at very high speed (≈ 2000 m/s, ~40% of speed of sound in steel)</li>
+          <li style="margin-bottom:5px">No necking, no warning, sudden catastrophic failure</li>
+          <li style="margin-bottom:5px">Flat, reflective, crystalline fracture surface ("chevron" or "herringbone" markings point to origin)</li>
+          <li style="margin-bottom:5px">Promoted by: low temperature, high strain rate (impact), thick sections, stress concentrations, high-strength steels</li>
+          <li>BCC metals (iron, steel) can undergo ductile-to-brittle transition (DBT); FCC metals (aluminium, copper) do not</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--muted);font-family:'Rajdhani',sans-serif;margin-bottom:8px;font-size:0.9rem">HISTORICAL EXAMPLES</h4>
+        <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+          <li style="margin-bottom:5px"><strong style="color:#fff">Liberty Ships (1940s):</strong> brittle fracture of hull welds in cold North Atlantic waters caused catastrophic structural failures — up to 3 ships broke in two</li>
+          <li style="margin-bottom:5px"><strong style="color:#fff">Aloha Airlines 737 (1988):</strong> fatigue crack growth led to brittle separation of upper fuselage</li>
+          <li style="margin-bottom:5px"><strong style="color:#fff">King's Bridge, Melbourne (1962):</strong> brittle fracture due to notch sensitivity in high-constraint weld zones</li>
+          <li><strong style="color:#fff">HS2 Prevention:</strong> all critical steelwork tested to EN 10025 J2 sub-grade (27 J at −20°C)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">6.3 Ductile-to-Brittle Transition (DBT)</h4>
+    <p>BCC metals (including structural steel) can behave in a ductile manner at room temperature but transition to brittle behaviour at lower temperatures. The temperature at which this transition occurs is called the <strong style="color:#fff">DBTT (Ductile-to-Brittle Transition Temperature)</strong>.</p>
+    <div style="background:rgba(0,201,177,0.04);border-radius:6px;padding:14px;margin-top:10px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:#fff">The Charpy Impact Test</strong> measures the energy absorbed (in Joules) when a standard notched specimen is fractured by a pendulum hammer. By testing at different temperatures, a transition curve is produced. The DBTT is taken at the temperature giving 27 J absorbed energy (the European Charpy criterion). S355 J2 steel must give ≥27 J at −20°C — well below the minimum UK winter air temperature (typically −15°C).</p>
+    </div>
+    <div class="hs2-box" style="margin-top:14px">
+      <h4>🚄 HS2 Charpy Requirements</h4>
+      <p>HS2 Phase One construction spans from London to Birmingham across varying exposure conditions. Bridge steelwork within the M25 and Chiltern tunnel portal zones is specified as S355 J2+N (normalised, 27 J at −20°C) to guarantee ductile fracture behaviour in all UK service temperatures. The "+N" suffix indicates normalised rolling — a heat treatment producing fine, uniform grain structure that lowers the DBTT and improves weldability.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 7: Griffith Theory -->
+  <div class="card">
+    <h3><span class="icon">🧬</span> Topic 7 — Griffith Crack Theory</h3>
+    <p>In 1921, A.A. Griffith showed that real materials fracture at stresses far below the theoretical atomic bond strength because of pre-existing cracks or flaws. These flaws concentrate stress and provide the energy needed for crack growth.</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:14px 0 8px">7.1 Stress Concentration at a Crack Tip</h4>
+    <p>At the tip of an elliptical crack of half-length <em>a</em> and tip radius ρ, the local stress is magnified above the applied stress σ by the <strong style="color:#fff">stress concentration factor K<sub>t</sub></strong>:</p>
+    <div class="formula">σ<sub>max</sub> = 2σ√(a/ρ)</div>
+    <p style="font-size:0.85rem;color:var(--muted)">A sharp crack has ρ → 0, meaning σ<sub>max</sub> → ∞ theoretically. In reality, plastic deformation at the crack tip blunts it slightly.</p>
+    <div style="background:rgba(245,166,35,0.06);border-radius:6px;padding:14px;margin-top:10px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:var(--gold)">Worked Example:</strong> A plate of glass contains a surface crack of depth a = 0.5 mm with a tip radius ρ = 0.001 mm. If σ = 10 MPa applied:</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.88rem;color:var(--teal);margin-top:8px">σ<sub>max</sub> = 2 × 10 × √(0.5/0.001) = 2 × 10 × 22.4 = <strong>448 MPa</strong> — enough to fracture glass!</p>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">7.2 Griffith Energy Balance</h4>
+    <p>Griffith's energy criterion states that a crack will propagate when the strain energy released by crack growth equals or exceeds the energy required to create new crack surfaces:</p>
+    <div class="formula">σ<sub>f</sub> = √(2Eγ<sub>s</sub> / πa)</div>
+    <p style="font-size:0.85rem;color:var(--muted)">σ<sub>f</sub> = fracture stress · E = Young's Modulus · γ<sub>s</sub> = surface energy per unit area · a = half crack length</p>
+    <p style="margin-top:10px;color:#c8d4e0">This equation shows that <strong style="color:#fff">fracture stress decreases as crack size increases</strong> — a longer crack requires less applied stress to propagate. This is the fundamental reason why Non-Destructive Testing (NDT) — finding cracks before they reach critical size — is central to structural safety management on HS2.</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">7.3 Modification for Metals (Irwin/Orowan)</h4>
+    <p>Griffith's theory was derived for perfectly brittle materials (glass). Irwin and Orowan independently modified it for metals by replacing surface energy γ<sub>s</sub> with the plastic work term G<sub>c</sub> (critical strain energy release rate), which is orders of magnitude larger:</p>
+    <div class="formula">σ<sub>f</sub> = √(EG<sub>c</sub> / πa)</div>
+    <p style="font-size:0.85rem;color:var(--muted)">G<sub>c</sub> = critical strain energy release rate (J/m²) · For steel ≈ 10,000–100,000 J/m² vs glass ≈ 10 J/m²</p>
+    <div class="hs2-box">
+      <h4>🚄 Why NDT is Mandatory on HS2</h4>
+      <p>The Griffith equation shows that a 10 mm crack in S355 steel at 355 MPa applied stress corresponds to K = 1.12 × 355 × √(π × 0.01) = 70.5 MPa√m — approaching the K<sub>IC</sub> of 50–100 MPa√m. All HS2 welds are inspected by ultrasonic testing (UT) and magnetic particle inspection (MPI) to ensure no crack-like flaws exceed the critical length for the design stress state.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 8: Fracture Toughness -->
+  <div class="card">
+    <h3><span class="icon">🔬</span> Topic 8 — Fracture Toughness K<sub>IC</sub></h3>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin-bottom:10px">8.1 The Stress Intensity Factor K</h4>
+    <p>The stress intensity factor K characterises the severity of the stress field at a crack tip. It combines applied stress, crack geometry, and specimen geometry into a single parameter:</p>
+    <div class="formula">K = Yσ√(πa)</div>
+    <p style="font-size:0.85rem;color:var(--muted)">K = stress intensity factor (MPa√m) · Y = dimensionless geometry factor (≈1.0–1.2 for common cases) · σ = applied stress (MPa) · a = crack half-length (m)</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">8.2 The Three Modes of Crack Opening</h4>
+    <div class="grid-3" style="margin-top:10px">
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px;text-align:center">
+        <div style="font-size:2rem;margin-bottom:6px">↕️</div>
+        <p style="color:var(--teal);font-family:'Rajdhani',sans-serif;font-weight:700">Mode I — Opening</p>
+        <p style="font-size:0.85rem;color:#c8d4e0">Crack opens perpendicular to the applied tensile stress. Most common in structural failures. K<sub>IC</sub> is the toughness for Mode I.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px;text-align:center">
+        <div style="font-size:2rem;margin-bottom:6px">↔️</div>
+        <p style="color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700">Mode II — Sliding</p>
+        <p style="font-size:0.85rem;color:#c8d4e0">In-plane shear — crack faces slide parallel to each other in the crack plane. Common in contact fatigue (e.g. rail-wheel contact).</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px;text-align:center">
+        <div style="font-size:2rem;margin-bottom:6px">🔄</div>
+        <p style="color:#9b59b6;font-family:'Rajdhani',sans-serif;font-weight:700">Mode III — Tearing</p>
+        <p style="font-size:0.85rem;color:#c8d4e0">Out-of-plane shear — crack faces twist relative to each other. Occurs in torsion-loaded components.</p>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">8.3 Fracture Toughness K<sub>IC</sub></h4>
+    <p>K<sub>IC</sub> (pronounced "K-one-C") is the <strong style="color:#fff">critical stress intensity factor for Mode I loading</strong> — the value of K at which unstable crack propagation begins. It is a material property, measured by standardised tests (BS EN ISO 12737) on pre-cracked specimens.</p>
+    <div class="grid-2" style="margin-top:12px">
+      <table>
+        <tr><th>Material</th><th>K<sub>IC</sub> (MPa√m)</th></tr>
+        <tr><td>S355 Structural Steel</td><td>50–100</td></tr>
+        <tr><td>Grade 900A Rail Steel</td><td>25–35</td></tr>
+        <tr><td>Austenitic Stainless Steel</td><td>200+</td></tr>
+        <tr><td>7075-T6 Aluminium</td><td>24</td></tr>
+        <tr><td>6061-T6 Aluminium</td><td>29</td></tr>
+        <tr><td>Cast Iron (grey)</td><td>6–20</td></tr>
+        <tr><td>C40 Concrete</td><td>1.0–1.5</td></tr>
+        <tr><td>Soda-lime glass</td><td>0.7–0.8</td></tr>
+        <tr><td>Nylon PA6</td><td>2.5–3.0</td></tr>
+      </table>
+      <div>
+        <div style="background:rgba(0,201,177,0.06);border-radius:6px;padding:14px;margin-bottom:12px">
+          <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:var(--teal)">Design Application:</strong> If K &lt; K<sub>IC</sub> → safe (crack stable). If K ≥ K<sub>IC</sub> → fracture (crack unstable). The critical crack length for a given stress:</p>
+          <div class="formula" style="font-size:0.88rem;margin-top:8px">a<sub>c</sub> = (1/π)(K<sub>IC</sub>/Yσ)²</div>
+        </div>
+        <div style="background:rgba(245,166,35,0.06);border-radius:6px;padding:14px">
+          <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:var(--gold)">Worked Example:</strong> S355 steel weld, σ = 355 MPa, Y = 1.12, K<sub>IC</sub> = 50 MPa√m. Find critical crack half-length a<sub>c</sub>:</p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--teal);margin-top:8px">a<sub>c</sub> = (1/π)(50/(1.12×355))² = (1/π)(0.1258)² = <strong>5.0 mm</strong></p>
+          <p style="font-size:0.82rem;color:var(--muted);margin-top:4px">Any crack ≥5 mm in this weld at yield stress would cause fracture → NDT detection limit must be &lt;5 mm.</p>
+        </div>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">8.4 Plane Strain vs Plane Stress Fracture</h4>
+    <p>Fracture toughness depends on specimen thickness. Thin specimens (plane stress) give higher apparent toughness due to shear lip formation; thick specimens (plane strain) give the conservative K<sub>IC</sub> value used in design. Plane strain conditions exist when:</p>
+    <div class="formula">B ≥ 2.5 (K<sub>IC</sub>/σ<sub>y</sub>)²</div>
+    <p style="font-size:0.85rem;color:var(--muted)">B = specimen thickness · This explains why thick structural sections (flanges &gt;40 mm) have reduced yield strength specifications in EN 10025.</p>
+
+    <div class="hs2-box">
+      <h4>🚄 Fracture Mechanics in HS2 Weld Inspection</h4>
+      <p>HS2 applies Engineering Critical Assessment (ECA) per BS 7910 to all Category 1 welds (primary load-carrying connections). ECA uses K<sub>IC</sub> values, design stress states, and NDT detection limits to calculate the maximum tolerable flaw size. For a viaduct main beam end connection with σ = 200 MPa and K<sub>IC</sub> = 60 MPa√m, the critical crack size is approximately 14 mm — so UT inspection must reliably detect cracks ≥5 mm (with a 3× safety factor). Phased array UT (PAUT) is specified to achieve this.</p>
+    </div>
+  </div>
+
+  <!-- ============ PART C BANNER ============ -->
+  <div style="background:linear-gradient(135deg,rgba(232,64,64,0.12),rgba(232,64,64,0.04));border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:14px 20px;margin:28px 0 12px">
+    <p style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--red);letter-spacing:2px">PART C — FATIGUE &amp; FAILURE</p>
+    <p style="font-size:0.85rem;color:var(--muted)">Topics 9–12 · Approximately 30 minutes</p>
+  </div>
+
+  <!-- TOPIC 9: Introduction to Fatigue -->
+  <div class="card">
+    <h3><span class="icon">⚡</span> Topic 9 — Fatigue: Introduction and Significance</h3>
+    <p>Fatigue is failure under <strong style="color:#fff">repeated cyclic loading</strong>, at stress levels well below the static yield strength or UTS. It is the most common cause of mechanical failure in engineering — responsible for approximately 80–90% of all in-service metallic failures.</p>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:14px 0 8px">Why Fatigue is So Dangerous</h4>
+    <div class="grid-2">
+      <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+        <li style="margin-bottom:6px">Occurs at stresses far below yield — no visible yielding or warning deformation</li>
+        <li style="margin-bottom:6px">Initiates at microscopic surface defects, notches, or stress concentrations</li>
+        <li style="margin-bottom:6px">Progresses slowly and invisibly until the crack reaches critical size</li>
+        <li>Final fracture is sudden, brittle, and catastrophic</li>
+      </ul>
+      <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+        <li style="margin-bottom:6px">Cannot be detected by visual inspection during stable propagation</li>
+        <li style="margin-bottom:6px">Fracture surface shows characteristic "beach marks" (arrest lines) and a smooth zone (fatigue crack) followed by a rougher, final fracture zone</li>
+        <li style="margin-bottom:6px">Affected by surface finish, corrosive environment, temperature, and residual stresses</li>
+        <li>Weld toe is the highest-risk location in welded structures</li>
+      </ul>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">Three Stages of Fatigue Failure</h4>
+    <div class="timeline" style="margin-top:10px">
+      <div class="tl-item">
+        <strong style="color:var(--teal)">Stage I — Crack Initiation</strong>
+        <p style="font-size:0.9rem">Begins at the surface, typically at a stress concentration (notch, corrosion pit, weld toe, machining mark). Persistent slip bands form as dislocations accumulate along a few slip planes, creating intrusions and extrusions on the surface. The microcrack is on the order of grain size.</p>
+      </div>
+      <div class="tl-item">
+        <strong style="color:var(--gold)">Stage II — Stable Crack Propagation</strong>
+        <p style="font-size:0.9rem">The crack re-orients to grow perpendicular to the maximum principal stress (Mode I). Each load cycle advances the crack by a small increment (nanometres to micrometres per cycle). "Striations" visible on the fracture surface represent individual load cycles. This stage can last millions of cycles and occupies most of the fatigue life.</p>
+      </div>
+      <div class="tl-item">
+        <strong style="color:var(--red)">Stage III — Rapid Crack Growth and Final Fracture</strong>
+        <p style="font-size:0.9rem">When K reaches K<sub>IC</sub>, unstable brittle fracture occurs suddenly. This stage occupies very few cycles relative to the total fatigue life. The fracture surface shows a rougher, more irregular texture compared to the smooth Stage II striations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC 10: S-N Curves and Fatigue Limit -->
+  <div class="card">
+    <h3><span class="icon">📉</span> Topic 10 — S-N Curves and the Fatigue Limit</h3>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin-bottom:10px">10.1 The S-N (Wöhler) Curve</h4>
+    <p>The S-N curve plots stress amplitude (S) against the number of cycles to failure (N) on a log scale. It is determined by testing many identical specimens at different stress levels and recording the number of cycles to failure at each.</p>
+    <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:16px;margin:14px 0">
+      <p style="color:#c8d4e0;font-size:0.9rem;margin-bottom:8px"><strong style="color:#fff">Key Features of the S-N Curve:</strong></p>
+      <ul style="padding-left:16px;color:#c8d4e0;font-size:0.9rem">
+        <li style="margin-bottom:5px"><strong style="color:var(--teal)">Low Cycle Fatigue (LCF):</strong> N &lt; 10⁴ cycles, high stress (approaching yield). Relevant to structures experiencing infrequent but large overloads.</li>
+        <li style="margin-bottom:5px"><strong style="color:var(--teal)">High Cycle Fatigue (HCF):</strong> N = 10⁴ to 10⁷ cycles, stress below yield. Most structural applications.</li>
+        <li style="margin-bottom:5px"><strong style="color:var(--green)">Fatigue Limit (Endurance Limit):</strong> For plain carbon steels, the S-N curve becomes horizontal at ~10⁶–10⁷ cycles, defining a stress below which the material theoretically has infinite life. σ<sub>e</sub> ≈ 0.4–0.5 × UTS for steel in air.</li>
+        <li><strong style="color:var(--red)">No Fatigue Limit:</strong> Aluminium alloys, high-strength steels in corrosive environments, and most non-ferrous metals show continuously decreasing curves with no flat region. A fatigue strength at 10⁸ cycles is reported instead.</li>
+      </ul>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:16px 0 8px">10.2 Stress Ratio R</h4>
+    <p>Fatigue behaviour depends not just on stress amplitude but on the mean stress and the stress ratio R:</p>
+    <div class="formula">R = σ<sub>min</sub> / σ<sub>max</sub></div>
+    <div class="grid-3" style="margin-top:10px">
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px;text-align:center">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--teal)">R = −1</p>
+        <p style="font-size:0.82rem;color:var(--muted)">Fully reversed loading (σ<sub>min</sub> = −σ<sub>max</sub>). Most severe fatigue condition. Used in standard S-N tests.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px;text-align:center">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--gold)">R = 0</p>
+        <p style="font-size:0.82rem;color:var(--muted)">Pulsating tension (load goes from zero to maximum). Typical of rail loading (tension only when train passes).</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px;text-align:center">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--green)">R = +0.5</p>
+        <p style="font-size:0.82rem;color:var(--muted)">High mean stress. Positive mean stress (tension) reduces fatigue life; compressive mean stress increases it — basis of shot peening.</p>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">10.3 Factors Affecting Fatigue Life</h4>
+    <div class="grid-2">
+      <div>
+        <p style="color:var(--red);font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:6px">LIFE-REDUCING FACTORS</p>
+        <ul style="padding-left:14px;color:#c8d4e0;font-size:0.88rem">
+          <li style="margin-bottom:4px">Stress concentrations (notches, holes, welds)</li>
+          <li style="margin-bottom:4px">High tensile residual stresses (from welding)</li>
+          <li style="margin-bottom:4px">Corrosive environment (corrosion fatigue — no fatigue limit)</li>
+          <li style="margin-bottom:4px">High surface roughness</li>
+          <li style="margin-bottom:4px">Large section size (higher likelihood of defects)</li>
+          <li>Elevated temperature</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:var(--green);font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:6px">LIFE-IMPROVING FACTORS</p>
+        <ul style="padding-left:14px;color:#c8d4e0;font-size:0.88rem">
+          <li style="margin-bottom:4px">Compressive residual stresses (shot peening, cold rolling)</li>
+          <li style="margin-bottom:4px">Smooth surface finish (ground, polished)</li>
+          <li style="margin-bottom:4px">Weld toe grinding or peening</li>
+          <li style="margin-bottom:4px">High-frequency peening (HiFIT) on weld toes</li>
+          <li style="margin-bottom:4px">Protective coating (prevents corrosion fatigue)</li>
+          <li>Reducing stress concentration factor K<sub>t</sub></li>
+        </ul>
+      </div>
+    </div>
+    <div class="hs2-box" style="margin-top:16px">
+      <h4>🚄 HS2 Fatigue Design — EN 1993-1-9</h4>
+      <p>HS2 steel structures are designed for fatigue to Eurocode 3 Part 1-9. Each type of weld/connection detail is assigned a <strong>fatigue detail category</strong> (e.g. Detail 71, 90, 125) representing the stress range (in MPa) causing failure at 2 × 10⁶ cycles. A transverse butt weld (Category 71) in the main viaduct beams must sustain the calculated stress range from train loading multiplied by λ (damage factor) over the 120-year design life. Weld toe grinding upgrades details by 1–2 categories, and is specified at critical HS2 connections to extend fatigue life.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 11: Paris Law and Fracture Mechanics-Based Fatigue -->
+  <div class="card">
+    <h3><span class="icon">📊</span> Topic 11 — Paris Law and Crack Growth Rate</h3>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin-bottom:10px">11.1 Paris Law</h4>
+    <p>For Stage II stable crack propagation, the crack growth rate per cycle is related to the stress intensity factor range ΔK by the Paris-Erdogan Law:</p>
+    <div class="formula">da/dN = C · (ΔK)<sup>m</sup></div>
+    <p style="font-size:0.85rem;color:var(--muted)">da/dN = crack growth rate (m/cycle) · ΔK = K<sub>max</sub> − K<sub>min</sub> = stress intensity factor range (MPa√m) · C and m = material constants (experimentally determined)</p>
+    <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:14px;margin-top:12px">
+      <p style="font-size:0.9rem;color:#c8d4e0;margin-bottom:8px"><strong style="color:#fff">Typical values for structural steel:</strong></p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--teal)">C ≈ 6.9 × 10⁻¹² (m/cycle when ΔK in MPa√m)<br>m ≈ 3.0</p>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">11.2 The Full da/dN vs ΔK Curve</h4>
+    <p>The Paris Law describes only the middle linear region of the log(da/dN) vs log(ΔK) curve. The full curve has three regions:</p>
+    <div class="timeline" style="margin-top:10px">
+      <div class="tl-item">
+        <strong style="color:var(--green)">Region I — Threshold</strong>
+        <p style="font-size:0.9rem">Below the threshold stress intensity range ΔK<sub>th</sub>, cracks do not propagate (da/dN → 0). For structural steel in air, ΔK<sub>th</sub> ≈ 6–8 MPa√m. Keeping ΔK &lt; ΔK<sub>th</sub> ensures infinite fatigue life — the design philosophy used for aircraft turbine discs.</p>
+      </div>
+      <div class="tl-item">
+        <strong style="color:var(--teal)">Region II — Paris Law (Stable Growth)</strong>
+        <p style="font-size:0.9rem">Linear on log-log plot, described by da/dN = C·(ΔK)<sup>m</sup>. This is the main engineering design region. Most of the useful fatigue life is spent here. The slope m ≈ 2–4 for metals.</p>
+      </div>
+      <div class="tl-item">
+        <strong style="color:var(--red)">Region III — Rapid Growth and Fracture</strong>
+        <p style="font-size:0.9rem">As K<sub>max</sub> approaches K<sub>IC</sub>, crack growth accelerates rapidly per cycle and the specimen fractures within a few more cycles. This region contributes very little to total life.</p>
+      </div>
+    </div>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:18px 0 8px">11.3 Calculating Fatigue Life from Paris Law</h4>
+    <p>By integrating Paris Law between initial crack size a₀ and critical crack size a<sub>c</sub>, the number of cycles to failure N<sub>f</sub> can be predicted:</p>
+    <div class="formula">N<sub>f</sub> = ∫(a₀ → a<sub>c</sub>) da / [C·(Yσ√πa)<sup>m</sup>]</div>
+    <div style="background:rgba(245,166,35,0.06);border-radius:6px;padding:14px;margin-top:12px">
+      <p style="font-size:0.9rem;color:#c8d4e0"><strong style="color:var(--gold)">Worked Example:</strong> Steel component (C = 6.9×10⁻¹², m=3, Y=1.0, σ=200 MPa). Initial crack a₀ = 1 mm, critical crack a<sub>c</sub> = 10 mm.</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;color:var(--teal);margin-top:8px">ΔK₀ = 1.0×200×√(π×0.001) = 11.2 MPa√m<br>ΔK<sub>c</sub> = 1.0×200×√(π×0.01) = 35.4 MPa√m<br>N<sub>f</sub> ≈ 2/(C·m·σ²·π·Y²) × [a₀<sup>1-m/2</sup> − a<sub>c</sub><sup>1-m/2</sup>]<br>N<sub>f</sub> ≈ <strong>1.4 × 10⁶ cycles</strong></p>
+    </div>
+    <div class="hs2-box" style="margin-top:16px">
+      <h4>🚄 Paris Law in HS2 Maintenance Planning</h4>
+      <p>HS2 uses fracture mechanics-based inspection intervals calculated from Paris Law. For a critical weld with an assumed initial defect of 2 mm (conservative NDT detection limit), and a calculated critical crack size of 12 mm, Paris Law integration gives N<sub>f</sub> ≈ 1.5 × 10⁷ cycles. At 300 trains/day, this is 137 years — exceeding the 120-year design life. However, with a safety factor of 3, the inspection interval is set at N<sub>f</sub>/3 ÷ annual load cycles = ~46 years, with intermediate visual checks every 6 years.</p>
+    </div>
+  </div>
+
+  <!-- TOPIC 12: Material Properties Table + Comparison -->
+  <div class="card">
+    <h3><span class="icon">📊</span> Topic 12 — Material Properties Summary &amp; HS2 Comparison</h3>
+    <p>The table below summarises the key tensile and fracture properties for all primary materials used in HS2 Phase One construction.</p>
+    <table style="margin-top:14px">
+      <tr><th>Material</th><th>E (GPa)</th><th>σ<sub>y</sub> (MPa)</th><th>UTS (MPa)</th><th>Elongation (%)</th><th>K<sub>IC</sub> (MPa√m)</th><th>Primary HS2 Use</th></tr>
+      <tr><td>S355 J2+N Structural Steel</td><td>210</td><td>355</td><td>470–630</td><td>≥22</td><td>50–100</td><td>Viaduct beams, portal frames, connections</td></tr>
+      <tr><td>S460 M/ML</td><td>210</td><td>460</td><td>550–720</td><td>≥17</td><td>40–80</td><td>High-load pin plates, splice plates</td></tr>
+      <tr><td>Grade 900A Rail Steel</td><td>210</td><td>≥680</td><td>≥900</td><td>≥10</td><td>25–35</td><td>High-speed mainline rail track</td></tr>
+      <tr><td>B500B High-Ductility Rebar</td><td>200</td><td>500</td><td>≥540</td><td>≥5 (class B)</td><td>—</td><td>RC tunnel linings, viaduct decks</td></tr>
+      <tr><td>C40/50 Concrete (compressive)</td><td>35</td><td>—</td><td>40–50 (comp)</td><td>~0</td><td>1.0–1.5</td><td>Tunnel segments, pile caps, deck slab</td></tr>
+      <tr><td>Grade 8.8 Bolts (HSFG)</td><td>210</td><td>640</td><td>800</td><td>≥12</td><td>—</td><td>Structural connections (slip-resistant)</td></tr>
+      <tr><td>7075-T6 Aluminium</td><td>71</td><td>503</td><td>572</td><td>11</td><td>24</td><td>Overhead line equipment masts</td></tr>
+      <tr><td>6061-T6 Aluminium</td><td>68</td><td>276</td><td>310</td><td>17</td><td>29</td><td>Non-structural cladding, fitments</td></tr>
+      <tr><td>HDPE (pipe lining)</td><td>0.8</td><td>20–30</td><td>30–40</td><td>&gt;500</td><td>1.5–4</td><td>Drainage pipe, cable conduit</td></tr>
+    </table>
+
+    <h4 style="color:var(--teal);font-family:'Rajdhani',sans-serif;margin:20px 0 10px">Why S355 Dominates HS2 Structural Steel Specification</h4>
+    <div class="grid-3">
+      <div style="background:rgba(0,201,177,0.06);border:1px solid rgba(0,201,177,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--teal);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">✅ Strength</p>
+        <p style="font-size:0.87rem;color:#c8d4e0">355 MPa yield strength is sufficient for most primary structural elements with economical section sizes. Higher grades (S460) give thinner sections but introduce weldability and DBTT concerns.</p>
+      </div>
+      <div style="background:rgba(46,204,113,0.06);border:1px solid rgba(46,204,113,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--green);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">✅ Ductility</p>
+        <p style="font-size:0.87rem;color:#c8d4e0">≥22% elongation ensures plastic hinge formation in overload scenarios, allowing moment redistribution and preventing progressive collapse — critical for public infrastructure.</p>
+      </div>
+      <div style="background:rgba(245,166,35,0.06);border:1px solid rgba(245,166,35,0.2);border-radius:6px;padding:14px">
+        <p style="color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:6px">✅ Weldability</p>
+        <p style="font-size:0.87rem;color:#c8d4e0">Carbon equivalent CE ≤ 0.43 for S355 ensures good weldability without preheat on sections up to 25 mm. Higher-strength steels require preheat, slowing fabrication and increasing cost.</p>
+      </div>
+    </div>
+    <div class="hs2-box" style="margin-top:16px">
+      <h4>🚄 Integrated Summary — Why These Properties Matter for HS2</h4>
+      <p>Every mechanical property covered in this lecture directly governs an HS2 design decision. Young's Modulus governs viaduct deflection limits. Yield strength determines beam section sizes. UTS controls bolt and net section failure checks. Ductility ensures seismic and overload robustness. K<sub>IC</sub> sets inspection intervals and NDT detection limits. Fatigue detail categories determine weld treatment requirements. Paris Law defines maintenance inspection intervals. This is not abstract theory — it is live engineering being built today.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======================================================= -->
+<!-- SIMULATOR TAB -->
+<!-- ======================================================= -->
+<div class="section" id="simulator">
+
+  <!-- Stress-Strain Simulator -->
+  <div class="card">
+    <h3><span class="icon">⚙️</span> Stress–Strain Curve Simulator</h3>
+    <p>Select a material and apply tensile load to watch how the specimen behaves. Observe elastic region, yield point, UTS, and fracture.</p>
+    <div class="sim-controls">
+      <label>Material:
+        <select id="matSelect" onchange="resetSim()">
+          <option value="steel">S355 Structural Steel</option>
+          <option value="railsteel">Grade 900A Rail Steel</option>
+          <option value="aluminium">Aluminium 6061-T6</option>
+          <option value="castiron">Cast Iron (Brittle)</option>
+          <option value="concrete">C40 Concrete</option>
+        </select>
+      </label>
+      <label>Load Rate:
+        <input type="range" id="loadRate" min="1" max="10" value="4">
+      </label>
+      <button class="btn btn-primary" onclick="startSim()">▶ Apply Load</button>
+      <button class="btn btn-outline" onclick="resetSim()">↺ Reset</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-family:'Rajdhani',sans-serif;letter-spacing:1px">STRESS–STRAIN CURVE</p>
+        <canvas id="ssCanvas" height="320" style="background:#070f1f;border:1px solid var(--border)"></canvas>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:6px;font-family:'Rajdhani',sans-serif;letter-spacing:1px">SPECIMEN VISUALISATION</p>
+        <canvas id="specCanvas" height="320" style="background:#070f1f;border:1px solid var(--border)"></canvas>
+      </div>
+    </div>
+    <div style="display:flex;gap:24px;margin-top:14px;flex-wrap:wrap">
+      <div><span style="font-size:0.8rem;color:var(--muted)">Stress</span><br><span id="simStress" class="animated-num" style="font-size:1.5rem">0</span><span style="color:var(--muted);font-size:0.8rem"> MPa</span></div>
+      <div><span style="font-size:0.8rem;color:var(--muted)">Strain</span><br><span id="simStrain" class="animated-num" style="font-size:1.5rem">0.000</span></div>
+      <div><span style="font-size:0.8rem;color:var(--muted)">Phase</span><br><span id="simPhase" style="color:var(--green);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">ELASTIC</span></div>
+      <div><span style="font-size:0.8rem;color:var(--muted)">Status</span><br><span id="simStatus" style="color:var(--teal);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700">INTACT</span></div>
+    </div>
+  </div>
+
+  <!-- Fatigue Simulator -->
+  <div class="card">
+    <h3><span class="icon">⚡</span> Fatigue &amp; Crack Propagation Simulator</h3>
+    <p>Simulate cyclic tensile loading on a steel specimen. Watch the crack initiate and grow using Paris Law: <span style="font-family:'JetBrains Mono',monospace;color:var(--teal)">da/dN = C(ΔK)ᵐ</span>. Higher stress = faster crack growth. Critical crack length = 20 mm.</p>
+    <div class="sim-controls" style="margin-top:14px">
+      <label style="display:flex;align-items:center;gap:10px">
+        Stress amplitude:
+        <input type="range" id="fatigueStress" min="100" max="480" value="250" oninput="document.getElementById('fsVal').textContent=this.value">
+        <span id="fsVal" style="color:var(--teal);font-family:'JetBrains Mono',monospace;min-width:36px">250</span> MPa
+      </label>
+      <button class="btn btn-primary" onclick="startFatigue()">▶ Run Simulation</button>
+      <button class="btn btn-outline" onclick="resetFatigue()">↺ Reset</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-top:12px">
+      <div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:5px;font-family:'Rajdhani',sans-serif;letter-spacing:1px">CRACK GROWTH CURVE (Paris Law)</p>
+        <canvas id="fatigueCanvas" width="700" height="260" style="background:#070f1f;border:1px solid var(--border);width:100%;display:block"></canvas>
+      </div>
+      <div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:5px;font-family:'Rajdhani',sans-serif;letter-spacing:1px">SPECIMEN CROSS-SECTION</p>
+        <canvas id="fatigueSpecCanvas" width="360" height="260" style="background:#070f1f;border:1px solid var(--border);width:100%;display:block"></canvas>
+      </div>
+    </div>
+    <div style="display:flex;gap:28px;margin-top:14px;flex-wrap:wrap;padding:12px;background:rgba(0,0,0,0.2);border-radius:6px">
+      <div><span style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:2px">Cycles (N)</span><span id="fatCycles" class="animated-num" style="font-size:1.4rem">0</span></div>
+      <div><span style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:2px">Crack Length (a)</span><span id="fatCrack" class="animated-num" style="font-size:1.4rem">0.000</span><span style="color:var(--muted);font-size:0.8rem"> mm</span></div>
+      <div><span style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:2px">ΔK (Stress Intensity)</span><span id="fatDK" class="animated-num" style="font-size:1.4rem">—</span><span style="color:var(--muted);font-size:0.8rem"> MPa√m</span></div>
+      <div><span style="font-size:0.78rem;color:var(--muted);display:block;margin-bottom:2px">Phase</span><span id="fatStatus" style="color:var(--green);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:1px">NO CRACK</span></div>
+    </div>
+    <div class="hs2-box" style="margin-top:14px">
+      <h4>🚄 Paris Law in HS2 Context</h4>
+      <p>HS2 rail fixings experience ~1.3 × 10¹⁰ load cycles over 120 years. Engineering design keeps stress intensity range (ΔK) well below the threshold where crack growth becomes significant, typically ΔK &lt; 5 MPa√m for welded steel details (EN 1993-1-9 Category F2).</p>
+    </div>
+  </div>
+
+  <!-- Fracture Toughness Calculator -->
+  <div class="card">
+    <h3><span class="icon">🧮</span> Fracture Toughness Calculator</h3>
+    <p>Calculate the critical stress for crack propagation using K<sub>IC</sub> = Yσ√(πa). Enter values below:</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-top:12px">
+      <div>
+        <label style="font-size:0.82rem;color:var(--muted);display:block;margin-bottom:4px">K<sub>IC</sub> (MPa√m)</label>
+        <input type="number" id="kicVal" value="50" style="background:#0a1628;border:1px solid var(--border);color:#fff;padding:9px 12px;border-radius:5px;width:120px;-webkit-user-select:text;user-select:text">
+      </div>
+      <div>
+        <label style="font-size:0.82rem;color:var(--muted);display:block;margin-bottom:4px">Crack half-length a (mm)</label>
+        <input type="number" id="crackA" value="5" style="background:#0a1628;border:1px solid var(--border);color:#fff;padding:9px 12px;border-radius:5px;width:120px;-webkit-user-select:text;user-select:text">
+      </div>
+      <div>
+        <label style="font-size:0.82rem;color:var(--muted);display:block;margin-bottom:4px">Geometry factor Y</label>
+        <input type="number" id="geomY" value="1.12" style="background:#0a1628;border:1px solid var(--border);color:#fff;padding:9px 12px;border-radius:5px;width:120px;-webkit-user-select:text;user-select:text">
+      </div>
+      <button class="btn btn-primary" onclick="calcFracture()">Calculate</button>
+    </div>
+    <div id="fractureResult" style="display:none;margin-top:16px;padding:16px;background:rgba(0,201,177,0.06);border:1px solid var(--teal);border-radius:6px">
+      <p style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;color:var(--teal)">Critical Fracture Stress:</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:#fff" id="fractureAnswer"></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======================================================= -->
+<!-- GAMES TAB -->
+<!-- ======================================================= -->
+<div class="section" id="games">
+  <div class="grid-2">
+
+    <!-- GAME 1: Property Sort -->
+    <div class="card">
+      <h3><span class="icon">🎯</span> Game 1: Property Sort</h3>
+      <p style="font-size:0.88rem;margin-bottom:14px">Drag each property card into the correct category — Elastic Behaviour or Plastic Behaviour.</p>
+      <div id="sortItems" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+        <div class="drag-item" draggable="true" data-cat="elastic" id="si1">Hooke's Law applies</div>
+        <div class="drag-item" draggable="true" data-cat="plastic" id="si2">Permanent deformation</div>
+        <div class="drag-item" draggable="true" data-cat="elastic" id="si3">Stress ∝ Strain</div>
+        <div class="drag-item" draggable="true" data-cat="plastic" id="si4">Dislocation motion</div>
+        <div class="drag-item" draggable="true" data-cat="elastic" id="si5">Reversible shape change</div>
+        <div class="drag-item" draggable="true" data-cat="plastic" id="si6">Strain hardening</div>
+        <div class="drag-item" draggable="true" data-cat="elastic" id="si7">E = σ/ε</div>
+        <div class="drag-item" draggable="true" data-cat="plastic" id="si8">Necking begins</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <p style="font-size:0.8rem;color:var(--teal);font-family:'Rajdhani',sans-serif;letter-spacing:1px;margin-bottom:6px">ELASTIC</p>
+          <div class="drag-zone" id="zone-elastic" ondragover="allowDrop(event)" ondrop="dropItem(event,'elastic')" ondragenter="this.classList.add('over')" ondragleave="this.classList.remove('over')"></div>
+        </div>
+        <div>
+          <p style="font-size:0.8rem;color:var(--gold);font-family:'Rajdhani',sans-serif;letter-spacing:1px;margin-bottom:6px">PLASTIC</p>
+          <div class="drag-zone" id="zone-plastic" ondragover="allowDrop(event)" ondrop="dropItem(event,'plastic')" ondragenter="this.classList.add('over')" ondragleave="this.classList.remove('over')"></div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="checkSort()">✓ Check Sort</button>
+        <button class="btn btn-outline" onclick="resetSort()">↺ Reset</button>
+      </div>
+      <div id="sortResult" style="display:none;margin-top:10px;font-family:'Rajdhani',sans-serif;font-size:1rem"></div>
+    </div>
+
+    <!-- GAME 2: Rapid Fire MCQ -->
+    <div class="card">
+      <h3><span class="icon">⚡</span> Game 2: Rapid Fire Challenge</h3>
+      <p style="font-size:0.88rem;margin-bottom:14px">Answer as many questions as you can in <strong style="color:var(--gold)">60 seconds</strong>. No second chances!</p>
+      <div id="rfStart">
+        <button class="btn btn-gold" onclick="startRapidFire()">▶ Start 60-Second Challenge</button>
+      </div>
+      <div id="rfGame" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <span style="font-family:'Rajdhani',sans-serif;color:var(--gold);font-size:1.2rem;font-weight:700">⏱ <span id="rfTimer">60</span>s</span>
+          <span style="font-family:'Rajdhani',sans-serif;color:var(--teal)">Score: <span id="rfScore">0</span></span>
+        </div>
+        <p id="rfQuestion" style="font-size:1rem;color:#fff;margin-bottom:12px;font-weight:600"></p>
+        <div id="rfOptions" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div id="rfEnd" style="display:none;text-align:center">
+        <div class="score-display">
+          <p style="font-family:'Rajdhani',sans-serif;color:var(--muted);letter-spacing:2px;margin-bottom:4px">FINAL SCORE</p>
+          <div class="big-score" id="rfFinalScore">0</div>
+          <p id="rfEndMsg" style="margin-top:8px;color:var(--muted)"></p>
+        </div>
+        <button class="btn btn-primary" onclick="startRapidFire()" style="margin-top:14px">Play Again</button>
+      </div>
+    </div>
+
+    <!-- GAME 3: Stress-Strain Labelling -->
+    <div class="card">
+      <h3><span class="icon">🖊️</span> Game 3: Label the Curve</h3>
+      <p style="font-size:0.88rem;margin-bottom:12px">Click on the correct region of the stress-strain curve when prompted. Match all 5 labels to pass!</p>
+      <canvas id="labelCanvas" height="220" style="background:#070f1f;border:1px solid var(--border);cursor:crosshair;width:100%" onclick="handleLabelClick(event)"></canvas>
+      <p id="labelPrompt" style="margin-top:10px;font-family:'Rajdhani',sans-serif;color:var(--gold);font-size:1rem;font-weight:600"></p>
+      <div id="labelScore" style="margin-top:8px;font-size:0.9rem;color:var(--muted)"></div>
+      <button class="btn btn-outline" onclick="resetLabelGame()" style="margin-top:10px">↺ Restart Game</button>
+    </div>
+
+    <!-- GAME 4: Match Terms -->
+    <div class="card">
+      <h3><span class="icon">🧩</span> Game 4: Match the Definition</h3>
+      <p style="font-size:0.88rem;margin-bottom:14px">Match each term to its correct definition using the dropdowns.</p>
+      <div id="matchGame">
+        <div class="match-pair">
+          <div class="match-left">Ultimate Tensile Strength</div>
+          <select onchange="checkMatch(this,0)" style="background:#0a1628;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:5px;font-size:0.88rem;flex:1">
+            <option value="">— Select —</option>
+            <option value="a">Maximum stress before fracture</option>
+            <option value="b">Stress at onset of plastic deformation</option>
+            <option value="c">Ratio of stress to strain</option>
+            <option value="d">Material's resistance to crack growth</option>
+          </select>
+          <span class="match-result" id="mr0"></span>
+        </div>
+        <div class="match-pair">
+          <div class="match-left">Yield Strength</div>
+          <select onchange="checkMatch(this,1)" style="background:#0a1628;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:5px;font-size:0.88rem;flex:1">
+            <option value="">— Select —</option>
+            <option value="a">Maximum stress before fracture</option>
+            <option value="b">Stress at onset of plastic deformation</option>
+            <option value="c">Ratio of stress to strain</option>
+            <option value="d">Material's resistance to crack growth</option>
+          </select>
+          <span class="match-result" id="mr1"></span>
+        </div>
+        <div class="match-pair">
+          <div class="match-left">Young's Modulus</div>
+          <select onchange="checkMatch(this,2)" style="background:#0a1628;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:5px;font-size:0.88rem;flex:1">
+            <option value="">— Select —</option>
+            <option value="a">Maximum stress before fracture</option>
+            <option value="b">Stress at onset of plastic deformation</option>
+            <option value="c">Ratio of stress to strain</option>
+            <option value="d">Material's resistance to crack growth</option>
+          </select>
+          <span class="match-result" id="mr2"></span>
+        </div>
+        <div class="match-pair">
+          <div class="match-left">Fracture Toughness K<sub>IC</sub></div>
+          <select onchange="checkMatch(this,3)" style="background:#0a1628;border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:5px;font-size:0.88rem;flex:1">
+            <option value="">— Select —</option>
+            <option value="a">Maximum stress before fracture</option>
+            <option value="b">Stress at onset of plastic deformation</option>
+            <option value="c">Ratio of stress to strain</option>
+            <option value="d">Material's resistance to crack growth</option>
+          </select>
+          <span class="match-result" id="mr3"></span>
+        </div>
+      </div>
+      <div id="matchFinal" style="margin-top:12px;display:none" class="score-display">
+        <div class="big-score">🎉</div>
+        <p style="color:var(--green);font-family:'Rajdhani',sans-serif;font-size:1.2rem">All matched correctly!</p>
+      </div>
+    </div>
+
+    <!-- GAME 5: Fill in the Blanks -->
+    <div class="card" style="grid-column:1/-1">
+      <h3><span class="icon">✏️</span> Game 5: Complete the Equation</h3>
+      <p style="font-size:0.88rem;margin-bottom:16px">Click a word from the bank to fill each blank. Complete all equations correctly.</p>
+      <div class="word-bank" id="wordBank5">
+        <div class="word-chip" onclick="useWord(this,'force')">Force</div>
+        <div class="word-chip" onclick="useWord(this,'area')">Cross-sectional Area</div>
+        <div class="word-chip" onclick="useWord(this,'strain')">Strain</div>
+        <div class="word-chip" onclick="useWord(this,'modulus')">Young's Modulus</div>
+        <div class="word-chip" onclick="useWord(this,'length')">Original Length</div>
+        <div class="word-chip" onclick="useWord(this,'change')">Change in Length</div>
+        <div class="word-chip" onclick="useWord(this,'stress')">Stress</div>
+      </div>
+      <div style="font-size:1rem;color:#e8edf5;line-height:2.4">
+        <p>① Stress (σ) = <span class="fill-blank"><input id="blank1" type="text" placeholder="?" data-answer="force" readonly onclick="fillFromBank(this)"></span> ÷ <span class="fill-blank"><input id="blank2" type="text" placeholder="?" data-answer="area" readonly onclick="fillFromBank(this)"></span></p>
+        <p>② Strain (ε) = <span class="fill-blank"><input id="blank3" type="text" placeholder="?" data-answer="change" readonly onclick="fillFromBank(this)"></span> ÷ <span class="fill-blank"><input id="blank4" type="text" placeholder="?" data-answer="length" readonly onclick="fillFromBank(this)"></span></p>
+        <p>③ <span class="fill-blank"><input id="blank5" type="text" placeholder="?" data-answer="modulus" readonly onclick="fillFromBank(this)"></span> (E) = <span class="fill-blank"><input id="blank6" type="text" placeholder="?" data-answer="stress" readonly onclick="fillFromBank(this)"></span> ÷ <span class="fill-blank"><input id="blank7" type="text" placeholder="?" data-answer="strain" readonly onclick="fillFromBank(this)"></span></p>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="checkFillBlanks()">✓ Check Answers</button>
+        <button class="btn btn-outline" onclick="resetFillBlanks()">↺ Reset</button>
+      </div>
+      <div id="fbResult" style="display:none;margin-top:10px;font-family:'Rajdhani',sans-serif;font-size:1rem"></div>
+    </div>
+
+    <!-- GAME 6: True or False Blitz -->
+    <div class="card" style="grid-column:1/-1">
+      <h3><span class="icon">🟢</span> Game 6: True or False Blitz</h3>
+      <p style="font-size:0.88rem;margin-bottom:14px">Is the statement TRUE or FALSE? Answer quickly to score bonus points!</p>
+      <div id="tfContainer">
+        <p id="tfStatement" style="font-size:1.1rem;color:#fff;font-family:'Rajdhani',sans-serif;font-weight:600;margin-bottom:16px;min-height:50px"></p>
+        <div style="display:flex;gap:12px">
+          <button class="btn btn-primary" style="flex:1;font-size:1.1rem" onclick="tfAnswer(true)">✅ TRUE</button>
+          <button class="btn btn-red" style="flex:1;font-size:1.1rem" onclick="tfAnswer(false)">❌ FALSE</button>
+        </div>
+        <div id="tfFeedback" style="margin-top:10px;font-family:'Rajdhani',sans-serif;font-size:0.95rem;min-height:30px"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px">
+          <span style="color:var(--muted);font-size:0.85rem">Question <span id="tfCurrent">1</span>/10</span>
+          <span style="color:var(--teal);font-family:'Rajdhani',sans-serif">Score: <span id="tfScore">0</span>/10</span>
+        </div>
+      </div>
+      <div id="tfEnd" style="display:none" class="score-display">
+        <p style="font-family:'Rajdhani',sans-serif;color:var(--muted);letter-spacing:2px">BLITZ SCORE</p>
+        <div class="big-score" id="tfFinalScore"></div>
+        <p id="tfEndMsg" style="margin-top:8px;color:var(--muted)"></p>
+        <button class="btn btn-primary" onclick="resetTF()" style="margin-top:12px">Play Again</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- HS2 RESEARCH TAB -->
+<!-- ======================================================= -->
+<div class="section" id="hs2">
+  <div class="card" style="background:linear-gradient(135deg,rgba(245,166,35,0.08),rgba(10,22,40,0.9));border-color:rgba(245,166,35,0.4)">
+    <h3><span class="icon">🚄</span> HS2 Phase One — Core Assessment Context</h3>
+    <p>HS2 Phase One is your primary research context for this module's assessment. Use the structured tasks below to investigate how tensile and fracture properties govern material selection and structural safety in this landmark project.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+      <span style="padding:4px 12px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.4);color:var(--gold);border-radius:4px;font-size:0.82rem;font-family:'Rajdhani',sans-serif;letter-spacing:1px">LONDON EUSTON → BIRMINGHAM CURZON STREET</span>
+      <span style="padding:4px 12px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.4);color:var(--gold);border-radius:4px;font-size:0.82rem;font-family:'Rajdhani',sans-serif;letter-spacing:1px">225 KM ROUTE</span>
+      <span style="padding:4px 12px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.4);color:var(--gold);border-radius:4px;font-size:0.82rem;font-family:'Rajdhani',sans-serif;letter-spacing:1px">MAX 360 KM/H DESIGN SPEED</span>
+      <span style="padding:4px 12px;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.4);color:var(--gold);border-radius:4px;font-size:0.82rem;font-family:'Rajdhani',sans-serif;letter-spacing:1px">120-YEAR DESIGN LIFE</span>
+    </div>
+  </div>
+
+  <!-- Structured Research Tasks with Answer Boxes -->
+  <div class="card">
+    <h3><span class="icon">🔍</span> Research Task 1 — Rail Steel Selection</h3>
+    <p>HS2 uses Grade 900A pearlitic rail steel. Research and explain why this grade was selected over alternatives such as Grade 700 or bainitic steel for the high-speed mainline.</p>
+    <div class="hs2-box">
+      <h4>📌 Research Guidance</h4>
+      <p>Consider: UTS requirements, rolling contact fatigue (RCF) resistance, wear behaviour, weldability, and the mechanical demands of 360 km/h train operations. Refer to EN 13674-1 (Railway Applications — Track — Rail).</p>
+    </div>
+    <div class="answer-box-wrap">
+      <textarea id="rt1" placeholder="Write your researched response here. Minimum 150 words. Cite any sources used."></textarea>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">⚠️ No hints provided — this is your own research and analysis.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔍</span> Research Task 2 — Viaduct Structural Steel</h3>
+    <p>The Colne Valley Viaduct (3.4 km) uses S355 structural steel. Analyse why S355 was specified over S275 or higher-grade S460 in terms of tensile properties, fracture toughness, and whole-life cost.</p>
+    <div class="hs2-box">
+      <h4>📌 Research Guidance</h4>
+      <p>Explore: Charpy impact test requirements (EN 10025), weld hydrogen cracking risk at higher grades, fatigue detail category (EN 1993-1-9), and the implications of using steels with yield strengths above 355 MPa for connection design.</p>
+    </div>
+    <div class="answer-box-wrap">
+      <textarea id="rt2" placeholder="Write your researched response here. Minimum 150 words. Cite any sources used."></textarea>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">⚠️ No hints provided — this is your own research and analysis.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔍</span> Research Task 3 — Tunnel Lining Concrete</h3>
+    <p>HS2 tunnel bores (including the 10 km Long Itchington Wood tunnel) use C50/60 precast concrete segments reinforced with steel fibres and rebar. Explain how this composite system addresses concrete's inherently low fracture toughness.</p>
+    <div class="hs2-box">
+      <h4>📌 Research Guidance</h4>
+      <p>Investigate: crack bridging mechanisms in steel-fibre-reinforced concrete (SFRC), how prestress reduces net tensile stress, Eurocode 2 durability requirements for tunnel environments (XS3 exposure class), and consequences of K<sub>IC</sub> being ~1.5 MPa√m in plain concrete.</p>
+    </div>
+    <div class="answer-box-wrap">
+      <textarea id="rt3" placeholder="Write your researched response here. Minimum 150 words. Cite any sources used."></textarea>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">⚠️ No hints provided — this is your own research and analysis.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔍</span> Research Task 4 — Fatigue in High-Speed Rail Connections</h3>
+    <p>Identify a critical fatigue-sensitive connection in HS2 (e.g. rail clips, viaduct beam-to-column joints, overhead line mast bases). Explain how fatigue life was assessed and what design decisions were made to meet the 120-year design life.</p>
+    <div class="hs2-box">
+      <h4>📌 Research Guidance</h4>
+      <p>Use Paris Law principles (da/dN = C·ΔKᵐ), EN 1993-1-9 fatigue detail categories, and concept of fatigue limit vs safe-life design philosophy. Consider that 300 trains/day × 365 × 120 years ≈ 1.3 × 10¹⁰ load cycles at a joint.</p>
+    </div>
+    <div class="answer-box-wrap">
+      <textarea id="rt4" placeholder="Write your researched response here. Minimum 150 words. Cite any sources used."></textarea>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">⚠️ No hints provided — this is your own research and analysis.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="icon">🔍</span> Research Task 5 — Critical Analysis</h3>
+    <p>HS2 Ltd has faced significant public and professional criticism regarding material cost overruns and specification changes during construction. Critically evaluate whether any materials substitutions (e.g. specification downgrading) could have compromised the long-term mechanical integrity of Phase One infrastructure.</p>
+    <div class="hs2-box">
+      <h4>📌 Research Guidance</h4>
+      <p>Draw on: PAC (Public Accounts Committee) reports on HS2 cost overruns, IStructE guidance on material specification, the implications of reducing steel grade or concrete class on tensile margins, fracture toughness, and fatigue life. Be balanced — include both risk and mitigation perspectives.</p>
+    </div>
+    <div class="answer-box-wrap">
+      <textarea id="rt5" placeholder="Write your critical analysis here. Minimum 200 words. This question requires evaluation, not description."></textarea>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">⚠️ No hints provided — this is your own research and analysis.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ======================================================= -->
+<!-- QUIZ TAB -->
+<!-- ======================================================= -->
+<div class="section" id="quiz">
+  <div class="card" style="margin-bottom:24px">
+    <h3><span class="icon">📝</span> End-of-Topic Quiz — Tensile Strength &amp; Fracture</h3>
+    <p>15 questions covering all learning objectives. Answer each question — no hints are provided. You must achieve <strong style="color:var(--teal)">68%</strong> (10/15) to pass. Answers are locked once submitted.</p>
+    <button class="btn btn-primary" onclick="submitQuiz()" style="margin-top:12px">Submit All Answers</button>
+    <button class="btn btn-outline" onclick="resetQuiz()" style="margin-top:12px;margin-left:10px">↺ Reset Quiz</button>
+  </div>
+
+  <div id="quizContainer"></div>
+
+  <div id="quizResult" style="display:none;margin-top:20px" class="score-display">
+    <p style="font-family:'Rajdhani',sans-serif;color:var(--muted);letter-spacing:2px">QUIZ RESULT</p>
+    <div class="big-score" id="quizScore"></div>
+    <div class="progress-bar" style="max-width:300px;margin:12px auto"><div class="progress-fill" id="quizProgress"></div></div>
+    <p id="quizMsg" style="margin-top:8px;font-family:'Rajdhani',sans-serif;font-size:1.1rem"></p>
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- GLOSSARY TAB -->
+<!-- ======================================================= -->
+<div class="section" id="glossary">
+  <div class="card">
+    <h3><span class="icon">📖</span> Key Terms Glossary</h3>
+    <p style="margin-bottom:16px">Click any term to reveal its definition. All definitions are relevant to tensile testing, fracture mechanics, and HS2 applications.</p>
+    <div id="glossContainer"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:32px;color:var(--muted);font-size:0.8rem;border-top:1px solid var(--border);margin-top:40px">
+  <p>EG4022 Engineering Materials | University of East London | Malvern University Partnerships</p>
+  <p style="margin-top:4px">Designed by <strong style="color:var(--teal)">Vismay Loliyaniya</strong> — Lecturer and Module Lead</p>
+  <p style="margin-top:4px;font-size:0.72rem">© 2025 All rights reserved. Reproduction of content is prohibited.</p>
+</footer>
+
+<script>
+// ===== COPY/PASTE BLOCK =====
+document.addEventListener('copy', e => { e.preventDefault(); return false; });
+document.addEventListener('cut', e => { e.preventDefault(); return false; });
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey||e.metaKey) && ['c','x','u','s','a','p'].includes(e.key.toLowerCase())) {
+    if (!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) e.preventDefault();
+  }
+  if (e.key==='F12') e.preventDefault();
+});
+
+// ===== BLOCK PASTE/DROP IN RESEARCH ANSWER BOXES =====
+// Runs after DOM is ready — attaches to all research task textareas
+function blockResearchPaste(){
+  document.querySelectorAll('#hs2 textarea').forEach(ta=>{
+    ta.addEventListener('paste', e=>{
+      e.preventDefault();
+      showToast('⛔ Paste is disabled — write your own answer');
+    });
+    ta.addEventListener('drop', e=>{
+      e.preventDefault();
+      showToast('⛔ Drag & drop is disabled — write your own answer');
+    });
+    ta.addEventListener('keydown', e=>{
+      // block Ctrl/Cmd+V and Ctrl/Cmd+X inside textareas
+      if ((e.ctrlKey||e.metaKey) && ['v','x'].includes(e.key.toLowerCase())){
+        e.preventDefault();
+        showToast('⛔ Paste is disabled — write your own answer');
+      }
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', blockResearchPaste);
+// Also call immediately in case DOM is already loaded
+blockResearchPaste();
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== TAB NAVIGATION =====
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if (id==='simulator') { drawSSCurve(); resetSim(); drawFatigueInit(); }
+  if (id==='games') { initLabelGame(); initTF(); }
+  if (id==='glossary') { buildGlossary(); }
+  if (id==='quiz') { buildQuiz(); }
+}
+
+// ===== STRESS-STRAIN SIMULATOR =====
+const matData = {
+  steel:     { name:'S355 Structural Steel', E:210, ys:355, uts:500, ef:0.22, brittle:false, color:'#3498db' },
+  railsteel: { name:'Grade 900A Rail Steel',  E:210, ys:680, uts:900, ef:0.12, brittle:false, color:'#e67e22' },
+  aluminium: { name:'Aluminium 6061-T6',       E:68,  ys:276, uts:310, ef:0.17, brittle:false, color:'#9b59b6' },
+  castiron:  { name:'Cast Iron (Brittle)',      E:170, ys:250, uts:250, ef:0.01, brittle:true,  color:'#e84040' },
+  concrete:  { name:'C40 Concrete',            E:35,  ys:40,  uts:40,  ef:0.005, brittle:true, color:'#95a5a6' }
+};
+let simRunning=false, simT=0, simInterval=null;
+
+function getSSPoint(mat, t) {
+  const m = matData[mat];
+  if (m.brittle) {
+    const str = Math.min(t, 1) * m.uts;
+    const stn = str/1000/m.E;
+    const frac = t>=1;
+    return {stress:frac?0:str, strain:frac?stn+0.005:stn, phase:frac?'FRACTURE':'ELASTIC', status:frac?'FRACTURED':'INTACT'};
+  }
+  const ysStn = m.ys/1000/m.E;
+  const totalPlastic = m.ef - ysStn;
+  if (t < ysStn*1000/m.uts*0.95) {
+    const frac = t/(ysStn*1000/m.uts*0.95);
+    return {stress:frac*m.ys, strain:frac*ysStn, phase:'ELASTIC', status:'INTACT'};
+  } else {
+    const pFrac = Math.min((t - ysStn*1000/m.uts*0.95) / (1-ysStn*1000/m.uts*0.95), 1);
+    const str = pFrac<0.85
+      ? m.ys + (m.uts-m.ys)*Math.sin(pFrac/0.85*Math.PI/2)
+      : m.uts - (m.uts-m.ys*0.7)*(pFrac-0.85)/0.15;
+    const stn = ysStn + pFrac*totalPlastic;
+    const frac = pFrac>=1;
+    const phase = pFrac<0.3?'PLASTIC':pFrac<0.85?'HARDENING':frac?'FRACTURE':'NECKING';
+    return {stress:frac?0:str, strain:frac?stn+0.01:stn, phase, status:frac?'FRACTURED':'INTACT'};
+  }
+}
+
+function drawSSCurve(upTo) {
+  const c = document.getElementById('ssCanvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  c.width = c.offsetWidth*1.5; c.height = 320;
+  const W=c.width, H=c.height, pad=50;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#070f1f'; ctx.fillRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+  for (let i=1;i<5;i++) {
+    ctx.beginPath(); ctx.moveTo(pad,pad+i*(H-pad*2)/5); ctx.lineTo(W-pad,pad+i*(H-pad*2)/5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad+i*(W-pad*2)/5,pad); ctx.lineTo(pad+i*(W-pad*2)/5,H-pad); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,H-pad); ctx.lineTo(W-pad,H-pad); ctx.stroke();
+  // labels
+  ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font=`${W*0.018}px JetBrains Mono`;
+  ctx.fillText('Stress (MPa)',pad+5,pad-8);
+  ctx.fillText('Strain →',W-pad-60,H-pad+20);
+  // curve
+  const mat = document.getElementById('matSelect').value;
+  const m = matData[mat];
+  const steps=200;
+  const maxT = upTo!==undefined ? upTo : 1;
+  ctx.beginPath();
+  ctx.strokeStyle = m.color; ctx.lineWidth=3;
+  let lastX=pad, lastY=H-pad;
+  for (let i=0;i<=steps;i++) {
+    const t=i/steps*maxT;
+    const pt = getSSPoint(mat,t);
+    if (pt.stress===0&&i>0) break;
+    const x = pad + (pt.strain/(m.ef*1.1))*(W-pad*2);
+    const y = H-pad - (pt.stress/m.uts)*(H-pad*2);
+    if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    lastX=x; lastY=y;
+  }
+  ctx.stroke();
+  // marker
+  if (upTo!==undefined) {
+    ctx.beginPath(); ctx.arc(lastX,lastY,6,0,Math.PI*2);
+    ctx.fillStyle=m.color; ctx.fill();
+  }
+}
+
+function startSim() {
+  if (simRunning) return;
+  simRunning=true; simT=0;
+  const rate=document.getElementById('loadRate').value/10;
+  simInterval = setInterval(()=>{
+    simT+=rate*0.01;
+    const mat=document.getElementById('matSelect').value;
+    const pt=getSSPoint(mat,simT);
+    document.getElementById('simStress').textContent=Math.round(pt.stress);
+    document.getElementById('simStrain').textContent=pt.strain.toFixed(4);
+    document.getElementById('simPhase').textContent=pt.phase;
+    document.getElementById('simPhase').style.color=pt.phase==='ELASTIC'?'var(--green)':pt.phase==='FRACTURE'?'var(--red)':'var(--gold)';
+    document.getElementById('simStatus').textContent=pt.status;
+    document.getElementById('simStatus').style.color=pt.status==='INTACT'?'var(--teal)':'var(--red)';
+    drawSSCurve(simT);
+    drawSpecimen(simT,mat,pt);
+    if (simT>=1.05||pt.stress===0) {
+      clearInterval(simInterval); simRunning=false;
+      showToast(pt.status==='FRACTURED'?'💥 Specimen fractured!':'✅ Test complete');
+    }
+  },50);
+}
+
+function resetSim() {
+  clearInterval(simInterval); simRunning=false; simT=0;
+  drawSSCurve(); drawSpecimen(0,document.getElementById('matSelect').value,{stress:0,strain:0,phase:'ELASTIC',status:'INTACT'});
+  ['simStress','simStrain'].forEach(id=>{
+    document.getElementById(id).textContent=id==='simStrain'?'0.000':'0';
+  });
+  document.getElementById('simPhase').textContent='ELASTIC';
+  document.getElementById('simStatus').textContent='INTACT';
+}
+
+function drawSpecimen(t, mat, pt) {
+  const c = document.getElementById('specCanvas');
+  if (!c) return;
+  c.width=c.offsetWidth*1.5; c.height=320;
+  const ctx=c.getContext('2d');
+  const W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#070f1f'; ctx.fillRect(0,0,W,H);
+  const m=matData[mat];
+  const necking = !m.brittle && t>0.8;
+  const frac = pt.status==='FRACTURED';
+  const midX=W/2, midY=H/2;
+  const specH=H*0.6, gripW=W*0.3, specW=W*0.12;
+  const neckDepth = necking?(t-0.8)/0.2*specW*0.4:0;
+  ctx.fillStyle=frac?'rgba(232,64,64,0.3)':m.color+'33';
+  ctx.strokeStyle=frac?'var(--red)':m.color;
+  ctx.lineWidth=2;
+  if (!frac) {
+    ctx.beginPath();
+    ctx.rect(midX-gripW/2,midY-specH/2,gripW,specH*0.2); ctx.fill(); ctx.stroke();
+    ctx.beginPath();
+    ctx.rect(midX-gripW/2,midY+specH*0.3,gripW,specH*0.2); ctx.fill(); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(midX-gripW/2+gripW*0.2, midY-specH*0.3+specH*0.2);
+    ctx.lineTo(midX-specW/2+neckDepth, midY-specH*0.05);
+    ctx.lineTo(midX-specW/2+neckDepth, midY+specH*0.05);
+    ctx.lineTo(midX-gripW/2+gripW*0.2, midY+specH*0.3);
+    ctx.lineTo(midX+gripW/2-gripW*0.2, midY+specH*0.3);
+    ctx.lineTo(midX+specW/2-neckDepth, midY+specH*0.05);
+    ctx.lineTo(midX+specW/2-neckDepth, midY-specH*0.05);
+    ctx.lineTo(midX+gripW/2-gripW*0.2, midY-specH*0.3+specH*0.2);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    // arrows
+    if (t>0.05) {
+      ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(midX,midY-specH/2-10); ctx.lineTo(midX,midY-specH/2-25); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(midX-6,midY-specH/2-20); ctx.lineTo(midX,midY-specH/2-28); ctx.lineTo(midX+6,midY-specH/2-20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(midX,midY+specH/2+10); ctx.lineTo(midX,midY+specH/2+25); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(midX-6,midY+specH/2+20); ctx.lineTo(midX,midY+specH/2+28); ctx.lineTo(midX+6,midY+specH/2+20); ctx.stroke();
+    }
+  } else {
+    // fractured pieces
+    const gap=20;
+    ['top','bot'].forEach((p,i)=>{
+      const off=i?gap:-gap;
+      ctx.fillStyle='rgba(232,64,64,0.2)'; ctx.strokeStyle='var(--red)'; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.rect(midX-gripW/2,midY-specH/2+i*specH*0.5+off,gripW,(specH*0.5-gap/2)); ctx.fill(); ctx.stroke();
+    });
+    ctx.fillStyle='var(--red)'; ctx.font=`bold ${W*0.05}px Rajdhani`;
+    ctx.textAlign='center'; ctx.fillText('FRACTURED',midX,midY+specH/2+30);
+  }
+}
+
+// ===== FATIGUE SIMULATOR =====
+// Canvas dimensions are fixed via HTML attributes (width/height) so they always work
+// regardless of whether the tab was visible on load.
+const FW=700, FH=260, FP=50;   // chart canvas fixed W/H/padding
+const SW=360, SH=260;           // specimen canvas fixed W/H
+const FAT_MAX_CYCLES=200000;
+const FAT_CPF=2000;             // cycles per animation frame (controls speed)
+
+let fatRAF=null, fatCycles=0, fatCrackLen=0.1, fatRunning=false, fatDone=false;
+let fatPts=[];  // {x:cycles, y:crackMm}
+// Pre-baked jagged crack offsets so they don't jitter every frame
+let _crackSegsR=[], _crackSegsL=[];
+function _genCrackSegs(){
+  _crackSegsR=[]; _crackSegsL=[];
+  for(let i=0;i<12;i++){
+    _crackSegsR.push((Math.random()-0.5));
+    _crackSegsL.push((Math.random()-0.5));
+  }
+}
+_genCrackSegs();
+
+// ---- CHART ----
+function _fatAxes(ctx){
+  ctx.fillStyle='#070f1f'; ctx.fillRect(0,0,FW,FH);
+  // grid lines
+  ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1;
+  for(let i=1;i<=4;i++){
+    const y=FP+(i/5)*(FH-FP-20); // horizontal
+    ctx.beginPath(); ctx.moveTo(FP,y); ctx.lineTo(FW-10,y); ctx.stroke();
+    const x=FP+(i/5)*(FW-FP-10); // vertical
+    ctx.beginPath(); ctx.moveTo(x,FP-8); ctx.lineTo(x,FH-20); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='rgba(255,255,255,0.4)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(FP,FP-8); ctx.lineTo(FP,FH-20); ctx.lineTo(FW-8,FH-20); ctx.stroke();
+  // y-axis label
+  ctx.save(); ctx.translate(14,FH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillStyle='#00c9b1'; ctx.font='bold 13px JetBrains Mono';
+  ctx.textAlign='center'; ctx.fillText('Crack length  a (mm)',0,0); ctx.restore();
+  // x-axis label
+  ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='12px JetBrains Mono';
+  ctx.textAlign='right'; ctx.fillText('Cycles (N) →',FW-8,FH-4);
+  // y ticks
+  ctx.textAlign='right'; ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.font='11px JetBrains Mono';
+  for(let i=0;i<=5;i++){
+    const val=(i/5*20).toFixed(0);
+    const y=FH-20-(i/5)*(FH-FP-20);
+    ctx.fillText(val,FP-5,y+4);
+  }
+  // x ticks
+  ctx.textAlign='center'; ctx.font='11px JetBrains Mono';
+  for(let i=0;i<=4;i++){
+    const val=((i/4)*FAT_MAX_CYCLES/1000).toFixed(0)+'k';
+    const x=FP+i/4*(FW-FP-10);
+    ctx.fillText(val,x,FH-6);
+  }
+  // critical threshold dashed line
+  const critY=FH-20-(20/20)*(FH-FP-20);
+  ctx.setLineDash([5,4]); ctx.strokeStyle='rgba(232,64,64,0.55)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(FP,critY); ctx.lineTo(FW-10,critY); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(232,64,64,0.8)'; ctx.font='bold 11px JetBrains Mono';
+  ctx.textAlign='left'; ctx.fillText('▲ Critical  20 mm',FP+5,critY-4);
+}
+
+function _fatDrawChart(){
+  const c=document.getElementById('fatigueCanvas'); if(!c) return;
+  const ctx=c.getContext('2d');
+  _fatAxes(ctx);
+  if(fatPts.length<2) return;
+  // coloured line: green→orange→red based on crack length
+  ctx.lineWidth=2.5; ctx.lineJoin='round';
+  for(let i=1;i<fatPts.length;i++){
+    const p0=fatPts[i-1], p1=fatPts[i];
+    const frac=Math.min(p1.y/20,1);
+    const r=Math.round(frac<0.5?46+frac*2*186:232);
+    const g=Math.round(frac<0.5?204-frac*2*80:204-frac*2*80);
+    const b=Math.round(frac<0.5?113-frac*2*113:0);
+    ctx.strokeStyle=`rgb(${r},${Math.max(g,40)},${Math.max(b,0)})`;
+    const x0=FP+(p0.x/FAT_MAX_CYCLES)*(FW-FP-10);
+    const y0=FH-20-(Math.min(p0.y,20)/20)*(FH-FP-20);
+    const x1=FP+(p1.x/FAT_MAX_CYCLES)*(FW-FP-10);
+    const y1=FH-20-(Math.min(p1.y,20)/20)*(FH-FP-20);
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  }
+  // live dot
+  const last=fatPts[fatPts.length-1];
+  const lx=FP+(last.x/FAT_MAX_CYCLES)*(FW-FP-10);
+  const ly=FH-20-(Math.min(last.y,20)/20)*(FH-FP-20);
+  ctx.beginPath(); ctx.arc(lx,ly,5,0,Math.PI*2);
+  ctx.fillStyle=last.y>12?'#e84040':last.y>3?'#f5a623':'#2ecc71'; ctx.fill();
+  // live readout on chart
+  ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='bold 12px JetBrains Mono';
+  ctx.textAlign='left';
+  ctx.fillText(`N = ${(last.x/1000).toFixed(1)}k   a = ${Math.min(last.y,20).toFixed(2)} mm`,FP+5,FP+4);
+}
+
+function drawFatigueInit(){
+  const c=document.getElementById('fatigueCanvas'); if(!c) return;
+  const ctx=c.getContext('2d');
+  _fatAxes(ctx);
+  ctx.fillStyle='rgba(255,255,255,0.22)'; ctx.font='bold 15px Rajdhani';
+  ctx.textAlign='center'; ctx.fillText('Press  ▶ Run Simulation  to begin',FW/2,FH/2-10);
+  ctx.font='12px Source Sans 3'; ctx.fillStyle='rgba(0,201,177,0.5)';
+  ctx.fillText('Try different stress amplitudes — higher stress = faster crack growth',FW/2,FH/2+12);
+  _fatDrawSpecimen(0);
+}
+
+// ---- SPECIMEN ----
+function _fatDrawSpecimen(crackMm){
+  const c=document.getElementById('fatigueSpecCanvas'); if(!c) return;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#070f1f'; ctx.fillRect(0,0,SW,SH);
+  const cx=SW/2, cy=SH/2-10;
+  const bw=SW*0.68, bh=SH*0.38;
+  const frac=Math.min(crackMm/20,1);
+  // specimen body gradient
+  const bg=ctx.createLinearGradient(cx-bw/2,0,cx+bw/2,0);
+  const c1=frac<0.4?'#1a4a7a':'#5a2800'; const c2=frac<0.4?'#0d2a4a':'#3a1000';
+  bg.addColorStop(0,c2); bg.addColorStop(0.5,c1); bg.addColorStop(1,c2);
+  ctx.fillStyle=bg; ctx.strokeStyle=frac<0.4?'#3a7ab5':'#c05010'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.roundRect(cx-bw/2,cy-bh/2,bw,bh,4); ctx.fill(); ctx.stroke();
+  // grip hatching top
+  ctx.fillStyle='rgba(0,201,177,0.12)';
+  ctx.beginPath(); ctx.roundRect(cx-bw/2,cy-bh/2-22,bw,18,3); ctx.fill();
+  ctx.strokeStyle='rgba(0,201,177,0.35)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.roundRect(cx-bw/2,cy-bh/2-22,bw,18,3); ctx.stroke();
+  // grip hatching bottom
+  ctx.fillStyle='rgba(0,201,177,0.12)';
+  ctx.beginPath(); ctx.roundRect(cx-bw/2,cy+bh/2+4,bw,18,3); ctx.fill();
+  ctx.strokeStyle='rgba(0,201,177,0.35)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.roundRect(cx-bw/2,cy+bh/2+4,bw,18,3); ctx.stroke();
+  // loading arrows (oscillate when running)
+  if(!fatDone){
+    const amp=Math.abs(Math.sin(fatCycles*0.0003))*14+4;
+    const ac='rgba(52,152,219,0.8)'; ctx.strokeStyle=ac; ctx.lineWidth=2;
+    // up arrow
+    ctx.beginPath(); ctx.moveTo(cx,cy-bh/2-22-2); ctx.lineTo(cx,cy-bh/2-22-amp-12); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx-7,cy-bh/2-22-amp-6); ctx.lineTo(cx,cy-bh/2-22-amp-16); ctx.lineTo(cx+7,cy-bh/2-22-amp-6); ctx.stroke();
+    // down arrow
+    ctx.beginPath(); ctx.moveTo(cx,cy+bh/2+22+2); ctx.lineTo(cx,cy+bh/2+22+amp+12); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx-7,cy+bh/2+22+amp+6); ctx.lineTo(cx,cy+bh/2+22+amp+16); ctx.lineTo(cx+7,cy+bh/2+22+amp+6); ctx.stroke();
+    ctx.fillStyle=ac; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText('σ cyclic',cx+bw/2+28,cy);
+  }
+  // surface notch indicator
+  ctx.strokeStyle='rgba(255,200,50,0.6)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(cx-bw/2,cy); ctx.lineTo(cx-bw/2+10,cy); ctx.stroke();
+  ctx.fillStyle='rgba(255,200,50,0.6)'; ctx.font='10px JetBrains Mono'; ctx.textAlign='right';
+  ctx.fillText('notch',cx-bw/2-3,cy+4);
+  // crack (only if >0.2mm)
+  if(crackMm>0.2){
+    const maxPx=(bw/2-2)*0.95;
+    const crackPx=frac*maxPx;
+    const cc=frac<0.35?'#f5a623':frac<0.7?'#e67e22':'#e84040';
+    ctx.strokeStyle=cc; ctx.lineWidth=Math.max(1.2, frac*4); ctx.lineJoin='round';
+    // right crack from notch
+    ctx.beginPath(); ctx.moveTo(cx-bw/2+10,cy);
+    const segs=12;
+    for(let i=0;i<segs;i++){
+      const px=cx-bw/2+10+(i+1)*(crackPx/segs);
+      const jy=cy+_crackSegsR[i]*frac*bh*0.28;
+      ctx.lineTo(px,jy);
+    }
+    ctx.stroke();
+    // crack tip glow
+    const tipX=cx-bw/2+10+crackPx;
+    const tipY=cy+(_crackSegsR[segs-1]||0)*frac*bh*0.28;
+    if(frac>0.05){
+      const grd=ctx.createRadialGradient(tipX,tipY,0,tipX,tipY,frac*22+4);
+      grd.addColorStop(0,cc+'dd'); grd.addColorStop(1,'transparent');
+      ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(tipX,tipY,frac*22+4,0,Math.PI*2); ctx.fill();
+    }
+    // crack length label
+    ctx.fillStyle=cc; ctx.font=`bold 13px Rajdhani`; ctx.textAlign='center';
+    ctx.fillText(`a = ${crackMm.toFixed(2)} mm`,cx,cy+bh/2+36);
+    // stage label
+    const stage=frac<0.15?'Stage I: Initiation':frac<0.7?'Stage II: Propagation':'Stage III: Rapid Growth';
+    ctx.fillStyle='rgba(255,255,255,0.45)'; ctx.font='11px Source Sans 3';
+    ctx.fillText(stage,cx,cy+bh/2+50);
+  } else {
+    ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.font='12px Rajdhani'; ctx.textAlign='center';
+    ctx.fillText('No crack initiated',cx,cy+bh/2+36);
+  }
+  // fracture overlay
+  if(fatDone && crackMm>=20){
+    ctx.strokeStyle='#e84040'; ctx.lineWidth=3.5;
+    ctx.beginPath(); ctx.moveTo(cx-bw/2,cy-6); ctx.lineTo(cx+bw/2,cy+6); ctx.stroke();
+    ctx.fillStyle='rgba(232,64,64,0.15)'; ctx.beginPath(); ctx.roundRect(cx-bw/2,cy-bh/2,bw,bh,4); ctx.fill();
+    ctx.fillStyle='#e84040'; ctx.font='bold 14px Rajdhani'; ctx.textAlign='center';
+    ctx.fillText('💥 FATIGUE FRACTURE',cx,cy-bh/2-32);
+  }
+  // title
+  ctx.fillStyle='rgba(0,201,177,0.6)'; ctx.font='bold 11px Rajdhani'; ctx.textAlign='center';
+  ctx.fillText('STEEL SPECIMEN  (S355)',cx,cy-bh/2-8);
+}
+
+// ---- TICK ----
+function fatigueTick(){
+  if(!fatRunning) return;
+  const stress=parseFloat(document.getElementById('fatigueStress').value)||250;
+  const C=1e-12, m=3;
+  let done=false;
+  for(let i=0;i<FAT_CPF;i++){
+    fatCycles++;
+    const a=Math.max(fatCrackLen,0.05)/1000; // m
+    const dK=stress*1.12*Math.sqrt(Math.PI*a);
+    fatCrackLen+=C*Math.pow(dK,m)*1000; // mm
+    if(fatCycles%300===0) fatPts.push({x:fatCycles, y:Math.min(fatCrackLen,20)});
+    if(fatCrackLen>=20||fatCycles>=FAT_MAX_CYCLES){ done=true; break; }
+  }
+  fatPts.push({x:fatCycles, y:Math.min(fatCrackLen,20)});
+  _fatDrawChart();
+  _fatDrawSpecimen(Math.min(fatCrackLen,20));
+  // update readouts
+  document.getElementById('fatCycles').textContent=(fatCycles/1000).toFixed(1)+'k';
+  document.getElementById('fatCrack').textContent=Math.min(fatCrackLen,20).toFixed(3);
+  const dK=stress*1.12*Math.sqrt(Math.PI*Math.max(fatCrackLen,0.05)/1000);
+  document.getElementById('fatDK').textContent=dK.toFixed(2);
+  const st=document.getElementById('fatStatus');
+  if(fatCrackLen<0.5){st.textContent='INITIATION';st.style.color='var(--green)';}
+  else if(fatCrackLen<5){st.textContent='CRACK GROWING';st.style.color='var(--gold)';}
+  else if(fatCrackLen<15){st.textContent='RAPID GROWTH';st.style.color='#e67e22';}
+  else{st.textContent='CRITICAL';st.style.color='var(--red)';}
+  if(done){
+    fatRunning=false; fatDone=true;
+    _fatDrawChart(); _fatDrawSpecimen(Math.min(fatCrackLen,20));
+    st.textContent=fatCrackLen>=20?'💥 FRACTURED':'✅ SURVIVED';
+    st.style.color=fatCrackLen>=20?'var(--red)':'var(--green)';
+    showToast(fatCrackLen>=20?'💥 Fatigue fracture reached!':'✅ Specimen survived all cycles');
+    return;
+  }
+  fatRAF=requestAnimationFrame(fatigueTick);
+}
+
+function startFatigue(){
+  if(fatRunning) return;
+  fatRunning=true; fatDone=false;
+  _genCrackSegs();
+  fatRAF=requestAnimationFrame(fatigueTick);
+}
+
+function resetFatigue(){
+  cancelAnimationFrame(fatRAF);
+  fatRunning=false; fatDone=false;
+  fatCycles=0; fatCrackLen=0.1; fatPts=[];
+  document.getElementById('fatCycles').textContent='0';
+  document.getElementById('fatCrack').textContent='0.000';
+  document.getElementById('fatDK').textContent='—';
+  document.getElementById('fatStatus').textContent='NO CRACK';
+  document.getElementById('fatStatus').style.color='var(--green)';
+  drawFatigueInit();
+}
+
+function calcFracture() {
+  const kic=parseFloat(document.getElementById('kicVal').value)||50;
+  const a=parseFloat(document.getElementById('crackA').value)/1000;
+  const Y=parseFloat(document.getElementById('geomY').value)||1.12;
+  const sigma=kic/(Y*Math.sqrt(Math.PI*a));
+  document.getElementById('fractureAnswer').textContent=`σ_critical = ${sigma.toFixed(1)} MPa`;
+  document.getElementById('fractureResult').style.display='block';
+}
+
+// ===== DRAG AND DROP SORT =====
+let draggingId=null;
+document.querySelectorAll('.drag-item').forEach(el=>{
+  el.addEventListener('dragstart',e=>{ draggingId=e.target.id; e.dataTransfer.setData('text',e.target.id); });
+});
+function allowDrop(e){ e.preventDefault(); }
+function dropItem(e,zone){
+  e.preventDefault();
+  const el=document.getElementById(draggingId);
+  if(el){ document.getElementById('zone-'+zone).appendChild(el); el.style.cursor='default'; }
+  e.currentTarget.classList.remove('over');
+}
+function checkSort(){
+  const zones=['elastic','plastic'];
+  let correct=0,total=0;
+  zones.forEach(z=>{
+    document.getElementById('zone-'+z).querySelectorAll('.drag-item').forEach(el=>{
+      total++;
+      if(el.dataset.cat===z){
+        el.style.borderColor='var(--green)'; el.style.color='var(--green)'; correct++;
+      } else {
+        el.style.borderColor='var(--red)'; el.style.color='var(--red)';
+      }
+    });
+  });
+  const r=document.getElementById('sortResult');
+  r.style.display='block';
+  r.style.color=correct===total?'var(--green)':'var(--gold)';
+  r.textContent=`${correct}/${total} correct! ${correct===total?'🎉 Perfect sort!':'↺ Some items need moving.'}`;
+}
+function resetSort(){
+  const bank=document.getElementById('sortItems');
+  ['zone-elastic','zone-plastic'].forEach(z=>{
+    document.getElementById(z).querySelectorAll('.drag-item').forEach(el=>{
+      el.style.borderColor=''; el.style.color='';
+      bank.appendChild(el);
+    });
+  });
+  document.getElementById('sortResult').style.display='none';
+}
+
+// ===== RAPID FIRE =====
+const rfQs = [
+  {q:'What does UTS stand for?',a:1,opts:['Upper Tensile Strength','Ultimate Tensile Strength','Uniform Tensile Stress','Unit Tensile Stiffness']},
+  {q:'Young\'s Modulus is the ratio of stress to...?',a:0,opts:['Strain','Load','Area','Force']},
+  {q:'Which material behaviour is REVERSIBLE?',a:2,opts:['Plastic','Fracture','Elastic','Fatigue']},
+  {q:'What unit is Young\'s Modulus measured in?',a:1,opts:['MPa','GPa','N/m','Pa/m']},
+  {q:'What is the formula for engineering stress?',a:0,opts:['F/A','A/F','F×L','ΔL/L']},
+  {q:'Brittle fracture involves...',a:2,opts:['Large plastic deformation','Visible necking','Little plastic deformation','Cup-and-cone surface']},
+  {q:'What does K_IC measure?',a:3,opts:['Yield strength','Ductility','Fatigue life','Fracture toughness']},
+  {q:'Paris Law describes...',a:1,opts:['Stress-strain slope','Crack growth per cycle','Yield stress','Strain hardening']},
+  {q:'HS2 uses which steel grade for mainline rail?',a:2,opts:['S275','S460','Grade 900A','Grade 700']},
+  {q:'The Charpy test measures...',a:0,opts:['Impact toughness','Yield strength','UTS','Fracture toughness']},
+  {q:'What is the yield strength of S355 steel?',a:1,opts:['275 MPa','355 MPa','460 MPa','500 MPa']},
+  {q:'A material with high ductility...',a:3,opts:['Fractures without warning','Has low strain at failure','Is always brittle','Undergoes significant plastic deformation']},
+  {q:'Fatigue failure occurs at stresses...',a:0,opts:['Below the UTS','Above the yield strength','Equal to E','Above UTS']},
+  {q:'What happens after the UTS point?',a:2,opts:['Strain hardening','Elastic recovery','Necking begins','Yield begins']},
+  {q:'Engineering strain is dimensionless — TRUE or FALSE?',a:0,opts:['TRUE','FALSE','Only in metals','Only in plastics']}
+];
+let rfCurrent=0, rfScoreV=0, rfTimerInterval=null, rfTime=60;
+
+function startRapidFire(){
+  rfCurrent=0; rfScoreV=0; rfTime=60;
+  document.getElementById('rfStart').style.display='none';
+  document.getElementById('rfEnd').style.display='none';
+  document.getElementById('rfGame').style.display='block';
+  document.getElementById('rfScore').textContent='0';
+  const shuffled=[...rfQs].sort(()=>Math.random()-0.5);
+  window._rfShuffled=shuffled;
+  rfTimerInterval=setInterval(()=>{
+    rfTime--;
+    document.getElementById('rfTimer').textContent=rfTime;
+    if(rfTime<=0){
+      clearInterval(rfTimerInterval);
+      endRapidFire();
+    }
+  },1000);
+  showRFQuestion();
+}
+function showRFQuestion(){
+  const q=window._rfShuffled[rfCurrent%window._rfShuffled.length];
+  document.getElementById('rfQuestion').textContent=`Q${rfCurrent+1}: ${q.q}`;
+  const opts=document.getElementById('rfOptions');
+  opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-opt';
+    btn.textContent=o;
+    btn.onclick=()=>answerRF(i,q.a);
+    opts.appendChild(btn);
+  });
+}
+function answerRF(sel,correct){
+  if(sel===correct) rfScoreV++;
+  document.getElementById('rfScore').textContent=rfScoreV;
+  rfCurrent++;
+  showRFQuestion();
+}
+function endRapidFire(){
+  document.getElementById('rfGame').style.display='none';
+  document.getElementById('rfEnd').style.display='block';
+  document.getElementById('rfFinalScore').textContent=rfScoreV;
+  const msgs=['Keep revising!','Good effort!','Well done!','Excellent!','Outstanding!'];
+  document.getElementById('rfEndMsg').textContent=msgs[Math.min(Math.floor(rfScoreV/3),4)];
+}
+
+// ===== LABEL GAME =====
+const labelRegions=[
+  {name:'Elastic Region',xRange:[0.05,0.25],yRange:[0.5,0.9]},
+  {name:'Yield Point',xRange:[0.23,0.32],yRange:[0.35,0.55]},
+  {name:'Plastic Region (Strain Hardening)',xRange:[0.3,0.6],yRange:[0.2,0.5]},
+  {name:'Ultimate Tensile Strength (UTS)',xRange:[0.55,0.75],yRange:[0.08,0.25]},
+  {name:'Fracture Point',xRange:[0.8,0.98],yRange:[0.15,0.45]}
+];
+let labelIdx=0, labelCorrect=0;
+
+function initLabelGame(){
+  drawLabelCurve();
+  labelIdx=0; labelCorrect=0;
+  updateLabelPrompt();
+}
+function drawLabelCurve(){
+  const c=document.getElementById('labelCanvas');
+  if(!c) return;
+  c.width=c.offsetWidth*1.5; c.height=220;
+  const ctx=c.getContext('2d');
+  const W=c.width,H=c.height,pad=30;
+  ctx.fillStyle='#070f1f'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,H-pad); ctx.lineTo(W-pad,H-pad); ctx.stroke();
+  // draw curve
+  const pts=[[0,0],[0.25,0.62],[0.28,0.65],[0.28,0.63],[0.5,0.8],[0.68,0.88],[0.85,0.7],[1,0.68]];
+  ctx.beginPath(); ctx.strokeStyle='#3498db'; ctx.lineWidth=3;
+  pts.forEach((p,i)=>{
+    const x=pad+p[0]*(W-pad*2);
+    const y=H-pad-p[1]*(H-pad*2);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font=`${W*0.014}px Rajdhani`;
+  ctx.fillText('σ (Stress)',pad+4,pad-6);
+  ctx.fillText('ε (Strain) →',W-70,H-pad+16);
+}
+function updateLabelPrompt(){
+  if(labelIdx>=labelRegions.length){
+    document.getElementById('labelPrompt').textContent='🎉 All regions labelled!';
+    document.getElementById('labelScore').textContent=`Score: ${labelCorrect}/${labelRegions.length}`;
+    return;
+  }
+  document.getElementById('labelPrompt').textContent=`👆 Click on: ${labelRegions[labelIdx].name}`;
+  document.getElementById('labelScore').textContent=`Progress: ${labelIdx}/${labelRegions.length}`;
+}
+function handleLabelClick(e){
+  if(labelIdx>=labelRegions.length) return;
+  const c=document.getElementById('labelCanvas');
+  const rect=c.getBoundingClientRect();
+  const scaleX=c.width/rect.width, scaleY=c.height/rect.height;
+  const x=(e.clientX-rect.left)*scaleX, y=(e.clientY-rect.top)*scaleY;
+  const W=c.width,H=c.height,pad=30;
+  const relX=(x-pad)/(W-pad*2), relY=1-(y-pad)/(H-pad*2);
+  const reg=labelRegions[labelIdx];
+  const hit=relX>=reg.xRange[0]&&relX<=reg.xRange[1]&&relY>=reg.yRange[0]&&relY<=reg.yRange[1];
+  // draw dot
+  const ctx=c.getContext('2d');
+  ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2);
+  ctx.fillStyle=hit?'var(--green)':'var(--red)'; ctx.fill();
+  if(hit){
+    ctx.fillStyle='var(--green)'; ctx.font=`bold ${W*0.016}px Rajdhani`;
+    ctx.fillText('✓ '+reg.name,x+12,y-4);
+    labelCorrect++;
+  } else {
+    ctx.fillStyle='var(--red)'; ctx.font=`${W*0.015}px Rajdhani`;
+    ctx.fillText('✗',x+10,y-4);
+  }
+  labelIdx++;
+  updateLabelPrompt();
+}
+function resetLabelGame(){
+  labelIdx=0; labelCorrect=0;
+  drawLabelCurve();
+  updateLabelPrompt();
+}
+
+// ===== MATCH GAME =====
+const matchAnswers=['a','b','c','d'];
+let matchCorrect=[false,false,false,false];
+function checkMatch(sel,idx){
+  const correct=matchAnswers[idx];
+  const r=document.getElementById('mr'+idx);
+  r.style.display='inline';
+  if(sel.value===correct){
+    r.textContent='✓'; r.style.color='var(--green)';
+    matchCorrect[idx]=true;
+    sel.style.borderColor='var(--green)';
+  } else {
+    r.textContent='✗'; r.style.color='var(--red)';
+    sel.style.borderColor='var(--red)';
+  }
+  if(matchCorrect.every(Boolean)) document.getElementById('matchFinal').style.display='block';
+}
+
+// ===== FILL IN BLANKS =====
+let activeBlank=null;
+const wordValues={'force':'Force','area':'Cross-sectional Area','strain':'Strain','modulus':'Young\'s Modulus','length':'Original Length','change':'Change in Length','stress':'Stress'};
+function useWord(chip, key){
+  if(!activeBlank) { showToast('Click a blank field first!'); return; }
+  const inp=activeBlank;
+  // clear any previous usage
+  document.querySelectorAll('.fill-blank input').forEach(el=>{
+    if(el.value.toLowerCase()===wordValues[key].toLowerCase()&&el!==inp) {
+      el.value=''; el.style.borderBottomColor='var(--teal)';
+      // re-enable chip
+    }
+  });
+  inp.value=wordValues[key];
+  inp.dataset.used=key;
+  inp.style.borderBottomColor='var(--gold)';
+  activeBlank=null;
+  document.querySelectorAll('.fill-blank input').forEach(el=>el.style.outline='none');
+}
+function fillFromBank(inp){
+  document.querySelectorAll('.fill-blank input').forEach(el=>el.style.outline='none');
+  inp.style.outline='2px solid var(--gold)';
+  activeBlank=inp;
+  showToast('Now click a word from the bank above');
+}
+function checkFillBlanks(){
+  let correct=0;
+  document.querySelectorAll('.fill-blank input').forEach(inp=>{
+    const ans=inp.dataset.answer;
+    if(inp.dataset.used===ans){ inp.style.borderBottomColor='var(--green)'; correct++; }
+    else if(inp.value){ inp.style.borderBottomColor='var(--red)'; }
+  });
+  const r=document.getElementById('fbResult');
+  r.style.display='block';
+  r.style.color=correct===7?'var(--green)':'var(--gold)';
+  r.textContent=`${correct}/7 correct! ${correct===7?'🎉 All equations complete!':'Keep trying!'}`;
+}
+function resetFillBlanks(){
+  document.querySelectorAll('.fill-blank input').forEach(inp=>{
+    inp.value=''; inp.dataset.used=''; inp.style.borderBottomColor='var(--teal)';
+  });
+  document.querySelectorAll('.word-chip').forEach(c=>c.classList.remove('used'));
+  document.getElementById('fbResult').style.display='none';
+  activeBlank=null;
+}
+
+// ===== TRUE OR FALSE =====
+const tfQs=[
+  {s:'Elastic deformation is permanent and cannot be recovered.',a:false},
+  {s:'Young\'s Modulus is measured in GPa for metals.',a:true},
+  {s:'UTS is always lower than the yield strength.',a:false},
+  {s:'Brittle materials give visible warning before fracture.',a:false},
+  {s:'HS2 uses Grade 900A steel for its mainline rail.',a:true},
+  {s:'Paris Law describes the rate of crack growth per fatigue cycle.',a:true},
+  {s:'A higher K_IC value means the material is MORE resistant to crack growth.',a:true},
+  {s:'Strain is measured in MPa.',a:false},
+  {s:'S355 structural steel has a yield strength of exactly 355 MPa.',a:true},
+  {s:'Fatigue failure typically occurs above the Ultimate Tensile Strength.',a:false}
+];
+let tfIdx=0, tfScore2=0, tfLocked=false;
+
+function initTF(){
+  tfIdx=0; tfScore2=0; tfLocked=false;
+  document.getElementById('tfContainer').style.display='block';
+  document.getElementById('tfEnd').style.display='none';
+  showTF();
+}
+function showTF(){
+  if(tfIdx>=tfQs.length){ endTF(); return; }
+  const q=tfQs[tfIdx];
+  document.getElementById('tfStatement').textContent=q.s;
+  document.getElementById('tfFeedback').textContent='';
+  document.getElementById('tfFeedback').style.color='';
+  document.getElementById('tfCurrent').textContent=tfIdx+1;
+  tfLocked=false;
+}
+function tfAnswer(val){
+  if(tfLocked) return;
+  tfLocked=true;
+  const correct=tfQs[tfIdx].a===val;
+  if(correct){ tfScore2++; }
+  document.getElementById('tfScore').textContent=tfScore2;
+  const fb=document.getElementById('tfFeedback');
+  fb.textContent=correct?'✅ Correct!':'❌ Incorrect — '+( tfQs[tfIdx].a?'That statement is TRUE':'That statement is FALSE');
+  fb.style.color=correct?'var(--green)':'var(--red)';
+  setTimeout(()=>{ tfIdx++; showTF(); },1200);
+}
+function endTF(){
+  document.getElementById('tfContainer').style.display='none';
+  document.getElementById('tfEnd').style.display='block';
+  document.getElementById('tfFinalScore').textContent=`${tfScore2}/10`;
+  const msgs=['Keep revising!','Good effort!','Nice work!','Excellent!','Perfect!'];
+  document.getElementById('tfEndMsg').textContent=msgs[Math.min(Math.floor(tfScore2/2),4)];
+}
+function resetTF(){ initTF(); }
+
+// ===== QUIZ =====
+const quizQs=[
+  {q:'What is the formula for engineering stress?',opts:['σ = ΔL/L₀','σ = F/A','σ = E×ε','σ = A/F'],a:1},
+  {q:'In the elastic region of the stress–strain curve, removing the load results in:',opts:['Permanent deformation','Material fracture','Recovery to original shape','Strain hardening'],a:2},
+  {q:'Which of the following correctly defines Young\'s Modulus?',opts:['E = F × A','E = σ / ε','E = ε / σ','E = UTS / yield strength'],a:1},
+  {q:'The yield strength of S355 structural steel used in HS2 viaducts is:',opts:['275 MPa','460 MPa','355 MPa','500 MPa'],a:2},
+  {q:'What type of fracture is characterised by a cup-and-cone fracture surface?',opts:['Brittle fracture','Cleavage fracture','Ductile fracture','Fatigue fracture'],a:2},
+  {q:'Fracture toughness K_IC is measured in:',opts:['MPa','GPa','MPa√m','kN/m²'],a:2},
+  {q:'Paris Law da/dN = C(ΔK)^m is used to predict:',opts:['Yield point location','Elastic modulus','Crack growth per fatigue cycle','Tensile strength'],a:2},
+  {q:'HS2 Phase One mainline rail uses which steel specification?',opts:['S355 Grade A','Grade 700 bainitic','Grade 900A pearlitic','EN 10025-2 S460'],a:2},
+  {q:'Why does concrete have low fracture toughness (K_IC ≈ 1.5 MPa√m)?',opts:['It has no elasticity','It has high porosity and microcracking','It is not a metal','Its density is too low'],a:1},
+  {q:'A material with a high elongation at fracture is best described as:',opts:['Brittle','Stiff','Ductile','Elastic'],a:2},
+  {q:'What is the significance of the Charpy impact test for HS2 steel?',opts:['Measures UTS at high temperature','Verifies ductile behaviour and toughness at low temperature','Determines Young\'s Modulus','Measures fatigue limit'],a:1},
+  {q:'Which region of the stress–strain curve follows the yield point in mild steel?',opts:['Elastic region','Fracture region','Strain hardening region','Proportional limit'],a:2},
+  {q:'What initiates fatigue failure in a structural connection?',opts:['Exceeding UTS once','Plastic deformation','Cyclic loading causing crack initiation at stress concentration','Exceeding Young\'s Modulus'],a:2},
+  {q:'The unit of engineering strain is:',opts:['MPa','GPa','Dimensionless (or %)','N/mm²'],a:2},
+  {q:'Why is steel reinforcement critical in HS2 tunnel concrete segments?',opts:['It increases workability','It provides tensile capacity and raises K_IC of the composite','It reduces density','It prevents corrosion alone'],a:1}
+];
+let quizAnswers=new Array(quizQs.length).fill(null), quizBuilt=false;
+
+function buildQuiz(){
+  if(quizBuilt) return;
+  quizBuilt=true;
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';
+  quizQs.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.className='quiz-q';
+    div.innerHTML=`<p class="question">Q${qi+1}. ${q.q}</p><div class="quiz-options">${q.opts.map((o,i)=>`<div class="quiz-opt" data-q="${qi}" data-i="${i}" onclick="selectQuizOpt(${qi},${i})">${String.fromCharCode(65+i)}. ${o}</div>`).join('')}</div><div class="feedback" id="qfb${qi}"></div>`;
+    c.appendChild(div);
+  });
+}
+function selectQuizOpt(qi,i){
+  if(quizAnswers[qi]!==null) return;
+  quizAnswers[qi]=i;
+  document.querySelectorAll(`.quiz-opt[data-q="${qi}"]`).forEach(el=>{
+    el.classList.add('disabled');
+    if(parseInt(el.dataset.i)===i) el.style.borderColor='var(--teal)';
+  });
+}
+function submitQuiz(){
+  let correct=0;
+  quizQs.forEach((q,qi)=>{
+    const fb=document.getElementById('qfb'+qi);
+    const sel=quizAnswers[qi];
+    document.querySelectorAll(`.quiz-opt[data-q="${qi}"]`).forEach(el=>{
+      el.classList.add('disabled');
+      if(parseInt(el.dataset.i)===q.a) el.classList.add('correct');
+      else if(parseInt(el.dataset.i)===sel&&sel!==q.a) el.classList.add('wrong');
+    });
+    fb.classList.add('show');
+    if(sel===q.a){
+      correct++;
+      fb.className='feedback show ok';
+      fb.textContent='✓ Correct!';
+    } else {
+      fb.className='feedback show bad';
+      fb.textContent='✗ Incorrect. Correct answer: '+String.fromCharCode(65+q.a)+'. '+q.opts[q.a];
+    }
+  });
+  const pct=Math.round(correct/quizQs.length*100);
+  const r=document.getElementById('quizResult');
+  r.style.display='block';
+  document.getElementById('quizScore').textContent=`${correct}/${quizQs.length}`;
+  document.getElementById('quizProgress').style.width=pct+'%';
+  const pass=correct>=10;
+  document.getElementById('quizMsg').textContent=pass?`🎉 PASSED (${pct}%) — Excellent work!`:`⚠️ NOT YET PASSED (${pct}%) — Review the theory and try again.`;
+  document.getElementById('quizMsg').style.color=pass?'var(--green)':'var(--red)';
+  r.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetQuiz(){
+  quizAnswers=new Array(quizQs.length).fill(null);
+  quizBuilt=false;
+  document.getElementById('quizContainer').innerHTML='';
+  document.getElementById('quizResult').style.display='none';
+  buildQuiz();
+}
+
+// ===== GLOSSARY =====
+const glossTerms=[
+  {t:'Stress (σ)',d:'The internal force per unit area within a material resisting an applied load. Formula: σ = F/A. Units: Pa or MPa.'},
+  {t:'Strain (ε)',d:'The fractional change in length of a material under load. Formula: ε = ΔL/L₀. Dimensionless.'},
+  {t:'Young\'s Modulus (E)',d:'A measure of material stiffness — the ratio of stress to strain in the elastic region. E = σ/ε. Units: GPa. For steel, E ≈ 200–210 GPa.'},
+  {t:'Yield Strength (σ_y)',d:'The stress at which a material begins to permanently deform. The boundary between elastic and plastic behaviour.'},
+  {t:'Ultimate Tensile Strength (UTS)',d:'The maximum stress a material can sustain before necking begins. Beyond this point, localised cross-sectional reduction occurs.'},
+  {t:'Ductility',d:'The ability of a material to undergo significant plastic deformation before fracture. Measured as % elongation or % reduction in area.'},
+  {t:'Elastic Deformation',d:'Reversible deformation — the material returns to its original shape when the load is removed. Governed by Hooke\'s Law in the linear elastic region.'},
+  {t:'Plastic Deformation',d:'Permanent, irreversible deformation that occurs once the yield stress is exceeded. Involves dislocation motion in metallic crystal structures.'},
+  {t:'Fracture Toughness (K_IC)',d:'A material property quantifying resistance to crack propagation. Formula: K_IC = Yσ√(πa). Units: MPa√m. High K_IC = better crack resistance.'},
+  {t:'Brittle Fracture',d:'Sudden fracture with little plastic deformation, often along cleavage planes. Dangerous as it provides no visible warning. Common in cast iron, ceramics, and steel at low temperatures.'},
+  {t:'Ductile Fracture',d:'Fracture preceded by significant plastic deformation, visible necking, and a cup-and-cone fracture surface. Characteristic of structural steels under normal conditions.'},
+  {t:'Fatigue',d:'Progressive damage and failure under repeated cyclic loading, typically at stresses below the UTS. Accounts for ~80–90% of mechanical failures. Described by S-N curves.'},
+  {t:'Paris Law',d:'An equation describing crack growth rate per fatigue cycle: da/dN = C(ΔK)^m, where ΔK is the stress intensity range, and C and m are material constants.'},
+  {t:'S-N Curve (Wöhler Curve)',d:'A graph of stress amplitude (S) vs number of cycles to failure (N). Used to determine fatigue life and fatigue limit of materials.'},
+  {t:'Strain Hardening',d:'The increase in strength and hardness of a material during plastic deformation, caused by dislocation multiplication and tangles that impede further dislocation movement.'},
+  {t:'Necking',d:'Localised reduction in cross-sectional area that occurs after the UTS is reached in a ductile tensile test. Leads to final fracture.'},
+  {t:'S355 Structural Steel',d:'A structural steel grade used extensively in HS2 viaducts and portal frames. Yield strength: 355 MPa; UTS: 470–630 MPa. Tested per EN 10025.'},
+  {t:'Grade 900A Rail Steel',d:'A pearlitic steel used for high-speed rail in HS2. UTS ≥ 900 MPa; yield strength ≥ 680 MPa. Designed for rolling contact fatigue resistance.'}
+];
+function buildGlossary(){
+  const c=document.getElementById('glossContainer');
+  if(c.children.length>0) return;
+  glossTerms.forEach(g=>{
+    c.innerHTML+=`<div class="gloss-term"><div class="gloss-header" onclick="this.nextElementSibling.classList.toggle('open')">${g.t}<span>▼</span></div><div class="gloss-body"><p>${g.d}</p></div></div>`;
+  });
+}
+
+// ===== INIT =====
+window.onload=()=>{
+  drawSSCurve();
+  drawSpecimen(0,'steel',{stress:0,strain:0,phase:'ELASTIC',status:'INTACT'});
+};
+</script>
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EG4022 Week — Atomic Bonding & Crystal Structures | HS2 Phase 1</title>
+<script src="scorm_api.js"></script>
+<style>
+:root{
+  --bg:#05070d;
+  --bg-2:#0a1020;
+  --panel:#0e1628;
+  --panel-2:#13203a;
+  --ink:#e8eef9;
+  --ink-dim:#9fb0cf;
+  --gold:#e8b84a;
+  --gold-2:#f5d27a;
+  --teal:#5cc8c8;
+  --teal-2:#8fe3e3;
+  --magenta:#ff5d8f;
+  --line:rgba(255,255,255,0.08);
+  --line-2:rgba(255,255,255,0.14);
+  --good:#5dd39e;
+  --bad:#ff6b6b;
+  --shadow:0 20px 60px rgba(0,0,0,0.55);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;overflow-x:hidden}
+body{
+  background:
+    radial-gradient(circle at 12% 8%, rgba(232,184,74,0.10), transparent 40%),
+    radial-gradient(circle at 88% 92%, rgba(92,200,200,0.10), transparent 45%),
+    linear-gradient(180deg,#05070d,#0a1020 60%,#05070d);
+  background-attachment:fixed;
+}
+
+/* ---------- Header ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(18px);
+  background:rgba(5,7,13,0.78);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  max-width:1280px;margin:0 auto;padding:14px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{
+  width:42px;height:42px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),var(--teal));
+  display:grid;place-items:center;font-weight:800;color:#05070d;font-size:18px;
+  box-shadow:0 0 24px rgba(232,184,74,0.35);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1.15}
+.brand-text strong{font-size:15px;letter-spacing:0.3px}
+.brand-text span{font-size:11.5px;color:var(--ink-dim);letter-spacing:1.6px;text-transform:uppercase}
+.status-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border:1px solid var(--line-2);border-radius:999px;
+  background:rgba(255,255,255,0.03);font-size:12.5px;color:var(--ink-dim);
+}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 10px var(--good)}
+
+/* ---------- Hero ---------- */
+.hero{
+  max-width:1280px;margin:0 auto;padding:50px 28px 30px;
+  display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center;
+}
+.hero h1{
+  font-family:'Georgia',serif;
+  font-size:clamp(34px,4.5vw,58px);line-height:1.05;letter-spacing:-1px;
+  background:linear-gradient(120deg,#fff 0%,var(--gold-2) 50%,var(--teal-2) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:18px;
+}
+.eyebrow{
+  display:inline-block;padding:6px 14px;border:1px solid var(--line-2);border-radius:999px;
+  font-size:11.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);
+  margin-bottom:22px;background:rgba(232,184,74,0.06);
+}
+.hero p{color:var(--ink-dim);font-size:16.5px;max-width:560px;margin-bottom:26px}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap}
+.hero-meta div{font-size:12.5px;color:var(--ink-dim)}
+.hero-meta strong{display:block;color:var(--ink);font-size:15px;margin-bottom:2px;letter-spacing:0.3px}
+
+.lattice-canvas{
+  position:relative;height:380px;border:1px solid var(--line);border-radius:18px;
+  background:radial-gradient(ellipse at center, rgba(92,200,200,0.06), transparent 70%);
+  overflow:hidden;
+}
+.lattice-canvas canvas{width:100%;height:100%;display:block}
+.lattice-tag{
+  position:absolute;bottom:14px;left:16px;font-size:11px;letter-spacing:2px;
+  color:var(--ink-dim);text-transform:uppercase;
+}
+
+/* ---------- Main ---------- */
+.shell{max-width:1280px;margin:0 auto;padding:20px 28px 80px}
+
+.section{margin-top:54px}
+.section-head{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+  margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--line);
+}
+.section-head h2{
+  font-family:Georgia,serif;font-size:28px;letter-spacing:-0.3px;font-weight:400;
+}
+.section-head h2 .num{
+  color:var(--gold);font-size:13px;letter-spacing:3px;display:block;margin-bottom:4px;
+  font-family:'Helvetica Neue',sans-serif;text-transform:uppercase;
+}
+.section-head .meta{font-size:12.5px;color:var(--ink-dim);letter-spacing:1px;text-transform:uppercase}
+
+/* ---------- Aim / Objectives ---------- */
+.aim-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:24px}
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);border-radius:16px;padding:26px;
+  box-shadow:var(--shadow);
+}
+.card h3{font-size:14px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.card p{color:var(--ink-dim);font-size:15px}
+.obj-list{list-style:none;display:grid;gap:14px}
+.obj-list li{
+  display:flex;gap:14px;align-items:flex-start;padding:14px;
+  background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:10px;
+  transition:all 0.25s;
+}
+.obj-list li:hover{border-color:var(--gold);background:rgba(232,184,74,0.04)}
+.obj-num{
+  flex-shrink:0;width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-2));
+  color:#05070d;font-weight:800;display:grid;place-items:center;font-size:13px;
+}
+.obj-list li span:last-child{color:var(--ink);font-size:14.5px}
+
+/* ---------- Topic chooser ---------- */
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.topic-card{
+  cursor:pointer;padding:22px;border-radius:14px;
+  background:linear-gradient(160deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);position:relative;overflow:hidden;
+  transition:all 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.topic-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent,rgba(232,184,74,0.06));
+  opacity:0;transition:opacity 0.3s;
+}
+.topic-card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.topic-card:hover::before{opacity:1}
+.topic-card.selected{border-color:var(--gold);background:linear-gradient(160deg,#1b1a0c,#1d1c10)}
+.topic-card.selected::after{
+  content:'✓';position:absolute;top:14px;right:14px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--gold);color:#05070d;display:grid;place-items:center;font-weight:800;
+}
+.topic-icon{font-size:34px;margin-bottom:14px;display:block}
+.topic-card h4{font-size:17px;margin-bottom:6px;letter-spacing:0.2px}
+.topic-card p{font-size:12.5px;color:var(--ink-dim);line-height:1.5}
+.topic-card .hs2-context{
+  margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);
+  font-size:11px;color:var(--teal);letter-spacing:0.5px;
+}
+
+/* ---------- Simulation ---------- */
+.sim-shell{
+  display:grid;grid-template-columns:1fr 320px;gap:24px;
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);border-radius:18px;padding:28px;
+  box-shadow:var(--shadow);
+}
+.sim-stage{
+  position:relative;background:radial-gradient(ellipse at center,#0b1530,#05070d);
+  border:1px solid var(--line);border-radius:12px;height:480px;overflow:hidden;
+}
+.sim-stage canvas{display:block;width:100%;height:100%}
+.sim-controls{display:flex;flex-direction:column;gap:14px}
+.sim-controls h4{font-size:14px;color:var(--gold);letter-spacing:1.6px;text-transform:uppercase;margin-bottom:6px}
+.sim-tabs{display:flex;background:var(--bg-2);border-radius:10px;padding:4px;gap:4px}
+.sim-tab{
+  flex:1;padding:9px;border:none;background:transparent;color:var(--ink-dim);
+  font-size:12px;cursor:pointer;border-radius:7px;font-weight:600;letter-spacing:0.5px;
+  transition:all 0.2s;
+}
+.sim-tab.active{background:var(--gold);color:#05070d}
+.sim-control-row{display:flex;flex-direction:column;gap:6px}
+.sim-control-row label{font-size:11.5px;color:var(--ink-dim);letter-spacing:1px;text-transform:uppercase}
+.sim-control-row input[type="range"]{
+  -webkit-appearance:none;appearance:none;
+  height:5px;background:var(--line-2);border-radius:3px;outline:none;
+}
+.sim-control-row input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--gold);cursor:pointer;border:2px solid var(--bg);
+}
+.sim-readout{
+  padding:12px;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;
+  font-family:Menlo,monospace;font-size:12px;color:var(--teal);
+}
+.sim-readout div{display:flex;justify-content:space-between;margin:3px 0}
+.sim-readout span:first-child{color:var(--ink-dim)}
+.sim-info{
+  padding:12px;background:rgba(232,184,74,0.05);border-left:3px solid var(--gold);
+  font-size:12.5px;color:var(--ink-dim);border-radius:0 8px 8px 0;
+}
+.sim-info strong{color:var(--ink);display:block;margin-bottom:4px;font-size:13px}
+
+/* ---------- Game stages ---------- */
+.stages-track{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px;
+}
+.stage-node{
+  position:relative;padding:16px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+  text-align:center;cursor:pointer;transition:all 0.25s;
+}
+.stage-node[data-state="locked"]{opacity:0.4;cursor:not-allowed}
+.stage-node[data-state="active"]{
+  border-color:var(--gold);background:rgba(232,184,74,0.08);
+  box-shadow:0 0 0 1px var(--gold), 0 10px 30px rgba(232,184,74,0.15);
+}
+.stage-node[data-state="complete"]{border-color:var(--good);background:rgba(93,211,158,0.06)}
+.stage-node .stage-num{
+  font-size:11px;letter-spacing:2px;color:var(--ink-dim);text-transform:uppercase;margin-bottom:6px;
+}
+.stage-node .stage-name{font-size:13px;font-weight:600;letter-spacing:0.3px}
+.stage-node .stage-icon{font-size:22px;margin-bottom:6px;display:block}
+.stage-node[data-state="complete"] .stage-icon::after{content:' ✓';color:var(--good)}
+
+.game-area{
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);border-radius:18px;padding:30px;min-height:420px;
+  box-shadow:var(--shadow);
+}
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.game-title{font-family:Georgia,serif;font-size:22px}
+.game-score{
+  font-family:Menlo,monospace;font-size:13px;color:var(--gold);
+  padding:8px 14px;background:rgba(232,184,74,0.08);border:1px solid var(--gold);border-radius:8px;
+}
+
+/* Stage 1 — Bond Matching */
+.bond-game{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.bond-pool{display:flex;flex-direction:column;gap:10px}
+.bond-pool h5{font-size:12.5px;color:var(--ink-dim);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.bond-item{
+  padding:14px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg-2);cursor:grab;transition:all 0.2s;user-select:none;
+}
+.bond-item:hover{border-color:var(--teal)}
+.bond-item.dragging{opacity:0.5}
+.bond-target{
+  padding:18px;border:2px dashed var(--line-2);border-radius:10px;
+  margin-bottom:10px;min-height:64px;display:flex;align-items:center;gap:14px;
+  transition:all 0.2s;
+}
+.bond-target.over{border-color:var(--gold);background:rgba(232,184,74,0.06)}
+.bond-target.filled{border-style:solid;border-color:var(--good);background:rgba(93,211,158,0.06)}
+.bond-target.wrong{border-color:var(--bad);background:rgba(255,107,107,0.06)}
+.bond-target .target-label{flex:1;font-size:13.5px}
+.bond-target .target-slot{
+  min-width:120px;padding:8px;background:var(--bg);border-radius:6px;
+  font-size:12px;color:var(--ink-dim);text-align:center;
+}
+
+/* Stage 2 — Crystal Build */
+.crystal-builder{display:grid;grid-template-columns:1fr 280px;gap:24px}
+.builder-canvas{
+  background:radial-gradient(ellipse at center,#0d1830,#05070d);
+  border:1px solid var(--line);border-radius:12px;height:360px;
+  position:relative;display:grid;place-items:center;
+}
+.builder-canvas canvas{width:100%;height:100%}
+.builder-options{display:flex;flex-direction:column;gap:10px}
+.builder-options button{
+  padding:14px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg-2);color:var(--ink);cursor:pointer;text-align:left;
+  font-size:13px;transition:all 0.2s;
+}
+.builder-options button:hover{border-color:var(--gold);background:rgba(232,184,74,0.04)}
+.builder-options button.selected{border-color:var(--gold);background:rgba(232,184,74,0.1)}
+
+/* Stage 3 — Slip Plane */
+.slip-game{display:grid;grid-template-rows:auto 1fr auto;gap:18px;min-height:320px}
+.slip-canvas-wrap{
+  background:radial-gradient(ellipse at center,#0d1830,#05070d);
+  border:1px solid var(--line);border-radius:12px;height:320px;position:relative;
+}
+.slip-canvas-wrap canvas{width:100%;height:100%}
+.slip-controls{display:flex;gap:10px;justify-content:center;align-items:center}
+.slip-controls button{
+  padding:10px 18px;background:var(--gold);color:#05070d;border:none;border-radius:8px;
+  font-weight:700;cursor:pointer;letter-spacing:0.5px;font-size:13px;
+}
+.slip-controls button:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Stage 4 — Strengthening Quiz */
+.mcq-game .mcq-q{font-size:16px;margin-bottom:18px;color:var(--ink)}
+.mcq-options{display:grid;gap:10px}
+.mcq-opt{
+  padding:14px 18px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg-2);cursor:pointer;text-align:left;color:var(--ink);
+  font-size:14px;transition:all 0.2s;
+}
+.mcq-opt:hover{border-color:var(--teal)}
+.mcq-opt.correct{border-color:var(--good);background:rgba(93,211,158,0.08)}
+.mcq-opt.wrong{border-color:var(--bad);background:rgba(255,107,107,0.08)}
+
+/* Stage 5 — HS2 Topic Question */
+.hs2-question{
+  padding:24px;background:linear-gradient(135deg,rgba(232,184,74,0.08),rgba(92,200,200,0.04));
+  border:1px solid var(--gold);border-radius:14px;margin-bottom:18px;
+}
+.hs2-question h4{color:var(--gold);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.hs2-question p{font-size:15.5px;color:var(--ink)}
+
+.btn{
+  padding:11px 22px;background:var(--gold);color:#05070d;border:none;border-radius:8px;
+  font-weight:700;cursor:pointer;font-size:13.5px;letter-spacing:0.5px;
+  transition:all 0.2s;
+}
+.btn:hover{background:var(--gold-2);transform:translateY(-1px)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line-2)}
+.btn-ghost:hover{background:rgba(255,255,255,0.04);border-color:var(--gold)}
+
+/* ---------- Assessment ---------- */
+.assessment-shell{
+  background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  border:1px solid var(--line);border-radius:18px;padding:30px;
+  box-shadow:var(--shadow);
+}
+.student-bar{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;
+  padding:18px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;
+}
+.student-bar div{display:flex;flex-direction:column;gap:6px}
+.student-bar label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-dim)}
+.student-bar input{
+  background:var(--bg);border:1px solid var(--line);color:var(--ink);
+  padding:10px 12px;border-radius:8px;font-size:14px;font-family:inherit;
+}
+.student-bar input:focus{border-color:var(--gold);outline:none}
+
+.qa-block{margin-bottom:24px;padding:22px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px}
+.qa-num{
+  display:inline-block;padding:4px 10px;background:var(--gold);color:#05070d;
+  font-weight:700;font-size:11px;letter-spacing:1px;border-radius:6px;margin-bottom:10px;
+}
+.qa-q{font-size:15.5px;margin-bottom:14px;color:var(--ink)}
+.qa-q strong{color:var(--gold)}
+.qa-answer{
+  width:100%;min-height:140px;
+  background:var(--bg);border:1px solid var(--line);border-radius:8px;
+  color:var(--ink);padding:14px;font-size:14px;font-family:inherit;line-height:1.6;
+  resize:vertical;
+}
+.qa-answer:focus{border-color:var(--gold);outline:none}
+.qa-counter{font-size:11.5px;color:var(--ink-dim);margin-top:6px;text-align:right;letter-spacing:0.5px}
+.paste-blocked{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  padding:20px 28px;background:var(--bad);color:#fff;border-radius:10px;
+  z-index:1000;font-weight:600;box-shadow:0 20px 60px rgba(255,107,107,0.4);
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.paste-blocked.show{opacity:1}
+
+.submit-bar{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:18px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;margin-top:22px;
+}
+.submit-info{font-size:13px;color:var(--ink-dim)}
+.submit-info strong{color:var(--ink)}
+
+/* ---------- Misc ---------- */
+.footer{
+  margin-top:60px;padding:30px 28px;border-top:1px solid var(--line);
+  text-align:center;color:var(--ink-dim);font-size:12.5px;letter-spacing:1px;
+}
+.footer strong{color:var(--gold)}
+
+@media(max-width:900px){
+  .hero,.aim-grid,.sim-shell,.crystal-builder,.bond-game,.student-bar{grid-template-columns:1fr}
+  .stages-track{grid-template-columns:repeat(2,1fr)}
+}
+
+.fade-in{animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Pulse animation for active stage */
+@keyframes pulse{0%,100%{box-shadow:0 0 0 1px var(--gold), 0 10px 30px rgba(232,184,74,0.15)}50%{box-shadow:0 0 0 1px var(--gold), 0 10px 40px rgba(232,184,74,0.35)}}
+.stage-node[data-state="active"]{animation:pulse 2.2s infinite}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">VL</div>
+      <div class="brand-text">
+        <strong>EG4022 · Engineering Materials</strong>
+        <span>Week · Atomic Bonding & Crystal Structures</span>
+      </div>
+    </div>
+    <div class="status-pill"><span class="status-dot"></span> Module Lead: Vismay Loliyaniya</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <span class="eyebrow">HS2 Phase 1 · Materials Engineering</span>
+    <h1>The hidden architecture inside every HS2 girder, rail, and viaduct.</h1>
+    <p>From the iron–iron bonds in a 60E1 rail to the slip planes that decide whether a tunnel segment cracks or yields, the way atoms arrange themselves drives every mechanical property you specify on site. Explore, simulate, play, and prove what you've learned.</p>
+    <div class="hero-meta">
+      <div><strong>Duration</strong>2.5 hrs interactive</div>
+      <div><strong>Stages</strong>5 gameplay levels</div>
+      <div><strong>Output</strong>Submittable .txt for Moodle</div>
+    </div>
+  </div>
+  <div class="lattice-canvas">
+    <canvas id="heroLattice"></canvas>
+    <div class="lattice-tag">— BCC α-iron · 3D rotation</div>
+  </div>
+</section>
+
+<main class="shell">
+
+  <!-- Aim & Objectives -->
+  <section class="section" id="sec-aim">
+    <div class="section-head">
+      <h2><span class="num">01 / Foundation</span>Aim & Learning Objectives</h2>
+      <div class="meta">Week Opening</div>
+    </div>
+    <div class="aim-grid">
+      <div class="card">
+        <h3>Aim</h3>
+        <p>To develop an understanding of how atomic bonding and crystal structure influence the mechanical properties and performance of engineering materials — with direct reference to materials specified across HS2 Phase 1 between London Euston and the West Midlands.</p>
+      </div>
+      <div class="card">
+        <h3>Learning Objectives</h3>
+        <ul class="obj-list">
+          <li><span class="obj-num">1</span><span>Understand the different types of atomic bonding and their influence on material behaviour.</span></li>
+          <li><span class="obj-num">2</span><span>Describe common crystal structures found in engineering materials.</span></li>
+          <li><span class="obj-num">3</span><span>Explain how deformation and strengthening mechanisms affect material performance.</span></li>
+          <li><span class="obj-num">4</span><span>Recognise the importance of bonding and crystal structure in controlling engineering properties such as strength and ductility.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topic Selection -->
+  <section class="section" id="sec-topic">
+    <div class="section-head">
+      <h2><span class="num">02 / Personalise</span>Choose your HS2 material of focus</h2>
+      <div class="meta">All questions adapt to your pick</div>
+    </div>
+    <p style="color:var(--ink-dim);margin-bottom:20px;font-size:14.5px">Every quiz question, the final stage challenge, and your downloadable assessment will be tailored to the material you select. Choose carefully — you can only pick one.</p>
+    <div class="topic-grid" id="topicGrid"></div>
+  </section>
+
+  <!-- Bonding Simulation -->
+  <section class="section" id="sec-sim-bond">
+    <div class="section-head">
+      <h2><span class="num">03 / Simulate</span>Bonding & Crystal Lattice Lab</h2>
+      <div class="meta">Live 3D · Switch bond types</div>
+    </div>
+    <div class="sim-shell">
+      <div class="sim-stage"><canvas id="bondSim"></canvas></div>
+      <div class="sim-controls">
+        <h4>Bond Type</h4>
+        <div class="sim-tabs">
+          <button class="sim-tab active" data-bond="metallic">Metallic</button>
+          <button class="sim-tab" data-bond="ionic">Ionic</button>
+          <button class="sim-tab" data-bond="covalent">Covalent</button>
+        </div>
+
+        <div class="sim-control-row">
+          <label>Temperature: <span id="tempVal">25°C</span></label>
+          <input type="range" id="tempSlider" min="-50" max="800" value="25">
+        </div>
+        <div class="sim-control-row">
+          <label>Applied stress: <span id="stressVal">0 MPa</span></label>
+          <input type="range" id="stressSlider" min="0" max="500" value="0">
+        </div>
+
+        <div class="sim-readout" id="bondReadout">
+          <div><span>Bond strength</span><span id="rBond">High</span></div>
+          <div><span>Electron mobility</span><span id="rMob">Free (sea)</span></div>
+          <div><span>Ductility</span><span id="rDuc">High</span></div>
+          <div><span>HS2 example</span><span id="rEx">Steel rail</span></div>
+        </div>
+
+        <div class="sim-info" id="bondInfo">
+          <strong>Metallic bonding</strong>
+          A delocalised "sea" of electrons holds positive ion cores together — explains why HS2 rails plastically deform under stress rather than shattering.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Crystal Structures Simulation -->
+  <section class="section" id="sec-sim-crystal">
+    <div class="section-head">
+      <h2><span class="num">04 / Visualise</span>Crystal structures — BCC, FCC, HCP</h2>
+      <div class="meta">Drag to rotate · Click to switch</div>
+    </div>
+    <div class="sim-shell">
+      <div class="sim-stage"><canvas id="crystalSim"></canvas></div>
+      <div class="sim-controls">
+        <h4>Lattice</h4>
+        <div class="sim-tabs">
+          <button class="sim-tab active" data-lat="bcc">BCC</button>
+          <button class="sim-tab" data-lat="fcc">FCC</button>
+          <button class="sim-tab" data-lat="hcp">HCP</button>
+        </div>
+
+        <div class="sim-readout">
+          <div><span>Atoms per cell</span><span id="lAtoms">2</span></div>
+          <div><span>Coordination</span><span id="lCoord">8</span></div>
+          <div><span>Packing factor</span><span id="lAPF">0.68</span></div>
+          <div><span>Slip systems</span><span id="lSlip">48 (limited)</span></div>
+          <div><span>HS2 use</span><span id="lUse">Rail steel (α-Fe)</span></div>
+        </div>
+
+        <div class="sim-info" id="latInfo">
+          <strong>Body-Centred Cubic (BCC)</strong>
+          α-iron and ferritic steels adopt BCC. Strong but less ductile than FCC at room temperature — relevant to cold-weather brittleness of older rail steels.
+        </div>
+
+        <div class="sim-control-row">
+          <label>Auto-rotate</label>
+          <input type="range" id="rotSpeed" min="0" max="100" value="40">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game Stages -->
+  <section class="section" id="sec-game">
+    <div class="section-head">
+      <h2><span class="num">05 / Play & Learn</span>5-stage materials gauntlet</h2>
+      <div class="meta">Unlock the final HS2 question</div>
+    </div>
+
+    <div class="stages-track" id="stagesTrack">
+      <div class="stage-node" data-stage="1" data-state="active">
+        <span class="stage-icon">🔗</span>
+        <div class="stage-num">Stage 01</div>
+        <div class="stage-name">Bond Match</div>
+      </div>
+      <div class="stage-node" data-stage="2" data-state="locked">
+        <span class="stage-icon">🧊</span>
+        <div class="stage-num">Stage 02</div>
+        <div class="stage-name">Build a Lattice</div>
+      </div>
+      <div class="stage-node" data-stage="3" data-state="locked">
+        <span class="stage-icon">↘️</span>
+        <div class="stage-num">Stage 03</div>
+        <div class="stage-name">Slip the Plane</div>
+      </div>
+      <div class="stage-node" data-stage="4" data-state="locked">
+        <span class="stage-icon">🛡️</span>
+        <div class="stage-num">Stage 04</div>
+        <div class="stage-name">Strengthen It</div>
+      </div>
+      <div class="stage-node" data-stage="5" data-state="locked">
+        <span class="stage-icon">🏆</span>
+        <div class="stage-num">Stage 05</div>
+        <div class="stage-name">HS2 Final</div>
+      </div>
+    </div>
+
+    <div class="game-area" id="gameArea">
+      <!-- Game content injected by JS -->
+    </div>
+  </section>
+
+  <!-- Assessment -->
+  <section class="section" id="sec-assess">
+    <div class="section-head">
+      <h2><span class="num">06 / Prove It</span>Topic-tailored written assessment</h2>
+      <div class="meta">Paste disabled · Type your own answers</div>
+    </div>
+    <div class="assessment-shell">
+
+      <div class="student-bar">
+        <div>
+          <label>Full name</label>
+          <input type="text" id="studentName" placeholder="Enter your full name">
+        </div>
+        <div>
+          <label>Student ID</label>
+          <input type="text" id="studentId" placeholder="Enter your student ID">
+        </div>
+      </div>
+
+      <div id="assessmentQuestions"></div>
+
+      <div class="submit-bar">
+        <div class="submit-info">
+          <strong>Heads up:</strong> answers must be your own words. Pasting is blocked. You will receive a <strong>.txt</strong> file to upload on Moodle.
+        </div>
+        <button class="btn" id="submitBtn">Submit & download for Moodle</button>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<div class="footer">
+  <p><strong>EG4022 Engineering Materials</strong> · Atomic Bonding & Crystal Structures · HS2 Phase 1 context</p>
+  <p style="margin-top:6px">Designed by <strong>Vismay Loliyaniya</strong> — Lecturer & Module Lead</p>
+</div>
+
+<div class="paste-blocked" id="pasteAlert">✋ Paste is disabled. Please write your own answer.</div>
+
+<script>
+/* ============================================================================
+   STATE
+============================================================================ */
+const STATE = {
+  topic: null,
+  stage: 1,
+  score: 0,
+  stagesComplete: [false,false,false,false,false],
+  bondType: 'metallic',
+  lattice: 'bcc'
+};
+
+/* ============================================================================
+   TOPIC DATA — HS2 Phase 1 materials
+============================================================================ */
+const TOPICS = [
+  { id:'reinforced-concrete', icon:'🏗️', name:'Reinforced Concrete',
+    desc:'Composite of C50/60 high-strength concrete with embedded steel rebar — the workhorse of HS2 viaducts and tunnel linings.',
+    hs2:'Colne Valley Viaduct · Chiltern Tunnel segments · piers & abutments',
+    bondingFocus:'Ionic/covalent C-S-H matrix bonded compositely with BCC metallic steel rebar' },
+  { id:'structural-steel', icon:'🔩', name:'Structural Steel',
+    desc:'Hot-rolled S355 / S460 weldable sections used for HS2 bridge girders and composite decks.',
+    hs2:'Wendover Dean Viaduct · twin-girder composite decks · station roofs',
+    bondingFocus:'Metallic bonding; BCC ferrite + pearlite, controlled-rolled microstructure' },
+  { id:'reinforcement-steel', icon:'🪡', name:'Reinforcement Steel',
+    desc:'B500B/B500C ribbed bar — high-ductility carbon steel rebar embedded in HS2 concrete.',
+    hs2:'Viaduct piers · tunnel segments · station base slabs',
+    bondingFocus:'Metallic bonding; BCC ferrite-pearlite, ribbed for mechanical interlock' },
+  { id:'ground-engineering', icon:'⛰️', name:'Ground Engineering Materials',
+    desc:'Soils, rock, cement-bentonite slurries, jet-grout, and lime/cement stabilised earthworks beneath HS2.',
+    hs2:'Chiltern chalk · London clay · diaphragm walls · piles · earthworks',
+    bondingFocus:'Mixed: silicate covalent/ionic in soils & grouts, clay sheet structures, weak van der Waals' },
+  { id:'corrosion-protection', icon:'🛡️', name:'Corrosion Protection Systems',
+    desc:'Galvanising, paint systems, cathodic protection, weathering steel patina, and stainless cladding for 120-year design life.',
+    hs2:'Steel viaducts · OLE masts · buried steelwork · marine-exposed fittings',
+    bondingFocus:'Passive oxide films (ionic/covalent) on top of metallic substrates; galvanic couples' },
+  { id:'sustainable-selection', icon:'♻️', name:'Sustainable Material Selection',
+    desc:'Low-carbon design — GGBS/PFA concretes, recycled steel, reused excavated material, and whole-life embodied carbon thinking.',
+    hs2:'HS2 Phase 1 Net Zero commitments · low-carbon concrete trials · circular earthworks',
+    bondingFocus:'How bonding & structure dictate embodied energy, recyclability, and durability' }
+];
+
+/* ============================================================================
+   QUESTION BANK — keyed per topic
+============================================================================ */
+const QUESTIONS = {
+  'reinforced-concrete': {
+    stage5:'HS2 viaduct piers (e.g. Colne Valley) and tunnel segments (Chiltern) rely on reinforced concrete — C50/60 concrete acting compositely with B500B steel rebar. Explain how the ionic/covalent bonding of the C-S-H gel and the metallic BCC ferrite structure of the rebar are deliberately combined so that concrete carries compression and steel carries tension. Reference at least one strengthening mechanism in either constituent and explain why the steel-concrete bond at the rib interface is essential to composite action.',
+    assessment:[
+      'Describe the bonding present in (a) the calcium-silicate-hydrate (C-S-H) gel of HS2 concrete and (b) the BCC ferrite of B500B reinforcing steel. Explain how the contrast in bonding gives reinforced concrete its characteristic compression-tension partition of stress in an HS2 viaduct pier.',
+      'Using crystal structure and slip system arguments, explain why concrete is brittle in tension while embedded BCC steel rebar can plastically deform. Why does this difference make reinforcement essential in the HS2 Colne Valley Viaduct deck soffit?',
+      'Bond strength between rebar ribs and the C-S-H matrix governs composite action. Using your knowledge of ionic/covalent bonding in cement paste and the role of mechanical interlock at the rib, explain how this bond is developed and what microstructural features (e.g. transition zone) can weaken it.',
+      'Compare at least two strengthening mechanisms used in B500B rebar (e.g. grain refinement, solid solution, cold work) with the strengthening mechanisms available in HS2 concrete (e.g. low w/c ratio, supplementary cementitious materials). Explain how each operates at the bonding/structure level.',
+      'A reinforced concrete pier on HS2 develops fine cracks under service loading. Using bonding and crystal structure arguments for both constituents, explain why the cracks are tolerable in concrete but the rebar must remain elastic, and propose one design or material change that would reduce cracking.'
+    ]
+  },
+  'structural-steel': {
+    stage5:'HS2 viaduct decks (e.g. Wendover Dean, Small Dean) use S355 weldable structural steel girders. Explain how the BCC ferrite-pearlite microstructure of S355 delivers the specified 355 MPa yield strength while retaining notch toughness adequate for cold-weather service in the Chilterns. Reference at least two strengthening mechanisms and explain how slip systems in BCC iron underpin both the strength and the ductile-to-brittle transition behaviour.',
+    assessment:[
+      'Explain how the metallic bond in S355 gives the material its combination of strength, ductility, and weldability — the three properties that make it the default choice for the long welded girders of HS2 viaduct decks.',
+      'S355 derives part of its strength from solid solution strengthening by manganese and silicon. Using crystal structure and dislocation theory, explain how substitutional and interstitial atoms impede dislocation motion in BCC ferrite.',
+      'Grain refinement via controlled rolling is the most efficient strengthening route for S355 because it raises both yield strength and impact toughness. Using the Hall-Petch relationship and BCC slip behaviour, explain why this is uniquely powerful compared with other strengthening mechanisms.',
+      'BCC iron exhibits a ductile-to-brittle transition temperature. Using slip system arguments (number of active slip systems vs temperature), explain why this matters for HS2 viaducts at -10°C in the Chilterns and how modern fine-grain S355 grades mitigate the risk.',
+      'Specify and justify the most appropriate strengthening route for an HS2 structural steel girder that must remain ductile at -20°C and weldable on site. Address dislocation behaviour, grain size, and alloying using bonding and crystal-structure principles.'
+    ]
+  },
+  'reinforcement-steel': {
+    stage5:'HS2 specifies B500B (or B500C in seismic zones) ribbed reinforcing steel — characteristic yield 500 MPa with high ductility class. Explain how the BCC ferrite-pearlite microstructure delivers both the yield strength and the minimum 5% total elongation at maximum force (Agt). Discuss the slip systems available in BCC iron, at least one strengthening mechanism active in the bar, and why ductility (not just strength) is the property that protects HS2 piers from sudden brittle failure under overload.',
+    assessment:[
+      'Describe the metallic bond in B500B reinforcing steel and explain how this bond underpins both the ductility (≥5% Agt) and the weldability that allow rebar cages to be fabricated for the HS2 Colne Valley Viaduct.',
+      'B500B has a ferrite-pearlite microstructure. Explain at the atomic and grain level how the boundaries between BCC ferrite grains, and the lamellae of cementite within pearlite, act as obstacles to dislocation motion and contribute to the 500 MPa characteristic yield strength.',
+      'Reinforcement in HS2 viaduct piers experiences thermal cycling between summer and winter. Using bonding and crystal structure arguments for steel and concrete separately, explain why their differential expansion can degrade the rebar-concrete bond at the rib interface over time.',
+      'Compare the slip systems available in BCC ferrite (B500B) with those in FCC austenite (e.g. 304/316 stainless rebar). Using slip number and active slip plane density, explain why a designer might specify austenitic stainless rebar in a chloride-exposed splash zone of an HS2 viaduct.',
+      'Cold-worked rebar can achieve higher yield strength but with reduced ductility. Using dislocation theory, explain the work-hardening mechanism and justify in detail why HS2 specifies B500B (high-ductility class B), not a more heavily cold-worked grade, for safety-critical reinforced concrete.'
+    ]
+  },
+  'ground-engineering': {
+    stage5:'HS2 Phase 1 traverses ground ranging from Chiltern chalk and London clay to flint gravels, and uses cement-bentonite diaphragm walls and lime-stabilised earthworks. Explain how the bonding and structural character of clay minerals (sheet silicates with strong covalent in-plane bonds and weak van der Waals interlayer bonds) and the ionic/covalent C-S-H bonds formed by lime or cement stabilisation control the strength, stiffness, and durability of ground engineering materials used on HS2.',
+    assessment:[
+      'Describe the bonding within a clay mineral sheet (e.g. kaolinite or illite found in London clay) and contrast it with the weaker interlayer forces. Explain how this anisotropic bonding controls the swelling/shrinkage behaviour observed in HS2 cuttings and embankments.',
+      'Lime stabilisation of clay used in HS2 earthworks works through cation exchange followed by pozzolanic reactions that produce C-S-H and C-A-H gels. Explain at the bonding level what these reactions do to soil particles and why the result is a stronger, less plastic ground material.',
+      'Cement-bentonite slurry walls (HS2 diaphragm walls) rely on the gel structure of hydrated bentonite for low permeability and on the C-S-H of cement for strength. Using bonding and structural arguments for each constituent, explain how the combination achieves both properties.',
+      'Compare the bonding and structure of intact Chiltern chalk (a porous polycrystalline calcium carbonate) with that of a high-strength concrete used on HS2. Explain why chalk has limited engineering strength despite being a crystalline ceramic.',
+      'Specify and justify a ground improvement strategy for a soft London clay layer beneath an HS2 embankment, choosing between lime stabilisation, cement stabilisation, or stone columns. Justify your choice in terms of bonding chemistry and the structural changes induced in the soil.'
+    ]
+  },
+  'corrosion-protection': {
+    stage5:'HS2 Phase 1 requires steelwork (viaducts, OLE masts, buried connectors) to deliver 120 years of design life — far longer than any unprotected steel. Explain at the bonding and crystal-structure level how protection systems such as zinc galvanising, paint coatings, weathering-steel patina, and cathodic protection work. Discuss how each interrupts the electrochemical reaction that would otherwise consume the metallic bond at the steel surface and convert iron back to oxide.',
+    assessment:[
+      'Describe the bonding in metallic iron and contrast it with the bonding in iron oxide (rust). Explain why corrosion is energetically favourable and what role the passive oxide layer plays on stainless steel surfaces used for HS2 fittings.',
+      'Hot-dip galvanising deposits a metallurgical Fe-Zn alloy layer on steel. Using metallic bonding and the concept of a galvanic couple, explain how zinc protects the underlying steel even when the coating is scratched on an HS2 OLE mast.',
+      'Paint systems (e.g. zinc-rich primer + epoxy + polyurethane top coat) used on HS2 viaducts rely on a combination of barrier action and electrochemical inhibition. Explain at the bonding level how each layer contributes and why adhesion at the steel-primer interface is critical.',
+      'Weathering steel (e.g. S355J2W) develops a tightly adherent rust patina that limits further corrosion. Using bonding and crystal-structure arguments, explain how Cu, Cr, and Ni additions promote the formation of a compact, low-permeability oxide structure compared with ordinary mild steel.',
+      'Specify and justify a corrosion protection strategy for an HS2 steel component in a buried, chloride-rich environment (e.g. close to de-icing salt runoff). Compare cathodic protection, hot-dip galvanising, and stainless cladding, justifying your choice using bonding and structure arguments.'
+    ]
+  },
+  'sustainable-selection': {
+    stage5:'HS2 Phase 1 has committed to ambitious low-carbon and circular-economy targets. Explain how an engineer\'s understanding of atomic bonding, crystal structure, and strengthening mechanisms is essential to sustainable material selection — for example by enabling GGBS/PFA replacement of Portland cement, electric-arc-furnace recycled steel, optimised section sizes through higher strength grades, and durability that avoids early replacement. Use specific examples linking bonding/structure to embodied carbon, recyclability, or service life.',
+    assessment:[
+      'Sustainable design starts with understanding what gives a material its strength. Explain how atomic bonding and crystal structure determine both the embodied carbon of producing a material and its end-of-life recyclability. Use steel and concrete as contrasting examples relevant to HS2.',
+      'GGBS (ground granulated blast-furnace slag) and PFA (pulverised fuel ash) replace part of the Portland cement in HS2 low-carbon concrete. Explain at the bonding level what these supplementary cementitious materials do to C-S-H formation and why the resulting concrete can have lower embodied carbon yet greater long-term durability.',
+      'Steel made via the electric arc furnace route from recycled scrap has substantially lower embodied carbon than primary blast-furnace steel. Using metallic bonding and crystal structure arguments, explain why steel\'s recyclability is essentially unlimited and what microstructural challenges (e.g. residual elements) must be controlled.',
+      'Specifying a higher strength grade (e.g. S460 instead of S355, B500B grade B rebar) reduces the mass of material needed for HS2 viaducts. Using strengthening mechanisms (grain refinement, solid solution, precipitation), explain how the additional strength is achieved without resorting to rare or carbon-intensive alloying elements.',
+      'Specify and justify a sustainable material choice for a typical HS2 viaduct deck, comparing reinforced concrete (with GGBS) and a weathering steel composite girder. Address embodied carbon, durability (120-year design life), maintenance, and end-of-life recovery — using bonding and crystal structure arguments to support your decision.'
+    ]
+  }
+};
+
+/* ============================================================================
+   INIT TOPIC GRID
+============================================================================ */
+const topicGrid = document.getElementById('topicGrid');
+TOPICS.forEach(t => {
+  const el = document.createElement('div');
+  el.className = 'topic-card';
+  el.dataset.id = t.id;
+  el.innerHTML = `
+    <span class="topic-icon">${t.icon}</span>
+    <h4>${t.name}</h4>
+    <p>${t.desc}</p>
+    <div class="hs2-context">▸ ${t.hs2}</div>`;
+  el.onclick = () => selectTopic(t.id);
+  topicGrid.appendChild(el);
+});
+
+function selectTopic(id){
+  STATE.topic = id;
+  document.querySelectorAll('.topic-card').forEach(c => c.classList.toggle('selected', c.dataset.id === id));
+  buildAssessment();
+  if (STATE.stage === 5) renderGameStage(5);
+}
+
+/* ============================================================================
+   HERO LATTICE — Rotating BCC unit cell
+============================================================================ */
+(function heroLattice(){
+  const c = document.getElementById('heroLattice');
+  const ctx = c.getContext('2d');
+  let w, h, angle = 0;
+  const resize = () => {
+    const r = c.getBoundingClientRect();
+    c.width = r.width * devicePixelRatio;
+    c.height = r.height * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    w = r.width; h = r.height;
+  };
+  resize(); window.addEventListener('resize', () => { ctx.setTransform(1,0,0,1,0,0); resize(); });
+
+  // BCC unit cell atoms (8 corners + 1 centre)
+  const cell = [];
+  for (let x of [-1,1]) for (let y of [-1,1]) for (let z of [-1,1]) cell.push([x,y,z]);
+  cell.push([0,0,0]);
+
+  function project(p, a){
+    // rotate Y then X
+    const cosA = Math.cos(a), sinA = Math.sin(a);
+    let x = p[0]*cosA - p[2]*sinA;
+    let z = p[0]*sinA + p[2]*cosA;
+    const cosB = Math.cos(a*0.4), sinB = Math.sin(a*0.4);
+    let y = p[1]*cosB - z*sinB;
+    z = p[1]*sinB + z*cosB;
+    // perspective
+    const scale = 90;
+    const persp = 4 / (4 + z);
+    return { x: w/2 + x*scale*persp, y: h/2 + y*scale*persp, z, r: 16*persp };
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const projected = cell.map(p => ({...project(p, angle), orig: p}));
+
+    // edges between corner atoms
+    const corners = projected.slice(0,8);
+    ctx.strokeStyle = 'rgba(232,184,74,0.35)';
+    ctx.lineWidth = 1;
+    for (let i=0;i<8;i++) for (let j=i+1;j<8;j++){
+      const a = corners[i].orig, b = corners[j].orig;
+      const diff = Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2]);
+      if (diff === 2){
+        ctx.beginPath();
+        ctx.moveTo(corners[i].x, corners[i].y);
+        ctx.lineTo(corners[j].x, corners[j].y);
+        ctx.stroke();
+      }
+    }
+    // body diagonals to centre
+    const centre = projected[8];
+    ctx.strokeStyle = 'rgba(92,200,200,0.4)';
+    ctx.setLineDash([4,4]);
+    for (const c of corners){
+      ctx.beginPath();
+      ctx.moveTo(c.x, c.y);
+      ctx.lineTo(centre.x, centre.y);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // sort by z to draw back-to-front
+    projected.sort((a,b) => b.z - a.z);
+    for (const p of projected){
+      const isCentre = p.orig[0]===0 && p.orig[1]===0 && p.orig[2]===0;
+      const grd = ctx.createRadialGradient(p.x-p.r/3, p.y-p.r/3, 1, p.x, p.y, p.r);
+      if (isCentre){
+        grd.addColorStop(0,'#f5d27a'); grd.addColorStop(1,'#7a5a10');
+      } else {
+        grd.addColorStop(0,'#8fe3e3'); grd.addColorStop(1,'#1e5757');
+      }
+      ctx.beginPath();
+      ctx.fillStyle = grd;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    angle += 0.005;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================================
+   BOND SIMULATION
+============================================================================ */
+(function bondSim(){
+  const c = document.getElementById('bondSim');
+  const ctx = c.getContext('2d');
+  let w, h;
+  const resize = () => {
+    const r = c.getBoundingClientRect();
+    c.width = r.width * devicePixelRatio;
+    c.height = r.height * devicePixelRatio;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    w = r.width; h = r.height;
+  };
+  resize(); window.addEventListener('resize', resize);
+
+  let temp = 25, stress = 0, t = 0;
+
+  document.getElementById('tempSlider').oninput = e => {
+    temp = +e.target.value; document.getElementById('tempVal').textContent = temp + '°C';
+  };
+  document.getElementById('stressSlider').oninput = e => {
+    stress = +e.target.value; document.getElementById('stressVal').textContent = stress + ' MPa';
+  };
+
+  document.querySelectorAll('#sec-sim-bond .sim-tab').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('#sec-sim-bond .sim-tab').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      STATE.bondType = b.dataset.bond;
+      updateBondInfo();
+    };
+  });
+
+  function updateBondInfo(){
+    const info = document.getElementById('bondInfo');
+    const r = {
+      metallic:{ s:'High', m:'Free (sea)', d:'High', e:'Steel rail',
+        title:'Metallic bonding',
+        body:'A delocalised "sea" of electrons holds positive ion cores together — explains why HS2 rails plastically deform under stress rather than shattering.' },
+      ionic:{ s:'High (brittle)', m:'None', d:'Very low', e:'C-S-H in concrete',
+        title:'Ionic bonding',
+        body:'Electrostatic attraction between oppositely charged ions. Strong but brittle — explains why HS2 concrete is excellent in compression but cracks in tension.' },
+      covalent:{ s:'Very high', m:'Localised', d:'Low', e:'Polymer fibres',
+        title:'Covalent bonding',
+        body:'Shared electron pairs form rigid, directional bonds. Found in polymer fibres reinforcing HS2 tunnel segments and in diamond-like coatings.' }
+    }[STATE.bondType];
+    document.getElementById('rBond').textContent = r.s;
+    document.getElementById('rMob').textContent = r.m;
+    document.getElementById('rDuc').textContent = r.d;
+    document.getElementById('rEx').textContent = r.e;
+    info.innerHTML = `<strong>${r.title}</strong>${r.body}`;
+  }
+  updateBondInfo();
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    t += 0.02;
+    const cx = w/2, cy = h/2;
+
+    if (STATE.bondType === 'metallic'){
+      // Lattice of cations + drifting electrons
+      const cols = 7, rows = 5, sp = 60;
+      const offX = cx - (cols-1)*sp/2;
+      const offY = cy - (rows-1)*sp/2;
+      // shear from stress
+      const shear = stress / 500 * 14;
+      // thermal jitter
+      const jitter = (temp+50)/850 * 4;
+
+      // electrons (sea)
+      ctx.fillStyle = 'rgba(92,200,200,0.5)';
+      for (let i=0;i<50;i++){
+        const ex = offX + ((Math.sin(t + i*0.7) + 1) * 0.5 * (cols-1)*sp);
+        const ey = offY + ((Math.cos(t*0.8 + i*0.5) + 1) * 0.5 * (rows-1)*sp);
+        ctx.beginPath();
+        ctx.arc(ex, ey, 2 + Math.sin(t*3+i)*0.6, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // cations
+      for (let r=0;r<rows;r++){
+        for (let i=0;i<cols;i++){
+          const sx = offX + i*sp + (r * shear/rows) + (Math.random()-0.5)*jitter;
+          const sy = offY + r*sp + (Math.random()-0.5)*jitter;
+          const grd = ctx.createRadialGradient(sx-6, sy-6, 2, sx, sy, 16);
+          grd.addColorStop(0,'#f5d27a'); grd.addColorStop(1,'#7a5a10');
+          ctx.beginPath();
+          ctx.fillStyle = grd;
+          ctx.arc(sx, sy, 14, 0, Math.PI*2);
+          ctx.fill();
+          ctx.fillStyle = '#05070d';
+          ctx.font = 'bold 10px Helvetica';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText('+', sx, sy);
+        }
+      }
+
+    } else if (STATE.bondType === 'ionic'){
+      const cols = 7, rows = 5, sp = 60;
+      const offX = cx - (cols-1)*sp/2;
+      const offY = cy - (rows-1)*sp/2;
+      const jitter = (temp+50)/850 * 3;
+      // brittle fracture if stress > 250
+      const cracked = stress > 250;
+
+      for (let r=0;r<rows;r++){
+        for (let i=0;i<cols;i++){
+          if (cracked && r === Math.floor(rows/2) && i > cols/2 - 2) continue;
+          const sx = offX + i*sp + (Math.random()-0.5)*jitter;
+          const sy = offY + r*sp + (Math.random()-0.5)*jitter;
+          const isCation = (r+i)%2 === 0;
+          const grd = ctx.createRadialGradient(sx-6, sy-6, 2, sx, sy, 16);
+          if (isCation){ grd.addColorStop(0,'#ff8fb1'); grd.addColorStop(1,'#7a2243'); }
+          else { grd.addColorStop(0,'#8fe3e3'); grd.addColorStop(1,'#1e5757'); }
+          ctx.beginPath();
+          ctx.fillStyle = grd;
+          ctx.arc(sx, sy, 16, 0, Math.PI*2);
+          ctx.fill();
+          ctx.fillStyle = '#05070d';
+          ctx.font = 'bold 11px Helvetica';
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(isCation ? '+' : '−', sx, sy);
+        }
+      }
+      if (cracked){
+        ctx.strokeStyle = '#ff6b6b'; ctx.lineWidth = 3;
+        ctx.setLineDash([6,6]);
+        ctx.beginPath();
+        ctx.moveTo(cx - 20, offY + (Math.floor(rows/2))*sp);
+        ctx.lineTo(w - 10, offY + (Math.floor(rows/2))*sp + 10);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#ff6b6b';
+        ctx.font = 'bold 13px Helvetica';
+        ctx.textAlign = 'right';
+        ctx.fillText('BRITTLE FRACTURE', w - 14, offY - 12);
+      }
+    } else {
+      // covalent — directional bonds
+      const positions = [];
+      const cols = 5, rows = 3, sp = 90;
+      const offX = cx - (cols-1)*sp/2;
+      const offY = cy - (rows-1)*sp/2;
+      const jitter = (temp+50)/850 * 2;
+
+      for (let r=0;r<rows;r++){
+        for (let i=0;i<cols;i++){
+          positions.push({
+            x: offX + i*sp + (Math.random()-0.5)*jitter,
+            y: offY + r*sp + (i%2 ? sp/2 : 0) + (Math.random()-0.5)*jitter
+          });
+        }
+      }
+      // shared electron pairs (bonds)
+      ctx.strokeStyle = 'rgba(245,210,122,0.6)';
+      ctx.lineWidth = 3;
+      for (let i=0;i<positions.length-1;i++){
+        for (let j=i+1;j<positions.length;j++){
+          const dx = positions[j].x - positions[i].x;
+          const dy = positions[j].y - positions[i].y;
+          if (Math.hypot(dx,dy) < sp*1.1){
+            ctx.beginPath();
+            ctx.moveTo(positions[i].x, positions[i].y);
+            ctx.lineTo(positions[j].x, positions[j].y);
+            ctx.stroke();
+            // moving electron pair
+            const mx = positions[i].x + dx/2 + Math.sin(t + i + j)*4;
+            const my = positions[i].y + dy/2 + Math.cos(t + i + j)*4;
+            ctx.fillStyle = 'rgba(92,200,200,0.9)';
+            ctx.beginPath(); ctx.arc(mx-3, my, 2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(mx+3, my, 2, 0, Math.PI*2); ctx.fill();
+          }
+        }
+      }
+      // atoms
+      for (const p of positions){
+        const grd = ctx.createRadialGradient(p.x-7, p.y-7, 2, p.x, p.y, 18);
+        grd.addColorStop(0,'#b3d9ff'); grd.addColorStop(1,'#1d3a66');
+        ctx.beginPath(); ctx.fillStyle = grd;
+        ctx.arc(p.x, p.y, 16, 0, Math.PI*2); ctx.fill();
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================================
+   CRYSTAL SIMULATION — BCC / FCC / HCP
+============================================================================ */
+(function crystalSim(){
+  const c = document.getElementById('crystalSim');
+  const ctx = c.getContext('2d');
+  let w, h, angle = 0, rotSpeed = 0.012;
+  const resize = () => {
+    const r = c.getBoundingClientRect();
+    c.width = r.width * devicePixelRatio;
+    c.height = r.height * devicePixelRatio;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    w = r.width; h = r.height;
+  };
+  resize(); window.addEventListener('resize', resize);
+
+  document.getElementById('rotSpeed').oninput = e => rotSpeed = (+e.target.value)/100 * 0.04;
+
+  let dragging = false, dragLastX = 0, manualAngle = 0;
+  c.addEventListener('mousedown', e => { dragging = true; dragLastX = e.clientX; });
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    manualAngle += (e.clientX - dragLastX) * 0.01;
+    dragLastX = e.clientX;
+  });
+
+  function getCellAtoms(){
+    if (STATE.lattice === 'bcc'){
+      const a = [];
+      for (let x of [-1,1]) for (let y of [-1,1]) for (let z of [-1,1]) a.push([x,y,z]);
+      a.push([0,0,0]);
+      return a;
+    } else if (STATE.lattice === 'fcc'){
+      const a = [];
+      for (let x of [-1,1]) for (let y of [-1,1]) for (let z of [-1,1]) a.push([x,y,z]);
+      // face centres
+      for (const f of [[0,0,1],[0,0,-1],[0,1,0],[0,-1,0],[1,0,0],[-1,0,0]]) a.push(f);
+      return a;
+    } else {
+      // simplified HCP (12 atoms approx in hex prism)
+      const a = [];
+      for (let z of [-1,1]){
+        for (let k=0;k<6;k++){
+          const ang = k * Math.PI/3;
+          a.push([Math.cos(ang), z, Math.sin(ang)]);
+        }
+        a.push([0, z, 0]);
+      }
+      // mid plane (3 atoms in B layer)
+      for (let k=0;k<3;k++){
+        const ang = k * 2*Math.PI/3 + Math.PI/6;
+        a.push([Math.cos(ang)*0.6, 0, Math.sin(ang)*0.6]);
+      }
+      return a;
+    }
+  }
+
+  function project(p, a){
+    const cosA = Math.cos(a), sinA = Math.sin(a);
+    let x = p[0]*cosA - p[2]*sinA;
+    let z = p[0]*sinA + p[2]*cosA;
+    const cosB = Math.cos(a*0.35), sinB = Math.sin(a*0.35);
+    let y = p[1]*cosB - z*sinB;
+    z = p[1]*sinB + z*cosB;
+    const scale = 95;
+    const persp = 4 / (4 + z);
+    return { x: w/2 + x*scale*persp, y: h/2 + y*scale*persp, z, r: 17*persp };
+  }
+
+  document.querySelectorAll('#sec-sim-crystal .sim-tab').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('#sec-sim-crystal .sim-tab').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      STATE.lattice = b.dataset.lat;
+      updateLatInfo();
+    };
+  });
+
+  function updateLatInfo(){
+    const info = document.getElementById('latInfo');
+    const r = {
+      bcc:{ atoms:2, coord:8, apf:'0.68', slip:'48 (limited)', use:'Rail steel (α-Fe)',
+        title:'Body-Centred Cubic (BCC)',
+        body:'α-iron and ferritic steels adopt BCC. Strong but less ductile than FCC at room temperature — relevant to cold-weather brittleness of older rail steels.' },
+      fcc:{ atoms:4, coord:12, apf:'0.74', slip:'12 (active)', use:'316 stainless, Cu, Al 6082',
+        title:'Face-Centred Cubic (FCC)',
+        body:'Maximum packing efficiency and 12 active slip systems. Used in austenitic stainless 316, copper contact wire, and aluminium 6082 cladding on HS2 stations.' },
+      hcp:{ atoms:6, coord:12, apf:'0.74', slip:'3 (very limited)', use:'Mg, Ti, Zn (rare on HS2)',
+        title:'Hexagonal Close-Packed (HCP)',
+        body:'Same packing as FCC but only 3 slip systems active at room temperature → low ductility. Generally avoided for highly stressed HS2 components.' }
+    }[STATE.lattice];
+    document.getElementById('lAtoms').textContent = r.atoms;
+    document.getElementById('lCoord').textContent = r.coord;
+    document.getElementById('lAPF').textContent = r.apf;
+    document.getElementById('lSlip').textContent = r.slip;
+    document.getElementById('lUse').textContent = r.use;
+    info.innerHTML = `<strong>${r.title}</strong>${r.body}`;
+  }
+  updateLatInfo();
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    if (!dragging) angle += rotSpeed;
+    const totalA = angle + manualAngle;
+
+    const atoms = getCellAtoms();
+    const proj = atoms.map(p => ({...project(p, totalA), orig:p}));
+
+    // draw cube/prism edges for BCC and FCC
+    if (STATE.lattice === 'bcc' || STATE.lattice === 'fcc'){
+      const corners = proj.filter(p => Math.abs(p.orig[0])===1 && Math.abs(p.orig[1])===1 && Math.abs(p.orig[2])===1);
+      ctx.strokeStyle = 'rgba(232,184,74,0.4)';
+      ctx.lineWidth = 1;
+      for (let i=0;i<corners.length;i++){
+        for (let j=i+1;j<corners.length;j++){
+          const a = corners[i].orig, b = corners[j].orig;
+          if (Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1])+Math.abs(a[2]-b[2]) === 2){
+            ctx.beginPath();
+            ctx.moveTo(corners[i].x, corners[i].y);
+            ctx.lineTo(corners[j].x, corners[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    } else {
+      // HCP — draw hex prism outlines
+      ctx.strokeStyle = 'rgba(232,184,74,0.4)';
+      const top=[], bot=[];
+      for (let k=0;k<6;k++){
+        const ang = k * Math.PI/3;
+        top.push(project([Math.cos(ang),1,Math.sin(ang)], totalA));
+        bot.push(project([Math.cos(ang),-1,Math.sin(ang)], totalA));
+      }
+      ctx.beginPath();
+      top.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+      ctx.closePath(); ctx.stroke();
+      ctx.beginPath();
+      bot.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+      ctx.closePath(); ctx.stroke();
+      for (let i=0;i<6;i++){
+        ctx.beginPath();
+        ctx.moveTo(top[i].x, top[i].y);
+        ctx.lineTo(bot[i].x, bot[i].y);
+        ctx.stroke();
+      }
+    }
+
+    proj.sort((a,b) => b.z - a.z);
+    for (const p of proj){
+      const isCentre = p.orig.every(v => v === 0);
+      const isFace = Math.abs(p.orig[0])+Math.abs(p.orig[1])+Math.abs(p.orig[2]) === 1;
+      const grd = ctx.createRadialGradient(p.x-p.r/3, p.y-p.r/3, 1, p.x, p.y, p.r);
+      if (isCentre){
+        grd.addColorStop(0,'#f5d27a'); grd.addColorStop(1,'#7a5a10');
+      } else if (isFace){
+        grd.addColorStop(0,'#ffb3d1'); grd.addColorStop(1,'#7a2243');
+      } else {
+        grd.addColorStop(0,'#8fe3e3'); grd.addColorStop(1,'#1e5757');
+      }
+      ctx.beginPath();
+      ctx.fillStyle = grd;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================================
+   GAME ENGINE — 5 stages
+============================================================================ */
+const gameArea = document.getElementById('gameArea');
+const stagesTrack = document.getElementById('stagesTrack');
+
+function updateStageStates(){
+  document.querySelectorAll('.stage-node').forEach((node, idx) => {
+    const stage = idx + 1;
+    if (STATE.stagesComplete[idx]) node.dataset.state = 'complete';
+    else if (stage === STATE.stage) node.dataset.state = 'active';
+    else if (stage < STATE.stage) node.dataset.state = 'complete';
+    else node.dataset.state = 'locked';
+  });
+}
+
+function completeStage(stage){
+  STATE.stagesComplete[stage-1] = true;
+  STATE.score += 20;
+  if (stage < 5){
+    STATE.stage = stage + 1;
+    setTimeout(() => renderGameStage(STATE.stage), 700);
+  }
+  updateStageStates();
+  saveScormProgress();
+}
+
+function renderGameStage(stage){
+  STATE.stage = stage;
+  updateStageStates();
+  if (stage === 1) renderStage1();
+  else if (stage === 2) renderStage2();
+  else if (stage === 3) renderStage3();
+  else if (stage === 4) renderStage4();
+  else if (stage === 5) renderStage5();
+}
+
+/* ---------- STAGE 1 — Bond Match ---------- */
+function renderStage1(){
+  const items = [
+    { id:'m', label:'Metallic bond', match:'Sea of delocalised electrons + cation cores' },
+    { id:'i', label:'Ionic bond', match:'Electrostatic attraction between + and − ions' },
+    { id:'c', label:'Covalent bond', match:'Shared electron pairs (directional)' },
+    { id:'v', label:'Van der Waals', match:'Weak fluctuating-dipole forces' }
+  ];
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+
+  gameArea.className = 'game-area fade-in';
+  gameArea.innerHTML = `
+    <div class="game-header">
+      <div>
+        <div class="game-title">Stage 01 · Match the Bond</div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:4px">Drag each definition onto the correct bond type.</p>
+      </div>
+      <div class="game-score">Score: ${STATE.score}</div>
+    </div>
+    <div class="bond-game">
+      <div>
+        <h5>Bond types</h5>
+        ${items.map(i => `
+          <div class="bond-target" data-id="${i.id}">
+            <span class="target-label">${i.label}</span>
+            <div class="target-slot">Drop here</div>
+          </div>`).join('')}
+      </div>
+      <div class="bond-pool">
+        <h5>Definitions</h5>
+        ${shuffled.map(i => `
+          <div class="bond-item" draggable="true" data-id="${i.id}">${i.match}</div>`).join('')}
+      </div>
+    </div>
+    <div style="margin-top:18px;text-align:right">
+      <button class="btn" id="stage1Next" disabled>Next stage →</button>
+    </div>
+  `;
+
+  let dragId = null;
+  let matched = 0;
+
+  document.querySelectorAll('#sec-game .bond-item').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      dragId = item.dataset.id;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+  });
+
+  document.querySelectorAll('#sec-game .bond-target').forEach(t => {
+    t.addEventListener('dragover', e => { e.preventDefault(); t.classList.add('over'); });
+    t.addEventListener('dragleave', () => t.classList.remove('over'));
+    t.addEventListener('drop', e => {
+      e.preventDefault();
+      t.classList.remove('over');
+      if (t.classList.contains('filled')) return;
+      const dragged = document.querySelector(`#sec-game .bond-item[data-id="${dragId}"]`);
+      if (!dragged) return;
+      if (t.dataset.id === dragId){
+        t.classList.add('filled');
+        t.querySelector('.target-slot').textContent = dragged.textContent;
+        dragged.remove();
+        matched++;
+        if (matched === items.length){
+          document.getElementById('stage1Next').disabled = false;
+        }
+      } else {
+        t.classList.add('wrong');
+        setTimeout(() => t.classList.remove('wrong'), 600);
+      }
+    });
+  });
+
+  document.getElementById('stage1Next').onclick = () => completeStage(1);
+}
+
+/* ---------- STAGE 2 — Build a lattice ---------- */
+function renderStage2(){
+  const questions = [
+    { q:'Which lattice describes α-iron (the BCC ferrite phase in HS2 rebar and structural steel) at room temperature?', opts:['BCC','FCC','HCP'], correct:0 },
+    { q:'Which lattice does austenitic stainless steel (used in HS2 corrosion-resistant fittings) adopt?', opts:['BCC','FCC','HCP'], correct:1 },
+    { q:'Which lattice has the LOWEST number of active slip systems at room temperature?', opts:['BCC','FCC','HCP'], correct:2 },
+    { q:'Pure aluminium and copper, both used in HS2 station fixings and OLE, share which crystal structure?', opts:['BCC','FCC','HCP'], correct:1 }
+  ];
+
+  gameArea.className = 'game-area fade-in';
+  gameArea.innerHTML = `
+    <div class="game-header">
+      <div>
+        <div class="game-title">Stage 02 · Build a Lattice</div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:4px">Identify the correct crystal structure for each HS2 material.</p>
+      </div>
+      <div class="game-score">Score: ${STATE.score}</div>
+    </div>
+    <div id="latticeQuiz"></div>
+    <div style="margin-top:18px;text-align:right">
+      <button class="btn" id="stage2Next" disabled>Next stage →</button>
+    </div>
+  `;
+  const wrap = document.getElementById('latticeQuiz');
+  let qi = 0, correctCount = 0;
+  function showQ(){
+    if (qi >= questions.length){
+      wrap.innerHTML = `<div style="text-align:center;padding:30px">
+        <div style="font-size:48px">${correctCount === questions.length ? '🏆' : '✅'}</div>
+        <h3 style="margin:14px 0;font-family:Georgia,serif">${correctCount}/${questions.length} correct</h3>
+        <p style="color:var(--ink-dim)">${correctCount === questions.length ? 'Perfect lattice mastery!' : 'Good effort — review the simulation above for the ones you missed.'}</p>
+      </div>`;
+      document.getElementById('stage2Next').disabled = false;
+      return;
+    }
+    const q = questions[qi];
+    wrap.innerHTML = `
+      <div class="qa-block mcq-game">
+        <div class="qa-num">Q${qi+1} of ${questions.length}</div>
+        <div class="mcq-q">${q.q}</div>
+        <div class="mcq-options">
+          ${q.opts.map((o,i) => `<button class="mcq-opt" data-i="${i}">${o}</button>`).join('')}
+        </div>
+      </div>`;
+    wrap.querySelectorAll('.mcq-opt').forEach(b => {
+      b.onclick = () => {
+        const i = +b.dataset.i;
+        wrap.querySelectorAll('.mcq-opt').forEach(x => x.disabled = true);
+        if (i === q.correct){ b.classList.add('correct'); correctCount++; }
+        else {
+          b.classList.add('wrong');
+          wrap.querySelector(`.mcq-opt[data-i="${q.correct}"]`).classList.add('correct');
+        }
+        setTimeout(() => { qi++; showQ(); }, 900);
+      };
+    });
+  }
+  showQ();
+  document.getElementById('stage2Next').onclick = () => completeStage(2);
+}
+
+/* ---------- STAGE 3 — Slip plane ---------- */
+function renderStage3(){
+  gameArea.className = 'game-area fade-in';
+  gameArea.innerHTML = `
+    <div class="game-header">
+      <div>
+        <div class="game-title">Stage 03 · Slip the Plane</div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:4px">Apply shear stress and watch a dislocation glide through the lattice. Make at least 1 full slip.</p>
+      </div>
+      <div class="game-score">Score: ${STATE.score}</div>
+    </div>
+    <div class="slip-game">
+      <div class="slip-canvas-wrap"><canvas id="slipCanvas"></canvas></div>
+      <div class="slip-controls">
+        <button id="applyShear">Apply shear ▶</button>
+        <button id="resetShear" class="btn-ghost btn">Reset</button>
+        <span id="slipCount" style="margin-left:14px;font-family:Menlo,monospace;font-size:13px;color:var(--gold)">Slips: 0</span>
+      </div>
+    </div>
+    <div style="margin-top:18px;text-align:right">
+      <button class="btn" id="stage3Next" disabled>Next stage →</button>
+    </div>
+  `;
+  const c = document.getElementById('slipCanvas');
+  const ctx = c.getContext('2d');
+  let w, h;
+  const resize = () => {
+    const r = c.getBoundingClientRect();
+    c.width = r.width * devicePixelRatio;
+    c.height = r.height * devicePixelRatio;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    w = r.width; h = r.height;
+  };
+  resize();
+
+  const cols = 14, rows = 6;
+  let dislocationCol = 4, animating = false, slips = 0;
+
+  function drawLattice(shift = 0){
+    ctx.clearRect(0,0,w,h);
+    const sp = Math.min(w/(cols+1), h/(rows+2));
+    const offX = (w - cols*sp)/2;
+    const offY = (h - rows*sp)/2;
+
+    // slip plane line
+    const slipRow = Math.floor(rows/2);
+    ctx.strokeStyle = 'rgba(232,184,74,0.3)';
+    ctx.setLineDash([6,6]);
+    ctx.beginPath();
+    ctx.moveTo(offX, offY + slipRow*sp);
+    ctx.lineTo(offX + cols*sp, offY + slipRow*sp);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    for (let r=0;r<rows;r++){
+      for (let i=0;i<cols;i++){
+        let x = offX + i*sp;
+        const y = offY + r*sp;
+        // top half shifts during slip
+        if (r < slipRow) x += shift * sp;
+        // skip the extra half plane atom that has slipped off
+        if (r < slipRow && i === dislocationCol && shift < 0.95) continue;
+
+        const isDislocation = (r === slipRow - 1 && i === dislocationCol);
+        const grd = ctx.createRadialGradient(x-5, y-5, 1, x, y, 14);
+        if (isDislocation){
+          grd.addColorStop(0,'#ff8fb1'); grd.addColorStop(1,'#7a2243');
+        } else {
+          grd.addColorStop(0,'#8fe3e3'); grd.addColorStop(1,'#1e5757');
+        }
+        ctx.beginPath();
+        ctx.fillStyle = grd;
+        ctx.arc(x, y, 13, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    // shear arrow at top
+    ctx.fillStyle = 'rgba(232,184,74,0.85)';
+    ctx.font = 'bold 12px Helvetica';
+    ctx.textAlign = 'left';
+    ctx.fillText('→ shear stress', offX + 8 + shift * sp, offY - 16);
+  }
+
+  drawLattice();
+
+  document.getElementById('applyShear').onclick = () => {
+    if (animating) return;
+    animating = true;
+    let t = 0;
+    const animate = () => {
+      t += 0.02;
+      drawLattice(t);
+      if (t < 1){ requestAnimationFrame(animate); }
+      else {
+        dislocationCol++;
+        slips++;
+        document.getElementById('slipCount').textContent = `Slips: ${slips}`;
+        if (dislocationCol >= cols){ dislocationCol = 4; }
+        animating = false;
+        if (slips >= 1) document.getElementById('stage3Next').disabled = false;
+        drawLattice(0);
+      }
+    };
+    animate();
+  };
+
+  document.getElementById('resetShear').onclick = () => { dislocationCol = 4; slips = 0;
+    document.getElementById('slipCount').textContent = `Slips: 0`;
+    document.getElementById('stage3Next').disabled = true;
+    drawLattice(0); };
+
+  document.getElementById('stage3Next').onclick = () => completeStage(3);
+}
+
+/* ---------- STAGE 4 — Strengthening MCQ ---------- */
+function renderStage4(){
+  const questions = [
+    { q:'Which strengthening mechanism is described by the Hall–Petch equation?', opts:['Grain refinement','Solid solution','Precipitation','Cold work'], correct:0 },
+    { q:'Adding Mg and Si to an aluminium alloy to form Mg₂Si precipitates is an example of:', opts:['Grain refinement','Solid solution','Precipitation hardening','Annealing'], correct:2 },
+    { q:'Cold drawing copper wire raises its strength by introducing:', opts:['Solute atoms','Dislocation tangles','Precipitates','New grain boundaries'], correct:1 },
+    { q:'Why does adding Mn and Si to S355 increase its yield strength?', opts:['Cold working','Quenching','Solid solution strengthening','Recrystallisation'], correct:2 },
+    { q:'Which strengthening method REDUCES ductility the most for a given strength gain?', opts:['Grain refinement','Precipitation','Heavy cold work','Solid solution'], correct:2 }
+  ];
+
+  gameArea.className = 'game-area fade-in';
+  gameArea.innerHTML = `
+    <div class="game-header">
+      <div>
+        <div class="game-title">Stage 04 · Strengthen It</div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:4px">Pick the correct strengthening mechanism for each scenario.</p>
+      </div>
+      <div class="game-score">Score: ${STATE.score}</div>
+    </div>
+    <div id="strQuiz"></div>
+    <div style="margin-top:18px;text-align:right">
+      <button class="btn" id="stage4Next" disabled>Final stage →</button>
+    </div>
+  `;
+  const wrap = document.getElementById('strQuiz');
+  let qi = 0, correctCount = 0;
+  function showQ(){
+    if (qi >= questions.length){
+      wrap.innerHTML = `<div style="text-align:center;padding:30px">
+        <div style="font-size:48px">${correctCount >= 4 ? '🛡️' : '✅'}</div>
+        <h3 style="margin:14px 0;font-family:Georgia,serif">${correctCount}/${questions.length} correct</h3>
+        <p style="color:var(--ink-dim)">${correctCount === 5 ? 'Strengthening mechanisms mastered!' : 'Strong showing — proceed to the final HS2 challenge.'}</p>
+      </div>`;
+      document.getElementById('stage4Next').disabled = false;
+      return;
+    }
+    const q = questions[qi];
+    wrap.innerHTML = `
+      <div class="qa-block mcq-game">
+        <div class="qa-num">Q${qi+1} of ${questions.length}</div>
+        <div class="mcq-q">${q.q}</div>
+        <div class="mcq-options">
+          ${q.opts.map((o,i) => `<button class="mcq-opt" data-i="${i}">${o}</button>`).join('')}
+        </div>
+      </div>`;
+    wrap.querySelectorAll('.mcq-opt').forEach(b => {
+      b.onclick = () => {
+        const i = +b.dataset.i;
+        wrap.querySelectorAll('.mcq-opt').forEach(x => x.disabled = true);
+        if (i === q.correct){ b.classList.add('correct'); correctCount++; }
+        else {
+          b.classList.add('wrong');
+          wrap.querySelector(`.mcq-opt[data-i="${q.correct}"]`).classList.add('correct');
+        }
+        setTimeout(() => { qi++; showQ(); }, 900);
+      };
+    });
+  }
+  showQ();
+  document.getElementById('stage4Next').onclick = () => completeStage(4);
+}
+
+/* ---------- STAGE 5 — HS2 topic-tailored question ---------- */
+function renderStage5(){
+  gameArea.className = 'game-area fade-in';
+  if (!STATE.topic){
+    gameArea.innerHTML = `
+      <div class="game-header">
+        <div class="game-title">Stage 05 · HS2 Final Challenge</div>
+        <div class="game-score">Score: ${STATE.score}</div>
+      </div>
+      <div style="text-align:center;padding:40px">
+        <div style="font-size:48px;margin-bottom:14px">🏗️</div>
+        <h3 style="font-family:Georgia,serif;margin-bottom:8px">Pick your HS2 material first</h3>
+        <p style="color:var(--ink-dim)">Scroll to section 02 and choose the material your stage 5 question should focus on.</p>
+        <button class="btn" style="margin-top:20px" onclick="document.getElementById('sec-topic').scrollIntoView({behavior:'smooth'})">Choose a topic ↑</button>
+      </div>
+    `;
+    return;
+  }
+  const topic = TOPICS.find(t => t.id === STATE.topic);
+  const question = QUESTIONS[STATE.topic].stage5;
+
+  gameArea.innerHTML = `
+    <div class="game-header">
+      <div>
+        <div class="game-title">Stage 05 · HS2 Final Challenge</div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:4px">Topic: <strong style="color:var(--gold)">${topic.name}</strong></p>
+      </div>
+      <div class="game-score">Score: ${STATE.score}</div>
+    </div>
+    <div class="hs2-question">
+      <h4>${topic.icon} HS2 Phase 1 · ${topic.name}</h4>
+      <p>${question}</p>
+    </div>
+    <p style="color:var(--ink-dim);font-size:13px;margin-bottom:10px">Write your answer below in your own words. (Minimum ~120 words to complete the stage.)</p>
+    <textarea class="qa-answer no-paste" id="stage5Answer" placeholder="Begin your engineering answer here..."></textarea>
+    <div class="qa-counter" id="stage5Counter">0 words</div>
+    <div style="margin-top:14px;text-align:right">
+      <button class="btn" id="stage5Submit" disabled>Submit answer & complete</button>
+    </div>
+  `;
+  const ta = document.getElementById('stage5Answer');
+  const submitBtn = document.getElementById('stage5Submit');
+  attachPasteBlock(ta);
+  ta.oninput = () => {
+    const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('stage5Counter').textContent = words + ' words';
+    submitBtn.disabled = words < 120;
+  };
+  submitBtn.onclick = () => {
+    STATE.stage5Answer = ta.value;
+    completeStage(5);
+    gameArea.innerHTML = `
+      <div style="text-align:center;padding:40px">
+        <div style="font-size:64px;margin-bottom:14px">🏆</div>
+        <h2 style="font-family:Georgia,serif;font-size:30px;margin-bottom:10px">All 5 stages cleared!</h2>
+        <p style="color:var(--ink-dim);font-size:15px;max-width:480px;margin:0 auto">Outstanding — you've matched bonds, identified lattices, glided dislocations, picked strengthening routes, and answered an HS2 challenge in your own words. Now complete the written assessment below to download your Moodle submission.</p>
+        <button class="btn" style="margin-top:24px" onclick="document.getElementById('sec-assess').scrollIntoView({behavior:'smooth'})">Go to assessment ↓</button>
+      </div>
+    `;
+  };
+}
+
+/* ============================================================================
+   ASSESSMENT
+============================================================================ */
+function buildAssessment(){
+  const wrap = document.getElementById('assessmentQuestions');
+  if (!STATE.topic){
+    wrap.innerHTML = `<div style="padding:30px;text-align:center;color:var(--ink-dim)">
+      <p style="font-size:15px">Choose a material in section 02 to load your tailored assessment questions.</p>
+    </div>`;
+    return;
+  }
+  const topic = TOPICS.find(t => t.id === STATE.topic);
+  const questions = QUESTIONS[STATE.topic].assessment;
+  wrap.innerHTML = `
+    <div style="margin-bottom:18px;padding:14px;background:rgba(232,184,74,0.06);border-left:3px solid var(--gold);border-radius:0 8px 8px 0">
+      <strong style="color:var(--gold);font-size:12px;letter-spacing:1.5px;text-transform:uppercase">Topic locked</strong>
+      <div style="margin-top:4px;font-size:14px">${topic.icon} ${topic.name} — ${topic.hs2}</div>
+    </div>
+  ` + questions.map((q,i) => `
+    <div class="qa-block">
+      <span class="qa-num">Question ${i+1}</span>
+      <div class="qa-q">${q}</div>
+      <textarea class="qa-answer no-paste" data-q="${i}" placeholder="Type your answer here..."></textarea>
+      <div class="qa-counter" data-c="${i}">0 words</div>
+    </div>
+  `).join('');
+
+  // Wire up paste-block and word count
+  wrap.querySelectorAll('.qa-answer').forEach(ta => {
+    attachPasteBlock(ta);
+    ta.oninput = () => {
+      const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
+      wrap.querySelector(`[data-c="${ta.dataset.q}"]`).textContent = words + ' words';
+    };
+  });
+}
+
+/* ============================================================================
+   PASTE BLOCKING (and drag-drop / cut)
+============================================================================ */
+function showPasteAlert(){
+  const a = document.getElementById('pasteAlert');
+  a.classList.add('show');
+  clearTimeout(showPasteAlert._t);
+  showPasteAlert._t = setTimeout(() => a.classList.remove('show'), 1600);
+}
+function attachPasteBlock(el){
+  el.addEventListener('paste', e => { e.preventDefault(); showPasteAlert(); });
+  el.addEventListener('drop', e => { e.preventDefault(); showPasteAlert(); });
+  el.addEventListener('dragover', e => e.preventDefault());
+  // Allow cut and copy of own typed words but not paste
+}
+
+/* ============================================================================
+   SUBMIT — generate .txt and trigger SCORM completion
+============================================================================ */
+document.getElementById('submitBtn').onclick = () => {
+  const name = document.getElementById('studentName').value.trim();
+  const id = document.getElementById('studentId').value.trim();
+  if (!name || !id){
+    alert('Please enter your full name and student ID before submitting.');
+    return;
+  }
+  if (!STATE.topic){
+    alert('Please choose a material topic in section 02 before submitting.');
+    return;
+  }
+  const answers = [];
+  document.querySelectorAll('#assessmentQuestions .qa-answer').forEach(ta => {
+    answers.push({ q: +ta.dataset.q, text: ta.value.trim() });
+  });
+  const empty = answers.filter(a => a.text.split(/\s+/).filter(Boolean).length < 30).length;
+  if (empty > 0){
+    if (!confirm(`${empty} answer(s) are under 30 words. Submit anyway?`)) return;
+  }
+
+  const topic = TOPICS.find(t => t.id === STATE.topic);
+  const questions = QUESTIONS[STATE.topic].assessment;
+  const ts = new Date().toLocaleString('en-GB');
+
+  let txt = `EG4022 ENGINEERING MATERIALS — ATOMIC BONDING & CRYSTAL STRUCTURES
+================================================================================
+Module Lead: Vismay Loliyaniya
+Submission timestamp: ${ts}
+
+STUDENT NAME : ${name}
+STUDENT ID   : ${id}
+TOPIC CHOSEN : ${topic.name}
+HS2 CONTEXT  : ${topic.hs2}
+BONDING FOCUS: ${topic.bondingFocus}
+
+Game stages completed: ${STATE.stagesComplete.filter(Boolean).length} / 5
+Game score: ${STATE.score} / 100
+
+================================================================================
+STAGE 5 — HS2 FINAL CHALLENGE
+================================================================================
+${QUESTIONS[STATE.topic].stage5}
+
+Answer:
+${STATE.stage5Answer || '(not answered)'}
+
+================================================================================
+WRITTEN ASSESSMENT — 5 QUESTIONS TAILORED TO YOUR TOPIC
+================================================================================
+`;
+  answers.forEach((a,i) => {
+    txt += `\n--- QUESTION ${i+1} ---\n${questions[i]}\n\nAnswer:\n${a.text || '(blank)'}\n`;
+  });
+  txt += `\n================================================================================
+END OF SUBMISSION
+Upload this file to the Moodle assignment page for EG4022 — Week: Atomic Bonding & Crystal Structures.
+================================================================================
+`;
+
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `EG4022_AtomicBonding_${name.replace(/\s+/g,'_')}_${id}.txt`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+
+  saveScormProgress(true);
+  alert('Submission downloaded.\n\nUpload the .txt file to your Moodle assignment page.');
+};
+
+/* ============================================================================
+   SCORM 1.2 integration
+============================================================================ */
+function saveScormProgress(completed = false){
+  if (typeof SCORM_API !== 'undefined' && SCORM_API.initialized){
+    const completedStages = STATE.stagesComplete.filter(Boolean).length;
+    SCORM_API.setValue('cmi.core.score.raw', String(STATE.score + completedStages * 10));
+    SCORM_API.setValue('cmi.core.score.min', '0');
+    SCORM_API.setValue('cmi.core.score.max', '150');
+    if (completed){
+      SCORM_API.setValue('cmi.core.lesson_status', 'completed');
+      SCORM_API.commit();
+    }
+  }
+}
+
+window.addEventListener('load', () => {
+  if (typeof SCORM_API !== 'undefined') SCORM_API.initialize();
+  // Try to pull student info from launcher
+  try {
+    const stored = JSON.parse(sessionStorage.getItem('eg4022_student') || 'null');
+    if (stored){
+      if (stored.name) document.getElementById('studentName').value = stored.name;
+      if (stored.id) document.getElementById('studentId').value = stored.id;
+    }
+  } catch(e){}
+  renderGameStage(1);
+  buildAssessment();
+});
+
+window.addEventListener('beforeunload', () => {
+  if (typeof SCORM_API !== 'undefined' && SCORM_API.initialized){
+    SCORM_API.setValue('cmi.core.exit', 'suspend');
+    SCORM_API.terminate();
+  }
+});
+</script>
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>

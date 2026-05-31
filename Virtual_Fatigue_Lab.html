@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fatigue Test Lab · EG4022 Engineering Materials</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #f5f2ec;
+  --paper:     #fdfcf8;
+  --ink:       #1a1a18;
+  --muted:     #7a7568;
+  --rule:      #d8d3c8;
+  --amber:     #c8860a;
+  --red:       #c0392b;
+  --blue:      #1a4a8a;
+  --green:     #2a7a4a;
+  --steel:     #4a6878;
+  --steel-lt:  #d0dce4;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --shadow:    0 1px 3px rgba(0,0,0,.10), 0 4px 16px rgba(0,0,0,.05);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*::selection{background:transparent}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── HEADER ── */
+.lab-header{background:var(--ink);color:var(--bg);padding:1.2rem 2rem;display:flex;align-items:center;gap:2rem;border-bottom:3px solid var(--amber)}
+.lab-header .logo{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);line-height:1.4}
+.lab-header h1{font-family:var(--font-mono);font-size:1rem;font-weight:700;letter-spacing:.04em;color:#fff}
+.lab-header .subtitle{font-size:.75rem;color:#999;font-weight:300;margin-top:.1rem}
+.lab-header .status-pill{margin-left:auto;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .8rem;border:1px solid;color:var(--amber);border-color:var(--amber)}
+.lab-header .status-pill.running{color:#4caf50;border-color:#4caf50;animation:blink 1s infinite}
+.lab-header .status-pill.complete{color:#64b5f6;border-color:#64b5f6}
+.lab-header .status-pill.fractured{color:#ef5350;border-color:#ef5350}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── STAGE NAV ── */
+.stage-nav{background:var(--paper);border-bottom:1px solid var(--rule);display:flex;overflow-x:auto}
+.stage-btn{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.9rem 1.4rem;border:none;border-bottom:3px solid transparent;background:none;cursor:pointer;color:var(--muted);white-space:nowrap;transition:all .2s}
+.stage-btn .step-num{display:block;font-size:.55rem;color:var(--muted);margin-bottom:.1rem;opacity:.6}
+.stage-btn:hover{color:var(--ink)}
+.stage-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+.stage-btn.done{color:var(--green);border-bottom-color:var(--green)}
+.stage-btn.done::after{content:' ✓';font-size:.6rem}
+
+/* ── LAYOUT ── */
+.lab-body{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 112px)}
+@media(max-width:900px){.lab-body{grid-template-columns:1fr}}
+.main-pane{padding:2rem;border-right:1px solid var(--rule)}
+.side-pane{padding:1.5rem;background:var(--paper);overflow-y:auto;max-height:calc(100vh - 112px);position:sticky;top:0}
+
+/* ── STAGES ── */
+.stage{display:none}
+.stage.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stage-title{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.stage-h2{font-family:var(--font-mono);font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:1.5rem;padding-bottom:.8rem;border-bottom:1px solid var(--rule)}
+
+/* ── CARDS ── */
+.card{background:var(--paper);border:1px solid var(--rule);padding:1.4rem;margin-bottom:1.2rem;box-shadow:var(--shadow)}
+.card-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.card-label::before{content:'';display:block;width:8px;height:1px;background:var(--muted)}
+
+/* ── MAT GRID ── */
+.mat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1rem}
+@media(max-width:700px){.mat-grid{grid-template-columns:repeat(2,1fr)}}
+.mat-card{border:2px solid var(--rule);padding:.9rem;cursor:pointer;transition:all .2s;background:var(--paper);text-align:center}
+.mat-card:hover{border-color:var(--steel)}
+.mat-card.selected{border-color:var(--amber);background:#fdf8ec}
+.mat-swatch{width:100%;height:5px;border-radius:1px;margin-bottom:.5rem}
+.mat-name{font-family:var(--font-mono);font-size:.72rem;font-weight:700;color:var(--ink);margin-bottom:.2rem}
+.mat-grade{font-size:.62rem;color:var(--muted);line-height:1.3}
+
+/* ── FORMS ── */
+.form-row{display:flex;align-items:center;gap:1rem;margin-bottom:.9rem}
+.form-row label{font-size:.78rem;color:var(--ink);min-width:160px}
+.form-row input[type=range]{flex:1;accent-color:var(--amber);cursor:pointer}
+.form-row select,.form-row input[type=number]{flex:1;background:var(--paper);border:1px solid var(--rule);padding:.4rem .7rem;font-family:var(--font-mono);font-size:.75rem;color:var(--ink)}
+.form-row select:focus,.form-row input[type=number]:focus{outline:none;border-color:var(--amber)}
+.val-badge{font-family:var(--font-mono);font-size:.72rem;font-weight:700;color:var(--amber);min-width:70px}
+
+/* ── BUTTONS ── */
+.btn{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1.4rem;border:1px solid;cursor:pointer;transition:all .2s;display:inline-block}
+.btn-primary{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-primary:hover{background:#a66e07;border-color:#a66e07}
+.btn-primary:disabled{background:var(--muted);border-color:var(--muted);cursor:not-allowed}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-danger:hover{background:#962d22}
+.btn-ghost{background:none;color:var(--ink);border-color:var(--rule)}
+.btn-ghost:hover{border-color:var(--steel);color:var(--steel)}
+.btn-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ── CANVAS ── */
+.canvas-wrap{border:1px solid var(--rule);background:var(--paper);margin-bottom:1.2rem;box-shadow:var(--shadow)}
+.canvas-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.6rem .8rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+canvas{display:block;width:100%}
+
+/* ── READOUTS ── */
+.ro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.8rem}
+.ro-cell{background:var(--bg);border:1px solid var(--rule);padding:.6rem .8rem}
+.ro-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem}
+.ro-val{font-family:var(--font-mono);font-size:.95rem;font-weight:700;color:var(--ink)}
+.ro-unit{font-size:.58rem;color:var(--muted);font-weight:400;margin-left:.1rem}
+.ro-cell.hi .ro-val{color:var(--amber)}
+.ro-cell.al .ro-val{color:var(--red)}
+
+/* ── PHASE BAR ── */
+.phase-strip{margin-bottom:.8rem}
+.phase-hdr{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:.3rem}
+.phase-bar{display:flex;height:5px;border:1px solid var(--rule);overflow:hidden;background:var(--bg)}
+.ph-seg{flex:1;transition:background .4s}
+.ph-I{background:var(--green)}
+.ph-II{background:var(--amber)}
+.ph-III{background:var(--red)}
+.ph-name{font-family:var(--font-mono);font-size:.68rem;font-weight:700;color:var(--muted);margin-top:.3rem}
+
+/* ── PROGRESS ── */
+.prog-wrap{margin-bottom:.8rem}
+.prog-hdr{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:.25rem}
+.prog-bar{height:4px;background:var(--rule);overflow:hidden}
+.prog-fill{height:100%;background:var(--amber);transition:width .2s,background .3s}
+
+/* ── LOG ── */
+.log-box{background:var(--ink);padding:.7rem;max-height:150px;overflow-y:auto;font-family:var(--font-mono);font-size:.62rem;margin-bottom:.8rem;scrollbar-width:thin}
+.log-entry{display:flex;gap:.5rem;padding:.15rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.lt{color:#5a8a5a;flex-shrink:0}
+.lm{color:#bbb}
+.lm.warn{color:#f5a623}
+.lm.crit{color:#ef5350}
+.lm.ok{color:#66bb6a}
+
+/* ── SIDE PANEL ── */
+.side-title{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:.4rem}
+.side-title::before{content:'';display:block;width:6px;height:1px;background:var(--muted)}
+.divider{height:1px;background:var(--rule);margin:1rem 0}
+.mini-tbl{width:100%;font-family:var(--font-mono);font-size:.63rem}
+.mini-tbl td{padding:.28rem .35rem;border-bottom:1px solid var(--rule);color:var(--ink)}
+.mini-tbl td:first-child{color:var(--muted);width:55%}
+.mini-tbl td.v{color:var(--amber);font-weight:700}
+
+/* ── SN LEGEND ── */
+.sn-leg{display:flex;flex-wrap:wrap;gap:.4rem .8rem;padding:.4rem .8rem .6rem}
+.leg-i{display:flex;align-items:center;gap:.3rem;font-family:var(--font-mono);font-size:.58rem;color:var(--muted)}
+.leg-d{width:10px;height:3px;border-radius:1px;flex-shrink:0}
+
+/* ── RESULTS ── */
+.cmp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.5rem}
+.cmp-cell{background:var(--bg);border:1px solid var(--rule);padding:.5rem .6rem;text-align:center}
+.cmp-key{font-family:var(--font-mono);font-size:.54rem;color:var(--muted);letter-spacing:.04em;line-height:1.3}
+.cmp-val{font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:var(--amber);margin-top:.15rem}
+.results-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:.7rem}
+.results-table th{background:var(--bg);border-bottom:2px solid var(--rule);padding:.45rem .6rem;text-align:left;letter-spacing:.07em;text-transform:uppercase;font-size:.57rem;color:var(--muted)}
+.results-table td{padding:.4rem .6rem;border-bottom:1px solid var(--rule);color:var(--ink)}
+.results-table tr:hover td{background:#fdf8ec}
+.results-table td.hl{color:var(--amber);font-weight:700}
+.code-block{background:var(--ink);color:#ccc;font-family:var(--font-mono);font-size:.68rem;padding:1rem;line-height:1.8;border:1px solid var(--rule);margin-top:.5rem;white-space:pre-wrap}
+
+/* ── REPORT ── */
+.report-field{background:var(--bg);border:1px solid var(--rule);padding:.7rem;margin-bottom:.6rem;font-family:var(--font-body);font-size:.8rem;line-height:1.6}
+.field-lbl{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+textarea.rta{width:100%;background:var(--paper);border:1px solid var(--rule);padding:.6rem;font-family:var(--font-body);font-size:.8rem;color:var(--ink);resize:vertical;min-height:80px;line-height:1.5}
+textarea.rta:focus{outline:none;border-color:var(--amber)}
+.no-paste-hint{font-size:.62rem;color:var(--muted);margin-top:.25rem;font-family:var(--font-mono)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="lab-header">
+  <div class="logo">EG4022<br/>Engineering Materials</div>
+  <div>
+    <h1>Virtual Fatigue Test Laboratory</h1>
+    <div class="subtitle">University of East London · Malvern University Partnerships · Vismay Loliyaniya — Module Lead</div>
+  </div>
+  <div class="status-pill" id="statusPill">STANDBY</div>
+</header>
+
+<!-- STAGE NAV -->
+<nav class="stage-nav">
+  <button class="stage-btn active" id="btn-s1" onclick="goStage(1)"><span class="step-num">Step 01</span>Specimen Setup</button>
+  <button class="stage-btn" id="btn-s2" onclick="goStage(2)"><span class="step-num">Step 02</span>Test Parameters</button>
+  <button class="stage-btn" id="btn-s3" onclick="goStage(3)"><span class="step-num">Step 03</span>Run Test</button>
+  <button class="stage-btn" id="btn-s4" onclick="goStage(4)"><span class="step-num">Step 04</span>Results &amp; Analysis</button>
+  <button class="stage-btn" id="btn-s5" onclick="goStage(5)"><span class="step-num">Step 05</span>Lab Report</button>
+</nav>
+
+<div class="lab-body">
+<div class="main-pane">
+
+<!-- ═══ STAGE 1 ═══ -->
+<div class="stage active" id="stage1">
+  <div class="stage-title">Step 01 of 05</div>
+  <div class="stage-h2">Specimen Setup — Material &amp; Geometry</div>
+  <div class="card">
+    <div class="card-label">Select test material (8 options)</div>
+    <div class="mat-grid" id="matGrid"></div>
+    <div id="matDescBox" style="font-size:.75rem;color:var(--muted);line-height:1.55;font-style:italic;margin-top:.3rem">Select a material above to see its description and engineering context.</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Specimen geometry</div>
+    <div class="form-row"><label>Specimen type</label>
+      <select id="specType"><option>Circular cross-section (round bar)</option><option>Rectangular flat plate</option><option>Notched specimen (K_t = 2.5)</option><option>Pre-cracked compact tension</option></select></div>
+    <div class="form-row"><label>Gauge length L₀</label><input type="range" id="gaugeLen" min="25" max="150" value="50" oninput="updateGeoLbls()"><span class="val-badge" id="gaugeLenV">50 mm</span></div>
+    <div class="form-row"><label>Diameter / width</label><input type="range" id="specDia" min="5" max="30" value="12" oninput="updateGeoLbls()"><span class="val-badge" id="specDiaV">12 mm</span></div>
+    <div class="form-row"><label>Initial crack size a₀</label><input type="range" id="initCrack" min="1" max="50" value="5" oninput="updateGeoLbls()"><span class="val-badge" id="initCrackV">0.5 mm</span></div>
+    <div class="form-row"><label>Surface finish</label>
+      <select id="surfFinish"><option value="1.0">Polished (K_sf = 1.0)</option><option value="1.15" selected>Ground (K_sf = 1.15)</option><option value="1.45">Machined (K_sf = 1.45)</option><option value="2.0">As-welded (K_sf = 2.0)</option></select></div>
+  </div>
+  <div class="canvas-wrap"><div class="canvas-label">Specimen diagram</div><canvas id="setupCanvas" height="110"></canvas></div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="confirmSetup()">Confirm Setup → Step 02</button></div>
+</div>
+
+<!-- ═══ STAGE 2 ═══ -->
+<div class="stage" id="stage2">
+  <div class="stage-title">Step 02 of 05</div>
+  <div class="stage-h2">Test Parameters — Loading &amp; Environment</div>
+  <div class="card">
+    <div class="card-label">Cyclic loading</div>
+    <div class="form-row"><label>Stress amplitude σ_a (MPa)</label><input type="range" id="stressAmp" min="20" max="700" value="220" oninput="updateParamLbls()"><span class="val-badge" id="stressAmpV">220 MPa</span></div>
+    <div class="form-row"><label>Stress ratio R = σ_min/σ_max</label><input type="range" id="stressR" min="-10" max="8" value="0" oninput="updateParamLbls()"><span class="val-badge" id="stressRV">0.0</span></div>
+    <div class="form-row"><label>Loading frequency (Hz)</label><input type="range" id="loadFreq" min="1" max="100" value="10" oninput="updateParamLbls()"><span class="val-badge" id="loadFreqV">10 Hz</span></div>
+    <div class="form-row"><label>Waveform</label>
+      <select id="waveform"><option>Sinusoidal (fully reversed)</option><option>Pulsating tension (R=0)</option><option>Random spectrum loading</option><option>Block loading</option></select></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Environment &amp; temperature</div>
+    <div class="form-row"><label>Test environment</label>
+      <select id="envSelect" onchange="updateEnvNote()">
+        <option value="air">Laboratory air (ambient, 20°C)</option>
+        <option value="seawater">Seawater (3.5% NaCl)</option>
+        <option value="hydrogen">Hydrogen atmosphere</option>
+        <option value="hightemp">Elevated temperature (300°C)</option>
+        <option value="vacuum">High vacuum (10⁻⁶ mbar)</option>
+      </select></div>
+    <div class="form-row"><label>Temperature (°C)</label><input type="range" id="tempCtrl" min="-40" max="500" value="20" oninput="updateParamLbls()"><span class="val-badge" id="tempV">20 °C</span></div>
+    <div id="envNote" style="font-size:.72rem;color:var(--blue);padding:.45rem .7rem;background:#eef3fa;border:1px solid #c0d0ea;font-family:var(--font-mono);margin-top:.3rem"></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Paris Law constants (auto-filled)</div>
+    <div class="form-row"><label>Growth constant C</label><input type="number" id="parisC" step="any" style="flex:1;background:var(--bg);border:1px solid var(--rule);padding:.4rem .7rem;font-family:var(--font-mono);font-size:.75rem;color:var(--ink)"></div>
+    <div class="form-row"><label>Growth exponent m</label><input type="number" id="parisM" step="0.1" style="flex:1;background:var(--bg);border:1px solid var(--rule);padding:.4rem .7rem;font-family:var(--font-mono);font-size:.75rem;color:var(--ink)"></div>
+    <div class="form-row"><label>Simulation speed</label><input type="range" id="simSpeed" min="1" max="20" value="5" oninput="updateParamLbls()"><span class="val-badge" id="simSpeedV">5×</span></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="goStage(1)">← Back</button>
+    <button class="btn btn-primary" onclick="confirmParams()">Confirm Parameters → Step 03</button>
+  </div>
+</div>
+
+<!-- ═══ STAGE 3 ═══ -->
+<div class="stage" id="stage3">
+  <div class="stage-title">Step 03 of 05</div>
+  <div class="stage-h2">Run Test — Live Fatigue Simulation</div>
+  <div class="canvas-wrap">
+    <div class="canvas-label"><span>Crack Growth — Paris Law · da/dN = C(ΔK)ᵐ</span><span id="crackInfo" style="color:var(--amber)"></span></div>
+    <canvas id="crackCanvas" height="240"></canvas>
+  </div>
+  <div class="canvas-wrap">
+    <div class="canvas-label"><span>S–N Wöhler Diagram — All Materials</span><span style="font-size:.56rem;color:var(--muted)">◆ = current test point</span></div>
+    <canvas id="snCanvas" height="200"></canvas>
+    <div class="sn-leg" id="snLeg"></div>
+  </div>
+  <div class="canvas-wrap"><div class="canvas-label">Specimen — Fatigue Crack Propagation</div><canvas id="specCanvas" height="130"></canvas></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="btnRun" onclick="startTest()">▶ Start Test</button>
+    <button class="btn btn-danger" id="btnStop" onclick="stopTest()" disabled>■ Stop</button>
+    <button class="btn btn-ghost" onclick="resetTest()">↺ Reset</button>
+    <button class="btn btn-ghost" id="btnToRes" onclick="goStage(4)" disabled>View Results →</button>
+  </div>
+</div>
+
+<!-- ═══ STAGE 4 ═══ -->
+<div class="stage" id="stage4">
+  <div class="stage-title">Step 04 of 05</div>
+  <div class="stage-h2">Results &amp; Analysis</div>
+  <div class="card"><div class="card-label">Key fatigue results</div><div class="cmp-grid" id="cmpGrid"></div></div>
+  <div class="card"><div class="card-label">Stress–Strain reference curve</div><canvas id="analysisCanvas" height="300"></canvas></div>
+  <div class="card"><div class="card-label">Full test data table</div>
+    <table class="results-table"><thead><tr><th>Property</th><th>Symbol</th><th>Measured</th><th>Published</th><th>Units</th></tr></thead><tbody id="resTbody"></tbody></table>
+  </div>
+  <div class="card"><div class="card-label">Working calculations</div><div class="code-block" id="workingOut"></div></div>
+  <div class="btn-row"><button class="btn btn-ghost" onclick="goStage(3)">← Back</button><button class="btn btn-primary" onclick="goStage(5)">Write Lab Report →</button></div>
+</div>
+
+<!-- ═══ STAGE 5 ═══ -->
+<div class="stage" id="stage5">
+  <div class="stage-title">Step 05 of 05</div>
+  <div class="stage-h2">Lab Report — Fatigue Investigation</div>
+  <div class="card"><div class="card-label">Report title (auto-filled)</div><div class="report-field" id="rTitle"></div></div>
+  <div class="card">
+    <div class="card-label">Abstract — write your own (no copy-paste)</div>
+    <div class="field-lbl">Summarise the aim, method, key results, and conclusion in 100–150 words.</div>
+    <textarea class="rta nopaste" id="rAbstract" rows="5" placeholder="Write your abstract here. State the material tested, loading conditions, cycles to failure or survival, crack length at fracture, and implications for HS2 Phase One."></textarea>
+    <div class="no-paste-hint">⚠ Paste disabled — type your own response</div>
+  </div>
+  <div class="card"><div class="card-label">Equipment &amp; method (auto-filled)</div><div class="report-field" id="rMethod"></div></div>
+  <div class="card"><div class="card-label">Results summary (auto-filled)</div><div class="report-field" id="rResults"></div></div>
+  <div class="card">
+    <div class="card-label">Discussion — write your own (no copy-paste)</div>
+    <div class="field-lbl">Discuss results in context of Paris Law, fracture toughness K_IC, and HS2 Phase One performance requirements.</div>
+    <textarea class="rta nopaste" id="rDiscussion" rows="6" placeholder="Discuss: Does the measured fatigue life agree with Paris Law? How does environment affect crack growth rate? What are the implications for HS2 structural inspection intervals? Compare your material to one alternative."></textarea>
+    <div class="no-paste-hint">⚠ Paste disabled — type your own response</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Conclusion — write your own (no copy-paste)</div>
+    <textarea class="rta nopaste" id="rConclusion" rows="4" placeholder="State whether the material meets fatigue life requirements for its intended application. Recommend suitability for HS2 Phase One with justification."></textarea>
+    <div class="no-paste-hint">⚠ Paste disabled — type your own response</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="goStage(4)">← Back to Results</button>
+    <button class="btn btn-primary" onclick="downloadCSV()">⬇ Download Test Data (.csv)</button>
+  </div>
+</div>
+
+</div><!-- /main-pane -->
+
+<!-- SIDE PANEL -->
+<aside class="side-pane">
+  <div class="side-title">Selected material</div>
+  <div style="font-family:var(--font-mono);font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.15rem" id="sideName">—</div>
+  <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--muted);margin-bottom:.5rem" id="sideGrade">—</div>
+  <div style="font-size:.72rem;color:var(--muted);line-height:1.5;margin-bottom:.7rem;font-style:italic" id="sideDesc"></div>
+  <table class="mini-tbl" id="sideTbl"></table>
+
+  <div class="divider"></div>
+
+  <div id="sideReadouts" style="display:none">
+    <div class="side-title">Live readouts</div>
+    <div class="ro-grid">
+      <div class="ro-cell hi"><div class="ro-label">Cycles N</div><div class="ro-val" id="ro-N">0</div></div>
+      <div class="ro-cell hi"><div class="ro-label">Crack a</div><div class="ro-val" id="ro-a">0.00<span class="ro-unit">mm</span></div></div>
+      <div class="ro-cell"><div class="ro-label">ΔK</div><div class="ro-val" id="ro-dk">—<span class="ro-unit">MPa√m</span></div></div>
+      <div class="ro-cell"><div class="ro-label">da/dN</div><div class="ro-val" id="ro-dadn">—<span class="ro-unit">nm/c</span></div></div>
+      <div class="ro-cell"><div class="ro-label">σ_max</div><div class="ro-val" id="ro-smax">—<span class="ro-unit">MPa</span></div></div>
+      <div class="ro-cell"><div class="ro-label">σ_mean</div><div class="ro-val" id="ro-smean">—<span class="ro-unit">MPa</span></div></div>
+    </div>
+    <div class="ro-grid" style="grid-template-columns:1fr">
+      <div class="ro-cell"><div class="ro-label">K / K_IC margin</div>
+        <div class="prog-bar" style="margin-top:.3rem"><div class="prog-fill" id="kicFill" style="width:0%"></div></div>
+        <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--muted);margin-top:.2rem;display:flex;justify-content:space-between"><span>0</span><span id="kicMax">K_IC</span></div>
+      </div>
+    </div>
+    <div style="height:.8rem"></div>
+    <div class="phase-strip">
+      <div class="phase-hdr"><span>I. Init</span><span>II. Propagation</span><span>III. Rapid</span></div>
+      <div class="phase-bar"><div class="ph-seg" id="ps-I"></div><div class="ph-seg" id="ps-II" style="flex:5"></div><div class="ph-seg" id="ps-III"></div></div>
+      <div class="ph-name" id="phName">—</div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-hdr"><span>Fatigue life consumed</span><span id="lifePct">0%</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="lifeFill" style="width:0%"></div></div>
+    </div>
+    <div class="side-title" style="margin-top:.8rem">Event log</div>
+    <div class="log-box" id="logBox">
+      <div class="log-entry"><span class="lt">0.0s</span><span class="lm ok">System ready.</span></div>
+    </div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="side-title">Theory reference</div>
+  <div style="font-size:.72rem;color:var(--muted);line-height:1.65">
+    <p style="font-family:var(--font-mono);color:var(--amber);font-size:.65rem;margin-bottom:.2rem">Paris Law</p>
+    <p style="font-family:var(--font-mono);font-size:.65rem;color:var(--steel);margin-bottom:.5rem">da/dN = C · (ΔK)ᵐ</p>
+    <p style="margin-bottom:.7rem">ΔK = Y·σ·√(πa). C and m are material constants. Larger ΔK → faster growth. Three regions: threshold → stable growth → rapid fracture.</p>
+    <p style="font-family:var(--font-mono);color:var(--amber);font-size:.65rem;margin-bottom:.2rem">Critical Crack Size</p>
+    <p style="font-family:var(--font-mono);font-size:.65rem;color:var(--steel);margin-bottom:.5rem">a_c = (K_IC / Y·σ)² / π</p>
+    <p style="margin-bottom:.7rem">Fracture when a = a_c. Defines inspection detection limit for NDT per BS 7910.</p>
+    <p style="font-family:var(--font-mono);color:var(--amber);font-size:.65rem;margin-bottom:.2rem">HS2 Phase One</p>
+    <p>300 trains/day × 365 × 120 years ≈ 1.3×10¹⁰ cycles. All critical welds assessed by ECA using K_IC and Paris Law. Phased array UT must detect cracks ≥ a_c/3.</p>
+  </div>
+</aside>
+</div><!-- /lab-body -->
+
+<script>
+// ── COPY/PASTE BLOCK ──
+document.addEventListener('copy', e=>e.preventDefault());
+document.addEventListener('cut',  e=>e.preventDefault());
+document.addEventListener('contextmenu', e=>e.preventDefault());
+document.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey)&&['c','x','u','s'].includes(e.key.toLowerCase())) e.preventDefault();
+  if(e.key==='F12') e.preventDefault();
+});
+document.querySelectorAll('.nopaste').forEach(el=>{
+  el.addEventListener('paste',e=>{e.preventDefault();toast('⚠ Paste disabled — type your own response');});
+  el.addEventListener('drop', e=>{e.preventDefault();toast('⚠ Drag & drop disabled');});
+  el.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&['v','x'].includes(e.key.toLowerCase())){e.preventDefault();toast('⚠ Paste disabled');} });
+});
+
+// ── MATERIALS ──
+const MATS = {
+  s355:    {id:'s355',    name:'S355 Structural Steel',  grade:'EN 10025-2 S355 J2+N',  col:'#1a4a8a', E:210,ys:355,  uts:500,  elong:22,  KIC:75,  dKth:6.5, C:6.9e-12, m:3.0, fLim:200,  envF:{air:1.0,seawater:1.8,hydrogen:2.5,hightemp:1.4,vacuum:0.8},  desc:'Primary structural steel for HS2 viaducts and portal frames. J2 sub-grade ensures 27 J Charpy toughness at −20°C, preventing brittle fracture in UK winter conditions. CE ≤ 0.43 guarantees weldability without preheat on sections up to 25 mm.', pub:{E:'210',ys:'355',uts:'490',KIC:'50–100',elong:'≥22%'}, epY:355/210e3, epUTS:0.12, epF:0.22},
+  rail900: {id:'rail900', name:'Grade 900A Rail Steel',  grade:'EN 13674-1',             col:'#c8860a', E:210,ys:680,  uts:900,  elong:10,  KIC:30,  dKth:5.0, C:9e-12,   m:3.2, fLim:300,  envF:{air:1.0,seawater:2.2,hydrogen:3.0,hightemp:1.6,vacuum:0.75}, desc:'Pearlitic steel for HS2 mainline at 360 km/h. High UTS (≥900 MPa) resists rolling contact fatigue. Lower K_IC requires tighter NDT flaw tolerances. Specified to EN 13674-1 for high-speed rail applications.', pub:{E:'210',ys:'≥680',uts:'≥900',KIC:'25–35',elong:'≥10%'}, epY:680/210e3, epUTS:0.08, epF:0.12},
+  s460:    {id:'s460',    name:'S460 High-Strength Steel',grade:'EN 10025-6 S460 M/ML',  col:'#2a7a4a', E:210,ys:460,  uts:620,  elong:17,  KIC:55,  dKth:6.0, C:7.5e-12, m:3.0, fLim:230,  envF:{air:1.0,seawater:2.0,hydrogen:3.5,hightemp:1.5,vacuum:0.8},  desc:'Higher-strength steel for HS2 pin plates and splice connections. CE up to 0.47 — controlled preheat required during welding. Reduced ductility compared to S355 increases hydrogen cracking risk.', pub:{E:'210',ys:'460',uts:'590',KIC:'40–80',elong:'≥17%'}, epY:460/210e3, epUTS:0.09, epF:0.17},
+  al6061:  {id:'al6061',  name:'Aluminium 6061-T6',      grade:'ASTM B209 / EN 573-3',   col:'#6a3d9a', E:68, ys:276,  uts:310,  elong:17,  KIC:29,  dKth:2.0, C:1.5e-11, m:3.5, fLim:null, envF:{air:1.0,seawater:2.5,hydrogen:1.8,hightemp:2.0,vacuum:0.9},  desc:'Medium-strength aluminium for OLE masts and non-structural fittings. No fatigue limit — S-N curve always declines. Severe corrosion fatigue in marine/seawater environments. Good strength-to-weight ratio.', pub:{E:'68',ys:'276',uts:'310',KIC:'29',elong:'17%'}, epY:276/68e3, epUTS:0.08, epF:0.17},
+  al7075:  {id:'al7075',  name:'Aluminium 7075-T6',      grade:'ASTM B209 / EN 573-3',   col:'#b05000', E:71, ys:503,  uts:572,  elong:11,  KIC:24,  dKth:1.8, C:2e-11,   m:3.8, fLim:null, envF:{air:1.0,seawater:3.0,hydrogen:2.0,hightemp:2.5,vacuum:0.9},  desc:'Precipitation-hardened high-strength aluminium. Outstanding specific strength. Highly sensitive to stress corrosion cracking (SCC). Lowest K_IC in this dataset — cracks propagate rapidly. Not suitable for wet/marine environments.', pub:{E:'71',ys:'503',uts:'572',KIC:'24',elong:'11%'}, epY:503/71e3, epUTS:0.06, epF:0.11},
+  ti64:    {id:'ti64',    name:'Titanium Ti-6Al-4V',     grade:'ASTM B265 Grade 5',      col:'#c0392b', E:114,ys:880,  uts:950,  elong:14,  KIC:55,  dKth:4.5, C:5e-12,   m:3.0, fLim:500,  envF:{air:1.0,seawater:1.3,hydrogen:2.8,hightemp:1.2,vacuum:0.7},  desc:'Aerospace-grade titanium alloy. Exceptional fatigue performance and corrosion resistance. Included for academic comparison — cost prohibitive for HS2 structural use at scale. Outstanding performance in vacuum.', pub:{E:'114',ys:'880',uts:'950',KIC:'55',elong:'14%'}, epY:880/114e3, epUTS:0.07, epF:0.14},
+  castiron:{id:'castiron',name:'Grey Cast Iron',         grade:'BS EN 1561 EN-GJL-250',  col:'#4a6878', E:170,ys:null, uts:250,  elong:0.5, KIC:15,  dKth:4.0, C:3e-11,   m:3.5, fLim:100,  envF:{air:1.0,seawater:1.6,hydrogen:1.5,hightemp:1.3,vacuum:0.85}, desc:'Brittle material with very low K_IC (15 MPa√m). Graphite flakes act as internal notches severely reducing fatigue life. Not suitable for primary HS2 structural use — shown for comparison and to demonstrate why brittle materials must be avoided in cyclic loading applications.', pub:{E:'170',ys:'N/A',uts:'250',KIC:'15',elong:'~0.5%'}, epY:0.0015, epUTS:0.0015, epF:0.005},
+  inconel: {id:'inconel', name:'Inconel 718',            grade:'AMS 5662 / ASTM B637',   col:'#555555', E:200,ys:1034, uts:1276, elong:12,  KIC:100, dKth:8.0, C:3e-12,   m:2.8, fLim:550,  envF:{air:1.0,seawater:1.2,hydrogen:2.0,hightemp:0.9,vacuum:0.7},  desc:'Nickel superalloy with the highest K_IC and fatigue limit in this dataset. Exceptional high-temperature strength. Used in jet engines and extreme environments. Academic comparison — cost and density make it impractical for HS2 structural elements.', pub:{E:'200',ys:'1034',uts:'1276',KIC:'100',elong:'12%'}, epY:1034/200e3, epUTS:0.10, epF:0.12}
+};
+
+const ENV_NOTES = {
+  air:'Standard test. Paris Law constants apply directly. Steel fatigue limit persists in dry air.',
+  seawater:'Corrosion fatigue eliminates fatigue limit in all materials. Chloride ions accelerate Stage I crack initiation. Environment factor applied to crack growth rate.',
+  hydrogen:'Hydrogen embrittlement severely reduces K_IC and accelerates crack growth. High-strength steels most susceptible (S460, 7075). Can reduce toughness by 50–70%.',
+  hightemp:'Elevated temperature increases C constant (creep-fatigue). Oxide-induced crack closure reduced. Fatigue limit may disappear above ~300°C in steels.',
+  vacuum:'Removes oxidation and corrosion at crack tip. Crack closure enhanced. Longest fatigue life — useful baseline for intrinsic material behaviour.'
+};
+
+// ── STATE ──
+let selMat='s355', running=false, raf=null;
+let cycles=0, crackMm=0.5, done=false;
+let testPts=[], snPts=[], crackSegs=[];
+let t0=null, logN=0;
+const MAX_N=500000, MAX_A=25;
+
+// ── HELPERS ──
+const M=()=>MATS[selMat];
+const getSa=()=>parseInt(document.getElementById('stressAmp').value);
+const getR=()=>parseInt(document.getElementById('stressR').value)/10;
+const getA0=()=>parseInt(document.getElementById('initCrack').value)/10;
+const getSpd=()=>parseInt(document.getElementById('simSpeed').value);
+const getEnv=()=>document.getElementById('envSelect')?.value||'air';
+const getEF=()=>M().envF[getEnv()]||1.0;
+const getSmax=()=>getSa()*2/(1-getR());
+const getSmean=()=>getSmax()*(1+getR())/2;
+const getAc=()=>Math.max(0.01,(M().KIC/(1.12*getSa()*getEF()))**2/Math.PI*1000);
+
+function toast(msg){
+  let t=document.getElementById('_t');
+  if(!t){t=document.createElement('div');t.id='_t';t.style.cssText='position:fixed;bottom:18px;right:18px;z-index:9999;background:var(--ink);color:var(--bg);font-family:var(--font-mono);font-size:.68rem;padding:.55rem 1rem;border-left:3px solid var(--amber)';document.body.appendChild(t);}
+  t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2500);
+}
+
+// ── STAGE NAV ──
+function goStage(n){
+  [1,2,3,4,5].forEach(i=>{
+    document.getElementById('stage'+i).classList.toggle('active',i===n);
+    const b=document.getElementById('btn-s'+i);
+    b.classList.remove('active');
+    if(i===n) b.classList.add('active');
+  });
+  document.getElementById('sideReadouts').style.display=n>=3?'block':'none';
+  if(n===3){setTimeout(()=>{resizeC();drawCrackEmpty();drawSN();drawSpec(crackMm,false);},50);}
+  if(n===4) buildResults();
+  if(n===5) populateReport();
+}
+
+// ── MATERIAL GRID ──
+function buildGrid(){
+  const g=document.getElementById('matGrid'); g.innerHTML='';
+  Object.values(MATS).forEach(m=>{
+    const d=document.createElement('div');
+    d.className='mat-card'+(m.id===selMat?' selected':'');
+    d.id='mc-'+m.id;
+    d.innerHTML=`<div class="mat-swatch" style="background:${m.col}"></div><div class="mat-name">${m.name}</div><div class="mat-grade">${m.grade}</div>`;
+    d.onclick=()=>pickMat(m.id);
+    g.appendChild(d);
+  });
+}
+function pickMat(id){
+  selMat=id;
+  document.querySelectorAll('.mat-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('mc-'+id)?.classList.add('selected');
+  updateSide(); updateSetupC();
+  document.getElementById('parisC').value=M().C.toExponential(2);
+  document.getElementById('parisM').value=M().m;
+  document.getElementById('matDescBox').textContent=M().desc;
+}
+function updateSide(){
+  const m=M();
+  document.getElementById('sideName').textContent=m.name;
+  document.getElementById('sideName').style.color=m.col;
+  document.getElementById('sideGrade').textContent=m.grade;
+  document.getElementById('sideDesc').textContent=m.desc;
+  document.getElementById('kicMax').textContent='K_IC='+m.KIC;
+  document.getElementById('sideTbl').innerHTML=[
+    ["Young's Modulus E",m.E+' GPa'],
+    ['Yield Strength σy',(m.ys||'N/A')+' MPa'],
+    ['UTS',m.uts+' MPa'],
+    ['Fracture Tough. K_IC',m.KIC+' MPa√m'],
+    ['ΔK threshold',m.dKth+' MPa√m'],
+    ['Paris C',m.C.toExponential(2)],
+    ['Paris m',m.m],
+    ['Fatigue limit',m.fLim?(m.fLim+' MPa'):'None'],
+    ['Elongation',m.pub.elong]
+  ].map(([k,v])=>`<tr><td>${k}</td><td class="v">${v}</td></tr>`).join('');
+}
+
+// ── LABEL UPDATES ──
+function updateGeoLbls(){
+  document.getElementById('gaugeLenV').textContent=document.getElementById('gaugeLen').value+' mm';
+  document.getElementById('specDiaV').textContent=document.getElementById('specDia').value+' mm';
+  document.getElementById('initCrackV').textContent=(parseInt(document.getElementById('initCrack').value)/10).toFixed(1)+' mm';
+  updateSetupC();
+}
+function updateParamLbls(){
+  document.getElementById('stressAmpV').textContent=getSa()+' MPa';
+  document.getElementById('stressRV').textContent=getR().toFixed(1);
+  document.getElementById('loadFreqV').textContent=document.getElementById('loadFreq').value+' Hz';
+  document.getElementById('tempV').textContent=document.getElementById('tempCtrl').value+' °C';
+  document.getElementById('simSpeedV').textContent=getSpd()+'×';
+}
+function updateEnvNote(){
+  document.getElementById('envNote').textContent=ENV_NOTES[getEnv()]||'';
+}
+
+// ── SETUP CANVAS ──
+function updateSetupC(){
+  const c=document.getElementById('setupCanvas'); if(!c) return;
+  c.width=c.offsetWidth||600; c.height=110;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,m=M();
+  ctx.fillStyle='#fdfcf8'; ctx.fillRect(0,0,W,H);
+  const cx=W/2,cy=H/2,L=W*0.65,dia=parseInt(document.getElementById('specDia').value);
+  const bh=Math.max(18,H*(0.3+dia/30*0.5));
+  const gw=28;
+  ctx.fillStyle='#d0dce4'; ctx.strokeStyle='#4a6878'; ctx.lineWidth=1.2;
+  [[cx-L/2-gw,cy-bh/2-8],[cx+L/2,cy-bh/2-8]].forEach(([gx,gy])=>{ctx.fillRect(gx,gy,gw,bh+16);ctx.strokeRect(gx,gy,gw,bh+16);});
+  ctx.fillStyle=m.col+'22'; ctx.strokeStyle=m.col; ctx.lineWidth=1.5;
+  ctx.fillRect(cx-L/2,cy-bh/2,L,bh); ctx.strokeRect(cx-L/2,cy-bh/2,L,bh);
+  ctx.fillStyle=m.col; ctx.font='bold 9px IBM Plex Mono'; ctx.textAlign='center';
+  ctx.fillText(m.name,cx,cy-bh/2-10);
+  ctx.fillStyle='#888'; ctx.font='9px IBM Plex Mono';
+  ctx.fillText('L₀='+document.getElementById('gaugeLen').value+'mm',cx,cy+bh/2+20);
+  ctx.fillText('∅'+dia+'mm',cx+L/2+36,cy+4);
+}
+
+// ── CONFIRM ──
+function confirmSetup(){
+  document.getElementById('btn-s1').classList.add('done');
+  document.getElementById('parisC').value=M().C.toExponential(2);
+  document.getElementById('parisM').value=M().m;
+  updateEnvNote(); updateParamLbls(); goStage(2);
+}
+function confirmParams(){
+  document.getElementById('btn-s2').classList.add('done');
+  resetTest(); goStage(3);
+}
+
+// ── CANVAS RESIZE ──
+function resizeC(){
+  ['crackCanvas','snCanvas'].forEach(id=>{const c=document.getElementById(id);if(c)c.width=c.offsetWidth||700;});
+  const s=document.getElementById('specCanvas'); if(s)s.width=s.offsetWidth||700;
+}
+
+// ── CHART BASE ──
+const PAD={t:34,r:18,b:36,l:52};
+function ca(c){return{x0:PAD.l,y0:PAD.t,x1:c.width-PAD.r,y1:c.height-PAD.b,w:c.width-PAD.l-PAD.r,h:c.height-PAD.t-PAD.b};}
+function drawBase(ctx,c,xLbl,yLbl,xT,yT){
+  ctx.fillStyle='#fdfcf8'; ctx.fillRect(0,0,c.width,c.height);
+  const a=ca(c);
+  ctx.fillStyle='#f8f6f0'; ctx.fillRect(a.x0,a.y0,a.w,a.h);
+  ctx.strokeStyle='#e8e4dc'; ctx.lineWidth=1;
+  xT.forEach(t=>{const x=a.x0+t.f*a.w;ctx.beginPath();ctx.moveTo(x,a.y0);ctx.lineTo(x,a.y1);ctx.stroke();ctx.fillStyle='#888';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';ctx.fillText(t.l,x,a.y1+13);});
+  yT.forEach(t=>{const y=a.y1-t.f*a.h;ctx.beginPath();ctx.moveTo(a.x0,y);ctx.lineTo(a.x1,y);ctx.stroke();ctx.fillStyle='#888';ctx.font='9px IBM Plex Mono';ctx.textAlign='right';ctx.fillText(t.l,a.x0-4,y+4);});
+  ctx.strokeStyle='#333';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(a.x0,a.y0);ctx.lineTo(a.x0,a.y1);ctx.lineTo(a.x1,a.y1);ctx.stroke();
+  ctx.fillStyle='#555';ctx.font='10px IBM Plex Mono';ctx.textAlign='center';
+  ctx.fillText(xLbl,a.x0+a.w/2,c.height-4);
+  ctx.save();ctx.translate(13,a.y0+a.h/2);ctx.rotate(-Math.PI/2);ctx.fillText(yLbl,0,0);ctx.restore();
+}
+
+// ── CRACK CHART ──
+function drawCrackEmpty(){
+  const c=document.getElementById('crackCanvas');if(!c)return;
+  const ctx=c.getContext('2d');
+  const xT=[.2,.4,.6,.8,1].map(f=>({f,l:(f*MAX_N/1000).toFixed(0)+'k'}));
+  const yT=[.2,.4,.6,.8,1].map(f=>({f,l:(f*MAX_A).toFixed(0)}));
+  drawBase(ctx,c,'Cycles N →','a (mm)',xT,yT);
+  const a=ca(c),m=M(),sa=getSa(),ef=getEF();
+  const aT=(m.dKth/(1.12*sa*ef))**2/Math.PI*1000;
+  if(aT>0&&aT<MAX_A){const y=a.y1-(aT/MAX_A)*a.h;ctx.setLineDash([3,3]);ctx.strokeStyle='#2a7a4a66';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x0,y);ctx.lineTo(a.x1,y);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#2a7a4a';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';ctx.fillText('ΔKth a='+aT.toFixed(2)+'mm',a.x0+3,y-3);}
+  const aC=getAc();
+  if(aC>0&&aC<MAX_A){const y=a.y1-(Math.min(aC,MAX_A)/MAX_A)*a.h;ctx.setLineDash([4,3]);ctx.strokeStyle='#c0392b88';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(a.x0,y);ctx.lineTo(a.x1,y);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#c0392b';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';ctx.fillText('a_c='+aC.toFixed(1)+'mm',a.x0+3,y-3);}
+  if(!testPts.length){const aa=ca(c);ctx.fillStyle='#ccc';ctx.font='11px IBM Plex Mono';ctx.textAlign='center';ctx.fillText('Configure parameters and press ▶ Start Test',aa.x0+aa.w/2,aa.y0+aa.h/2);}
+}
+function drawCrackLive(){
+  const c=document.getElementById('crackCanvas');if(!c)return;
+  const ctx=c.getContext('2d');
+  const xT=[.2,.4,.6,.8,1].map(f=>({f,l:(f*MAX_N/1000).toFixed(0)+'k'}));
+  const yT=[.2,.4,.6,.8,1].map(f=>({f,l:(f*MAX_A).toFixed(0)}));
+  drawBase(ctx,c,'Cycles N →','a (mm)',xT,yT);
+  const a=ca(c),m=M(),sa=getSa(),ef=getEF();
+  const aC=getAc();
+  const aT=(m.dKth/(1.12*sa*ef))**2/Math.PI*1000;
+  if(aT>0&&aT<MAX_A){const y=a.y1-(aT/MAX_A)*a.h;ctx.setLineDash([3,3]);ctx.strokeStyle='#2a7a4a55';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x0,y);ctx.lineTo(a.x1,y);ctx.stroke();ctx.setLineDash([]);}
+  if(aC>0&&aC<MAX_A){const y=a.y1-(Math.min(aC,MAX_A)/MAX_A)*a.h;ctx.setLineDash([4,3]);ctx.strokeStyle='#c0392b77';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(a.x0,y);ctx.lineTo(a.x1,y);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#c0392b';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';ctx.fillText('a_c='+aC.toFixed(1)+'mm',a.x0+3,y-3);}
+  if(testPts.length>1){
+    // shaded area under curve
+    ctx.save();ctx.fillStyle='rgba(26,74,138,0.04)';ctx.beginPath();ctx.moveTo(a.x0+(testPts[0].x/MAX_N)*a.w,a.y1);testPts.forEach(p=>ctx.lineTo(a.x0+(p.x/MAX_N)*a.w,a.y1-(Math.min(p.y,MAX_A)/MAX_A)*a.h));ctx.lineTo(a.x0+(testPts[testPts.length-1].x/MAX_N)*a.w,a.y1);ctx.closePath();ctx.fill();ctx.restore();
+    ctx.lineWidth=2.2;ctx.lineJoin='round';
+    for(let i=1;i<testPts.length;i++){
+      const p0=testPts[i-1],p1=testPts[i];
+      const fr=Math.min(p1.y/Math.max(aC,0.01),1);
+      ctx.strokeStyle=fr<0.3?'#2a7a4a':fr<0.7?'#c8860a':'#c0392b';
+      ctx.beginPath();ctx.moveTo(a.x0+(p0.x/MAX_N)*a.w,a.y1-(Math.min(p0.y,MAX_A)/MAX_A)*a.h);ctx.lineTo(a.x0+(p1.x/MAX_N)*a.w,a.y1-(Math.min(p1.y,MAX_A)/MAX_A)*a.h);ctx.stroke();
+    }
+    const last=testPts[testPts.length-1];
+    const lx=a.x0+(last.x/MAX_N)*a.w,ly=a.y1-(Math.min(last.y,MAX_A)/MAX_A)*a.h;
+    const fc=last.y>aC*0.8?'#c0392b':last.y>aC*0.4?'#c8860a':'#2a7a4a';
+    ctx.beginPath();ctx.arc(lx,ly,5,0,Math.PI*2);ctx.fillStyle=fc;ctx.fill();
+    ctx.fillStyle='#333';ctx.font='bold 9px IBM Plex Mono';ctx.textAlign='left';
+    ctx.fillText(`N=${(last.x/1000).toFixed(1)}k  a=${Math.min(last.y,MAX_A).toFixed(2)}mm`,a.x0+4,a.y0+13);
+  }
+  document.getElementById('crackInfo').textContent=`${M().name} · σ_a=${getSa()} MPa · R=${getR().toFixed(1)}`;
+}
+
+// ── S-N CHART ──
+const SNMIN=1e3,SNMAX=1e9,SSMIN=0,SSMAX=1400;
+const logF=v=>(Math.log10(v)-Math.log10(SNMIN))/(Math.log10(SNMAX)-Math.log10(SNMIN));
+const sup=n=>String(n).split('').map(c=>({'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'}[c]||c)).join('');
+
+function drawSN(){
+  const c=document.getElementById('snCanvas');if(!c)return;
+  const ctx=c.getContext('2d');
+  const xT=[1e3,1e4,1e5,1e6,1e7,1e8,1e9].map(v=>({f:logF(v),l:'10'+sup(Math.log10(v))}));
+  const yT=[200,400,600,800,1000,1200,1400].map(v=>({f:(v-SSMIN)/(SSMAX-SSMIN),l:v+''}));
+  drawBase(ctx,c,'Cycles to failure (log N) →','Stress S (MPa)',xT,yT);
+  const a=ca(c),a0=getA0()/1000,envSel=getEnv();
+  Object.values(MATS).forEach(m=>{
+    const isSel=m.id===selMat,ef=m.envF[envSel]||1.0;
+    ctx.globalAlpha=isSel?0.9:0.15;ctx.lineWidth=isSel?2:1;ctx.strokeStyle=m.col;
+    const pts=[];
+    for(let s=SSMAX;s>=20;s-=12){
+      const se=s*ef,aC2=Math.min((m.KIC/(1.12*se))**2/Math.PI,0.1);
+      if(aC2<=a0) continue;
+      if(m.fLim&&s<m.fLim/ef) break;
+      const ex=m.m/2-1;if(ex<=0) continue;
+      const N=(Math.pow(a0,1-m.m/2)-Math.pow(aC2,1-m.m/2))/(m.C*(1.12*se*Math.sqrt(Math.PI))**m.m*(1-m.m/2));
+      if(N<=0||!isFinite(N)) continue;
+      const xf=logF(N),yf=(s-SSMIN)/(SSMAX-SSMIN);
+      if(xf<0||xf>1) continue;
+      pts.push({x:a.x0+xf*a.w,y:a.y1-yf*a.h});
+    }
+    if(pts.length>1){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();}
+    if(m.fLim&&isSel){
+      const fl=m.fLim/ef,yf2=(fl-SSMIN)/(SSMAX-SSMIN);
+      if(yf2>0&&yf2<1){const y=a.y1-yf2*a.h;ctx.save();ctx.globalAlpha=0.45;ctx.setLineDash([4,4]);ctx.strokeStyle=m.col;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x0,y);ctx.lineTo(a.x1,y);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=m.col;ctx.font='8px IBM Plex Mono';ctx.textAlign='right';ctx.globalAlpha=0.65;ctx.fillText('σ_e='+fl.toFixed(0),a.x1-2,y-3);ctx.restore();}
+    }
+    ctx.globalAlpha=1;
+  });
+  // completed test points
+  snPts.forEach(p=>{
+    const xf=logF(p.N),yf=(p.S-SSMIN)/(SSMAX-SSMIN);
+    if(xf<0||xf>1||yf<0||yf>1) return;
+    const x=a.x0+xf*a.w,y=a.y1-yf*a.h,mc=MATS[p.mat]?.col||'#333';
+    ctx.fillStyle=mc;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle=mc+'88';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,8,0,Math.PI*2);ctx.stroke();
+  });
+  // live point
+  if(cycles>0){
+    const sa=getSa(),xf=logF(cycles),yf=(sa-SSMIN)/(SSMAX-SSMIN);
+    if(xf>=0&&xf<=1&&yf>=0&&yf<=1){const x=a.x0+xf*a.w,y=a.y1-yf*a.h;ctx.fillStyle=M().col;ctx.font='bold 12px IBM Plex Mono';ctx.textAlign='center';ctx.fillText('◆',x,y+4);}
+  }
+  // legend
+  document.getElementById('snLeg').innerHTML=Object.values(MATS).map(m=>`<span class="leg-i"><span class="leg-d" style="background:${m.col}"></span>${m.name.split(' ').slice(0,2).join(' ')}</span>`).join('');
+}
+
+// ── SPECIMEN ──
+function genSegs(){crackSegs=[];for(let i=0;i<14;i++)crackSegs.push((Math.random()-0.5));}
+genSegs();
+
+function drawSpec(crackMm,isRunning){
+  const c=document.getElementById('specCanvas');if(!c)return;
+  c.width=c.offsetWidth||700;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,m=M();
+  ctx.fillStyle='#fdfcf8';ctx.fillRect(0,0,W,H);
+  const frac=Math.min(crackMm/MAX_A,1),cx=W/2,cy=H/2,bw=W*0.68,bh=H*0.42,gw=W*0.065;
+  // grips
+  ctx.fillStyle='#d0dce4';ctx.strokeStyle='#4a6878';ctx.lineWidth=1.2;
+  [[cx-bw/2-gw,cy-bh/2-10],[cx+bw/2,cy-bh/2-10]].forEach(([gx,gy])=>{ctx.fillRect(gx,gy,gw,bh+20);ctx.strokeRect(gx,gy,gw,bh+20);});
+  // hatching
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1;
+  for(let i=0;i<5;i++){const gy=cy-bh/2-10+i*(bh+20)/4;[[cx-bw/2-gw+2,cx-bw/2-2],[cx+bw/2+2,cx+bw/2+gw-2]].forEach(([x1,x2])=>{ctx.beginPath();ctx.moveTo(x1,gy);ctx.lineTo(x2,gy);ctx.stroke();});}
+  // body
+  const bc=frac<0.3?m.col:frac<0.65?'#8b4000':'#6b0000';
+  const bg=ctx.createLinearGradient(0,cy-bh/2,0,cy+bh/2);
+  bg.addColorStop(0,'#eeeae0');bg.addColorStop(.5,bc+'22');bg.addColorStop(1,'#eeeae0');
+  ctx.fillStyle=bg;ctx.strokeStyle=bc+'99';ctx.lineWidth=1.5;
+  ctx.fillRect(cx-bw/2,cy-bh/2,bw,bh);ctx.strokeRect(cx-bw/2,cy-bh/2,bw,bh);
+  // notch
+  ctx.strokeStyle='#c8860a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-bw/2,cy-4);ctx.lineTo(cx-bw/2+7,cy);ctx.lineTo(cx-bw/2,cy+4);ctx.stroke();
+  ctx.fillStyle='#c8860a';ctx.font='8px IBM Plex Mono';ctx.textAlign='right';ctx.fillText('notch',cx-bw/2-4,cy+3);
+  // loading arrows
+  if(isRunning&&!done){
+    const amp=8+Math.abs(Math.sin(cycles*0.00015))*12;
+    ctx.strokeStyle=m.col+'cc';ctx.lineWidth=2;
+    [[cx-bw/2-gw-2,-1],[cx+bw/2+gw+2,1]].forEach(([ox,dir])=>{
+      const ex=ox+dir*(amp+14);ctx.beginPath();ctx.moveTo(ox,cy);ctx.lineTo(ex,cy);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(ex-dir*8,cy-6);ctx.lineTo(ex,cy);ctx.lineTo(ex-dir*8,cy+6);ctx.stroke();
+    });
+    ctx.fillStyle=m.col;ctx.font='bold 9px IBM Plex Mono';ctx.textAlign='center';ctx.fillText('σ = ±'+getSa()+' MPa',cx,cy+bh/2+20);
+  }
+  // crack
+  if(crackMm>0.3){
+    const maxPx=bw/2*.9,crackPx=frac*maxPx;
+    const cc=frac<0.3?'#c8860a':frac<0.65?'#b05000':'#c0392b';
+    ctx.strokeStyle=cc;ctx.lineWidth=Math.max(1,frac*3.5);ctx.lineJoin='round';
+    ctx.beginPath();ctx.moveTo(cx-bw/2+7,cy);
+    for(let i=0;i<12;i++) ctx.lineTo(cx-bw/2+7+(i+1)*(crackPx/12),cy+crackSegs[i]*frac*bh*.3);
+    ctx.stroke();
+    const tx=cx-bw/2+7+crackPx,ty=cy+(crackSegs[11]||0)*frac*bh*.3;
+    if(frac>0.05){const g=ctx.createRadialGradient(tx,ty,0,tx,ty,frac*18+3);g.addColorStop(0,cc+'cc');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(tx,ty,frac*18+3,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=cc;ctx.font='bold 9px IBM Plex Mono';ctx.textAlign='center';ctx.fillText(`a = ${crackMm.toFixed(3)} mm`,cx-bw/2+7+crackPx/2,cy+bh/2+17);
+    const stg=frac<0.12?'Stage I — Initiation':frac<0.65?'Stage II — Stable Propagation':'Stage III — Rapid Growth';
+    ctx.fillStyle='#888';ctx.font='8px IBM Plex Mono';ctx.fillText(stg,cx-bw/2+7+crackPx/2,cy+bh/2+28);
+  }
+  ctx.fillStyle=m.col;ctx.font='bold 9px IBM Plex Mono';ctx.textAlign='center';ctx.fillText(m.name.toUpperCase(),cx,cy-bh/2-13);
+  if(done&&crackMm>=MAX_A*.9){
+    ctx.strokeStyle='#c0392b';ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(cx-bw/2+10,cy-4);ctx.lineTo(cx+bw/2-10,cy+4);ctx.stroke();
+    ctx.fillStyle='rgba(192,57,43,.09)';ctx.fillRect(cx-bw/2,cy-bh/2,bw,bh);
+    ctx.fillStyle='#c0392b';ctx.font='bold 12px IBM Plex Mono';ctx.textAlign='center';ctx.fillText('FATIGUE FRACTURE',cx,cy-bh/2-25);
+  }
+}
+
+// ── READOUTS ──
+function updateRO(){
+  const m=M(),sa=getSa(),ef=getEF();
+  const am=Math.max(crackMm,0.05)/1000,dK=1.12*sa*ef*Math.sqrt(Math.PI*am);
+  const dadn=m.C*Math.pow(dK,m.m),aC=getAc(),kpct=Math.min(dK/m.KIC*100,100);
+  document.getElementById('ro-N').textContent=cycles>=1000?(cycles/1000).toFixed(1)+'k':cycles;
+  document.getElementById('ro-a').innerHTML=Math.min(crackMm,MAX_A).toFixed(3)+'<span class="ro-unit">mm</span>';
+  document.getElementById('ro-dk').innerHTML=dK.toFixed(2)+'<span class="ro-unit">MPa√m</span>';
+  document.getElementById('ro-dadn').innerHTML=(dadn*1e9).toFixed(2)+'<span class="ro-unit">nm/c</span>';
+  document.getElementById('ro-smax').innerHTML=getSmax().toFixed(0)+'<span class="ro-unit">MPa</span>';
+  document.getElementById('ro-smean').innerHTML=getSmean().toFixed(0)+'<span class="ro-unit">MPa</span>';
+  const kf=document.getElementById('kicFill');kf.style.width=kpct+'%';kf.style.background=kpct<50?'#2a7a4a':kpct<80?'#c8860a':'#c0392b';
+  const lp=Math.min(cycles/MAX_N*100,100).toFixed(1);
+  document.getElementById('lifePct').textContent=lp+'%';
+  const lf=document.getElementById('lifeFill');lf.style.width=lp+'%';lf.style.background=parseFloat(lp)<50?'#2a7a4a':parseFloat(lp)<80?'#c8860a':'#c0392b';
+  const fr=crackMm/Math.max(aC,0.01);
+  const[stg,si]=fr<0.12?['Stage I — Initiation','I']:fr<0.65?['Stage II — Stable Propagation','II']:['Stage III — Rapid Growth','III'];
+  document.getElementById('phName').textContent=stg;document.getElementById('phName').style.color=si==='I'?'#2a7a4a':si==='II'?'#c8860a':'#c0392b';
+  ['ps-I','ps-II','ps-III'].forEach(id=>document.getElementById(id)?.classList.remove('ph-I','ph-II','ph-III'));
+  document.getElementById('ps-'+si)?.classList.add('ph-'+si);
+}
+
+// ── LOG ──
+function addLog(msg,type=''){
+  const lb=document.getElementById('logBox');
+  const el=document.createElement('div');el.className='log-entry';
+  const el2=t0?((Date.now()-t0)/1000).toFixed(1):'0.0';
+  el.innerHTML=`<span class="lt">${el2}s</span><span class="lm ${type}">${msg}</span>`;
+  lb.appendChild(el);lb.scrollTop=lb.scrollHeight;logN++;if(logN>80)lb.children[1]?.remove();
+}
+
+// ── TEST LOOP ──
+function testTick(){
+  if(!running)return;
+  const m=M(),sa=getSa(),ef=getEF(),spd=getSpd(),cpf=2000*spd;
+  let fin=false;const aC=getAc();
+  for(let i=0;i<cpf;i++){
+    cycles++;
+    const am=Math.max(crackMm,0.05)/1000,dK=1.12*sa*ef*Math.sqrt(Math.PI*am);
+    crackMm+=m.C*Math.pow(dK,m.m)*1000;
+    if(cycles%400===0) testPts.push({x:cycles,y:Math.min(crackMm,MAX_A)});
+    if(crackMm>=aC||cycles>=MAX_N){fin=true;break;}
+  }
+  testPts.push({x:cycles,y:Math.min(crackMm,MAX_A)});
+  drawCrackLive();drawSN();drawSpec(Math.min(crackMm,MAX_A),true);updateRO();
+  if(crackMm>0.6&&crackMm<0.7) addLog('Crack initiated — Stage I complete','warn');
+  if(crackMm>aC*.5&&crackMm<aC*.5+.5) addLog('50% of critical crack size reached','warn');
+  if(crackMm>aC*.8&&crackMm<aC*.8+.3) addLog('⚠ Entering Stage III — rapid growth','crit');
+  if(fin){
+    running=false;done=true;
+    const frac=crackMm>=aC;
+    document.getElementById('btnRun').disabled=false;document.getElementById('btnStop').disabled=true;document.getElementById('btnToRes').disabled=false;
+    snPts.push({N:cycles,S:sa,mat:selMat});
+    drawCrackLive();drawSN();drawSpec(Math.min(crackMm,MAX_A),false);
+    document.getElementById('btn-s3').classList.add('done');
+    const pill=document.getElementById('statusPill');pill.className='status-pill '+(frac?'fractured':'complete');pill.textContent=frac?'FRACTURED':'SURVIVED';
+    if(frac){addLog(`💥 FRACTURE at N=${(cycles/1000).toFixed(1)}k — a=${crackMm.toFixed(2)}mm`,'crit');toast('💥 Fatigue fracture at '+(cycles/1000).toFixed(1)+'k cycles');}
+    else{addLog(`✅ SURVIVED ${MAX_N/1000}k cycles`,'ok');toast('✅ Specimen survived all cycles');}
+    return;
+  }
+  document.getElementById('statusPill').className='status-pill running';document.getElementById('statusPill').textContent='RUNNING';
+  raf=requestAnimationFrame(testTick);
+}
+function startTest(){if(running)return;running=true;done=false;t0=t0||Date.now();document.getElementById('btnRun').disabled=true;document.getElementById('btnStop').disabled=false;addLog(`Test started — ${M().name}, σ_a=${getSa()} MPa, R=${getR().toFixed(1)}, env=${getEnv()}`,'ok');raf=requestAnimationFrame(testTick);}
+function stopTest(){running=false;cancelAnimationFrame(raf);document.getElementById('btnRun').disabled=false;document.getElementById('btnStop').disabled=true;document.getElementById('statusPill').className='status-pill';document.getElementById('statusPill').textContent='PAUSED';addLog('Paused at N='+(cycles/1000).toFixed(1)+'k');}
+function resetTest(){running=false;done=false;cancelAnimationFrame(raf);cycles=0;crackMm=getA0();testPts=[];t0=null;logN=0;genSegs();
+  document.getElementById('btnRun').disabled=false;document.getElementById('btnStop').disabled=true;document.getElementById('btnToRes').disabled=true;
+  document.getElementById('statusPill').className='status-pill';document.getElementById('statusPill').textContent='STANDBY';
+  document.getElementById('logBox').innerHTML='<div class="log-entry"><span class="lt">0.0s</span><span class="lm ok">Reset. Ready.</span></div>';
+  document.getElementById('ro-N').textContent='0';document.getElementById('ro-a').innerHTML='0.00<span class="ro-unit">mm</span>';document.getElementById('ro-dk').innerHTML='—<span class="ro-unit">MPa√m</span>';document.getElementById('ro-dadn').innerHTML='—<span class="ro-unit">nm/c</span>';
+  document.getElementById('lifePct').textContent='0%';document.getElementById('lifeFill').style.width='0%';document.getElementById('kicFill').style.width='0%';document.getElementById('phName').textContent='—';
+  ['ps-I','ps-II','ps-III'].forEach(id=>document.getElementById(id)?.classList.remove('ph-I','ph-II','ph-III'));
+  drawCrackEmpty();drawSN();drawSpec(crackMm,false);
+}
+
+// ── RESULTS ──
+function buildResults(){
+  const m=M(),sa=getSa(),ef=getEF(),aC=getAc(),a0=getA0(),frac=crackMm>=aC;
+  document.getElementById('cmpGrid').innerHTML=[
+    ['Cycles N','N_f',cycles>=1000?(cycles/1000).toFixed(1)+'k':cycles,'cycles'],
+    ['Final Crack','a_f',Math.min(crackMm,MAX_A).toFixed(2),'mm'],
+    ['Critical Crack','a_c',aC.toFixed(2),'mm'],
+    ['Outcome','—',frac?'FRACTURE':'SURVIVED','—']
+  ].map(([k,s,v,u])=>`<div class="cmp-cell"><div class="cmp-key">${k} (${s})</div><div class="cmp-val" style="${frac&&s==='—'?'color:var(--red)':''}">${v}</div><div style="font-size:.54rem;color:var(--muted);font-family:var(--font-mono)">${u}</div></div>`).join('');
+  document.getElementById('resTbody').innerHTML=[
+    ["Young's Modulus",'E',m.E,m.pub.E,'GPa',false],
+    ['Yield Strength','σ_y',m.ys||'N/A',m.pub.ys,'MPa',false],
+    ['UTS','UTS',m.uts,m.pub.uts,'MPa',false],
+    ['Fracture Toughness','K_IC',m.KIC,m.pub.KIC,'MPa√m',true],
+    ['Initial crack','a₀',a0.toFixed(1),'—','mm',false],
+    ['Critical crack','a_c',aC.toFixed(2),'—','mm',true],
+    ['Paris C','C',m.C.toExponential(2),'—','—',false],
+    ['Paris m','m',m.m,'—','—',false],
+    ['Env. factor','EF',ef.toFixed(1),'1.0','—',false],
+    ['Cycles run','N',cycles>=1000?(cycles/1000).toFixed(1)+'k':cycles,'—','—',true],
+    ['Outcome','—',frac?'FRACTURE ✗':'SURVIVED ✓','—','—',true]
+  ].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${r[5]?'hl':''}">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+  const dK0=1.12*sa*ef*Math.sqrt(Math.PI*a0/1000),dKf=1.12*sa*ef*Math.sqrt(Math.PI*Math.min(crackMm,aC)/1000);
+  document.getElementById('workingOut').innerHTML=
+    `<span style="color:#c8860a">// Paris Law: da/dN = C · (ΔK)ᵐ</span>\nC = ${m.C.toExponential(2)}  |  m = ${m.m}  |  Y = 1.12\n\n`+
+    `<span style="color:#c8860a">// Initial ΔK (a₀ = ${a0.toFixed(1)} mm):</span>\nΔK₀ = 1.12 × ${sa} × ${ef.toFixed(1)} × √(π × ${(a0/1000).toFixed(4)}) = <strong>${dK0.toFixed(2)} MPa√m</strong>\n\n`+
+    `<span style="color:#c8860a">// da/dN at a₀:</span>\nda/dN = ${m.C.toExponential(2)} × (${dK0.toFixed(2)})^${m.m} = <strong>${(m.C*Math.pow(dK0,m.m)*1e9).toFixed(3)} nm/cycle</strong>\n\n`+
+    `<span style="color:#c8860a">// Critical crack size a_c:</span>\na_c = (K_IC / Y·σ·EF)² / π = (${m.KIC} / 1.12×${sa}×${ef.toFixed(1)})² / π = <strong>${aC.toFixed(2)} mm</strong>\n\n`+
+    `<span style="color:#c8860a">// Final ΔK:</span>\nΔK_f = <strong>${dKf.toFixed(2)} MPa√m</strong>  vs  K_IC = ${m.KIC} MPa√m  →  <strong>${frac?'FRACTURE ✗':'SAFE ✓'}</strong>\n\n`+
+    `<span style="color:#c8860a">// HS2 Inspection Interval (safety factor 3):</span>\nMax tolerable flaw = a_c / 3 = <strong>${(aC/3).toFixed(1)} mm</strong>  — NDT must reliably detect this size.`;
+  drawAnalysisChart();
+  document.getElementById('btn-s4').classList.add('done');
+}
+
+function drawAnalysisChart(){
+  const c=document.getElementById('analysisCanvas');if(!c)return;
+  c.width=c.offsetWidth||600;c.height=300;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,m=M();
+  const pad={l:58,r:16,t:28,b:40},pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  const maxS=m.uts*1.25,maxE=m.uts===250?0.006:(m.epF||0.25)*1.3;
+  ctx.fillStyle='#fdfcf8';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#f8f6f0';ctx.fillRect(pad.l,pad.t,pw,ph);
+  const sx=e=>pad.l+(e/maxE)*pw,sy=s=>pad.t+ph-(s/maxS)*ph;
+  ctx.strokeStyle='#e8e4dc';ctx.lineWidth=1;
+  for(let i=1;i<=5;i++){ctx.beginPath();ctx.moveTo(pad.l+i*pw/5,pad.t);ctx.lineTo(pad.l+i*pw/5,pad.t+ph);ctx.stroke();ctx.beginPath();ctx.moveTo(pad.l,pad.t+i*ph/5);ctx.lineTo(pad.l+pw,pad.t+i*ph/5);ctx.stroke();}
+  ctx.strokeStyle='#333';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+ph);ctx.lineTo(pad.l+pw,pad.t+ph);ctx.stroke();
+  ctx.fillStyle='#666';ctx.font='10px IBM Plex Mono';ctx.textAlign='center';ctx.fillText('Strain ε (mm/mm)',pad.l+pw/2,H-6);
+  ctx.save();ctx.translate(15,pad.t+ph/2+20);ctx.rotate(-Math.PI/2);ctx.fillText('Stress σ (MPa)',0,0);ctx.restore();
+  for(let i=0;i<=5;i++){ctx.fillStyle='#888';ctx.font='9px IBM Plex Mono';ctx.textAlign='right';ctx.fillText((maxS/5*i).toFixed(0),pad.l-4,sy(maxS/5*i)+4);ctx.textAlign='center';ctx.fillText((maxE/5*i).toFixed(4),sx(maxE/5*i),pad.t+ph+15);}
+  const ey=m.epY||0.002,eu=m.epUTS||0.1,ef2=m.epF||0.2;
+  const pts=[];for(let i=0;i<=20;i++){const e=i/20*ey;pts.push([e,m.E*1000*e]);}
+  if(m.ys){pts.push([ey,m.ys]);for(let i=1;i<=40;i++){const t=i/40;pts.push([ey+t*(eu-ey),(m.ys+(m.uts-m.ys)*Math.sin(t*Math.PI/2))]);}}
+  for(let i=1;i<=30;i++){const t=i/30;pts.push([eu+t*(ef2-eu),m.uts*(1-t*.25)]);}
+  ctx.save();ctx.fillStyle='rgba(42,122,74,.06)';ctx.beginPath();ctx.moveTo(sx(0),sy(0));pts.filter(p=>p[0]<=ey*1.1).forEach(p=>ctx.lineTo(sx(p[0]),sy(p[1])));ctx.lineTo(sx(ey),sy(0));ctx.closePath();ctx.fill();ctx.restore();
+  ctx.lineWidth=2.5;ctx.lineJoin='round';
+  for(let i=1;i<pts.length;i++){const col=pts[i][0]<=ey*1.05?'#2a7a4a':pts[i][0]<=eu?'#c8860a':'#c0392b';ctx.strokeStyle=col;ctx.beginPath();ctx.moveTo(sx(pts[i-1][0]),sy(pts[i-1][1]));ctx.lineTo(sx(pts[i][0]),sy(pts[i][1]));ctx.stroke();}
+  if(m.ys){[[ey,m.ys,'σy='+m.ys,'#2a7a4a'],[eu,m.uts,'UTS='+m.uts,'#c8860a']].forEach(([e,s,lbl,col])=>{ctx.strokeStyle=col;ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(pad.l,sy(s));ctx.lineTo(sx(e),sy(s));ctx.stroke();ctx.beginPath();ctx.moveTo(sx(e),sy(s));ctx.lineTo(sx(e),pad.t+ph);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=col;ctx.beginPath();ctx.arc(sx(e),sy(s),4,0,Math.PI*2);ctx.fill();ctx.font='bold 9px IBM Plex Mono';ctx.textAlign='left';ctx.fillText(lbl,sx(e)+5,sy(s)-4);});}
+  ctx.fillStyle='#333';ctx.font='bold 10px IBM Plex Mono';ctx.textAlign='left';ctx.fillText('Stress–Strain Reference — '+m.name,pad.l,pad.t-8);
+}
+
+// ── REPORT ──
+function populateReport(){
+  const m=M(),sa=getSa(),ef=getEF(),aC=getAc(),frac=crackMm>=aC;
+  document.getElementById('rTitle').textContent=`Fatigue Investigation: ${m.name} — σ_a = ${sa} MPa, R = ${getR().toFixed(1)}, Environment: ${getEnv()}`;
+  document.getElementById('rMethod').innerHTML=`Material: ${m.name} (${m.grade})<br>Paris constants: C = ${m.C.toExponential(2)}, m = ${m.m} &nbsp;|&nbsp; K_IC = ${m.KIC} MPa√m &nbsp;|&nbsp; ΔK_th = ${m.dKth} MPa√m<br>Loading: σ_a = ${sa} MPa, R = ${getR().toFixed(1)}, waveform: ${document.getElementById('waveform')?.value}<br>Initial crack: a₀ = ${getA0().toFixed(1)} mm &nbsp;|&nbsp; Environment: ${getEnv()} (EF = ${ef.toFixed(1)}×)<br>Method: Paris Law numerical integration (BS 7910 ECA principles) &nbsp;|&nbsp; Standard: BS EN ISO 12737`;
+  document.getElementById('rResults').innerHTML=`Cycles to fracture / run: <strong>N = ${cycles>=1000?(cycles/1000).toFixed(1)+'k':cycles}</strong><br>Final crack: a = ${Math.min(crackMm,MAX_A).toFixed(2)} mm &nbsp;|&nbsp; Critical crack a_c = ${aC.toFixed(1)} mm<br>Outcome: <strong>${frac?'FATIGUE FRACTURE — specimen failed':'SURVIVED — crack below critical size'}</strong>`;
+  document.getElementById('btn-s5').classList.add('done');
+}
+
+// ── CSV ──
+function downloadCSV(){
+  if(!testPts.length){toast('Run the test first.');return;}
+  const m=M(),sa=getSa(),ef=getEF();
+  let csv='Index,Cycles,Crack_a_mm,DeltaK_MPa_sqrtm,da_dN_m_per_cycle\n';
+  testPts.forEach((p,i)=>{const dK=1.12*sa*ef*Math.sqrt(Math.PI*p.y/1000);csv+=`${i},${p.x},${p.y.toFixed(4)},${dK.toFixed(3)},${(m.C*Math.pow(dK,m.m)).toExponential(4)}\n`;});
+  const b=new Blob([csv],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=`fatigue_${selMat}_${sa}MPa.csv`;a.click();URL.revokeObjectURL(u);
+}
+
+// ── INIT ──
+window.addEventListener('resize',()=>{resizeC();drawCrackEmpty();drawSN();drawSpec(crackMm,running);updateSetupC();});
+buildGrid();pickMat('s355');updateGeoLbls();updateParamLbls();updateEnvNote();
+setTimeout(()=>updateSetupC(),80);
+</script>
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>

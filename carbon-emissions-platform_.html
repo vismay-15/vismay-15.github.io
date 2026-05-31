@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CARBON · An Interactive Field Manual for Engineers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@300;400;500;700&family=Inter+Tight:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ====== DESIGN TOKENS ====== */
+:root{
+  --ink:#0d0e0c;
+  --paper:#f1ecdf;
+  --paper-2:#e6e0cf;
+  --moss:#2d4a2b;
+  --moss-2:#3d6438;
+  --rust:#c8542b;
+  --rust-2:#a8431f;
+  --ochre:#d8a23c;
+  --sky:#7ea8c4;
+  --char:#1a1b18;
+  --line:rgba(13,14,12,0.18);
+  --line-strong:rgba(13,14,12,0.5);
+  --shadow: 0 30px 60px -30px rgba(13,14,12,0.4);
+  --serif: "Fraunces", "Times New Roman", serif;
+  --sans: "Inter Tight", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow-x:hidden}
+body{
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(200,84,43,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(45,74,43,0.08) 0%, transparent 50%);
+  min-height:100vh;
+}
+/* paper grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.06 0 0 0 0 0.05 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ====== AUTHOR CARD ====== */
+.author-card{
+  margin-top:36px;display:inline-flex;align-items:center;gap:18px;
+  padding:14px 22px 14px 14px;background:var(--ink);color:var(--paper);
+  border-radius:0;position:relative;
+}
+.author-card::before{
+  content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--ochre);
+}
+.author-mark{
+  width:48px;height:48px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, var(--ochre), var(--rust) 70%, var(--char));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:600;font-size:18px;color:var(--paper);
+  box-shadow:inset 0 0 8px rgba(0,0,0,0.3);
+  letter-spacing:-0.02em;
+}
+.author-body{display:flex;flex-direction:column;gap:2px}
+.author-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ochre);
+}
+.author-name{
+  font-family:var(--serif);font-weight:500;font-size:20px;letter-spacing:-0.01em;
+  color:var(--paper);line-height:1.1;
+}
+.author-affil{
+  font-family:var(--mono);font-size:11px;color:var(--paper);opacity:0.7;letter-spacing:0.05em;
+  margin-top:2px;
+}
+@media(max-width:600px){
+  .author-card{display:flex;width:100%}
+  .author-name{font-size:17px}
+  .author-affil{font-size:10px}
+}
+
+/* ====== NAVIGATION ====== */
+nav.top{
+  position:sticky;top:0;z-index:50;
+  background:rgba(241,236,223,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{font-family:var(--serif);font-weight:600;font-size:22px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:28px;height:28px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, var(--ochre), var(--rust) 70%, var(--char));
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+}
+.nav-links{display:flex;gap:4px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.1em}
+.nav-links button{
+  background:none;border:none;color:var(--ink);padding:8px 14px;cursor:pointer;
+  border-radius:20px;transition:all .25s;font-family:inherit;font-size:inherit;letter-spacing:inherit;
+}
+.nav-links button:hover{background:var(--ink);color:var(--paper)}
+.nav-links button.active{background:var(--ink);color:var(--paper)}
+.nav-meta{font-family:var(--mono);font-size:10px;color:var(--ink);opacity:0.6;letter-spacing:0.1em}
+
+/* ====== LAYOUT ====== */
+main{position:relative;z-index:2}
+section.chapter{min-height:100vh;padding:80px 40px;display:none;animation:fade .5s ease both}
+section.chapter.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.container{max-width:1280px;margin:0 auto}
+
+.chapter-tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--rust);margin-bottom:20px;display:flex;align-items:center;gap:14px;
+}
+.chapter-tag::before{content:"";width:30px;height:1px;background:var(--rust)}
+
+h1.huge{
+  font-family:var(--serif);font-weight:300;font-size:clamp(48px,9vw,140px);
+  line-height:0.88;letter-spacing:-0.04em;margin-bottom:32px;
+}
+h1.huge em{font-style:italic;color:var(--rust);font-weight:400}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,52px);line-height:1;letter-spacing:-0.02em;margin-bottom:24px}
+h3{font-family:var(--serif);font-weight:500;font-size:22px;margin-bottom:12px;letter-spacing:-0.01em}
+p{font-size:16px;line-height:1.6;color:var(--char);max-width:65ch;margin-bottom:14px}
+p.lead{font-family:var(--serif);font-weight:300;font-size:clamp(20px,2.2vw,28px);line-height:1.4;letter-spacing:-0.01em}
+
+/* ====== HOME / HERO ====== */
+.hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:60px;align-items:center;margin-top:60px}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+
+.hero-side{
+  border:1px solid var(--line-strong);
+  padding:30px;background:var(--paper-2);
+  border-radius:4px;
+  font-family:var(--mono);font-size:12px;line-height:1.8;
+}
+.hero-side .row{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
+.hero-side .row:last-child{border:none}
+.hero-side strong{font-weight:700;color:var(--rust)}
+.hero-side h4{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:14px;letter-spacing:-0.01em}
+
+.cta-row{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:0.1em;
+  padding:14px 24px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  cursor:pointer;border-radius:0;transition:all .25s;display:inline-flex;align-items:center;gap:10px;
+}
+.btn:hover{background:var(--rust);border-color:var(--rust);color:var(--paper);transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.btn .arrow{display:inline-block;transition:transform .25s}
+.btn:hover .arrow{transform:translateX(4px)}
+
+/* hero animated globe */
+.globe-wrap{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.globe-svg{width:100%;height:100%;animation:rotate 60s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.co2-particle{
+  position:absolute;font-family:var(--mono);font-size:10px;color:var(--rust);
+  opacity:0;animation:float-up 4s ease-in infinite;
+}
+@keyframes float-up{
+  0%{transform:translateY(40px) scale(0.5);opacity:0}
+  20%{opacity:0.8}
+  100%{transform:translateY(-200px) scale(1.5);opacity:0}
+}
+
+/* ====== STATS STRIP ====== */
+.stats-strip{
+  margin-top:80px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line-strong);border:1px solid var(--line-strong);
+}
+@media(max-width:700px){.stats-strip{grid-template-columns:1fr 1fr}}
+.stat{
+  background:var(--paper);padding:28px 24px;
+  display:flex;flex-direction:column;gap:8px;transition:background .3s;
+}
+.stat:hover{background:var(--paper-2)}
+.stat .num{font-family:var(--serif);font-weight:400;font-size:48px;line-height:1;letter-spacing:-0.03em}
+.stat .num em{color:var(--rust);font-style:normal}
+.stat .label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--char);opacity:0.7}
+
+/* ====== MODULE INDEX ====== */
+.module-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:50px}
+@media(max-width:900px){.module-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.module-grid{grid-template-columns:1fr}}
+.mod-card{
+  background:var(--paper-2);padding:28px;border:1px solid var(--line);
+  cursor:pointer;transition:all .3s;position:relative;overflow:hidden;
+}
+.mod-card::before{
+  content:"";position:absolute;inset:0;background:var(--ink);
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.7,.0,.3,1);z-index:1;
+}
+.mod-card:hover::before{transform:translateY(0)}
+.mod-card > *{position:relative;z-index:2;transition:color .3s}
+.mod-card:hover *{color:var(--paper)}
+.mod-card .mod-num{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--rust);margin-bottom:14px}
+.mod-card h3{margin-bottom:8px}
+.mod-card p{font-size:14px;color:var(--char);margin-bottom:0}
+
+/* ====== DIAGRAMS ====== */
+.diagram-block{
+  margin:40px 0;padding:40px;background:var(--paper-2);border:1px solid var(--line);
+  position:relative;
+}
+.diagram-block::before{
+  content:"FIG.";position:absolute;top:14px;right:18px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.2em;color:var(--line-strong);
+}
+
+/* SCOPES diagram */
+.scopes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:20px}
+@media(max-width:800px){.scopes{grid-template-columns:1fr}}
+.scope-card{
+  padding:24px;border:2px solid var(--ink);position:relative;background:var(--paper);
+  transition:all .3s;cursor:pointer;
+}
+.scope-card:hover{transform:translateY(-4px);box-shadow:8px 8px 0 var(--ink)}
+.scope-card.s1{border-color:var(--rust)}
+.scope-card.s2{border-color:var(--ochre)}
+.scope-card.s3{border-color:var(--moss)}
+.scope-card .badge{
+  display:inline-block;padding:4px 10px;font-family:var(--mono);font-size:10px;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--paper);margin-bottom:12px;
+}
+.scope-card.s1 .badge{background:var(--rust)}
+.scope-card.s2 .badge{background:var(--ochre);color:var(--ink)}
+.scope-card.s3 .badge{background:var(--moss)}
+.scope-card ul{margin-top:10px;padding-left:18px;font-size:13px;line-height:1.7}
+
+/* ====== METHODOLOGY TABLE ====== */
+.method-table{
+  width:100%;border-collapse:collapse;margin-top:24px;font-size:14px;
+  background:var(--paper);
+}
+.method-table th{
+  text-align:left;padding:14px 16px;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;font-weight:400;
+}
+.method-table td{padding:16px;border-bottom:1px solid var(--line);vertical-align:top}
+.method-table tr:hover td{background:var(--paper-2)}
+.method-table strong{font-family:var(--serif);font-size:16px;color:var(--rust)}
+.tag-pill{display:inline-block;padding:2px 8px;background:var(--moss);color:var(--paper);font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;margin-right:4px}
+
+/* ====== FORMULA BOX ====== */
+.formula{
+  background:var(--ink);color:var(--paper);padding:30px 40px;margin:30px 0;
+  font-family:var(--serif);font-size:clamp(20px,2.5vw,32px);line-height:1.4;
+  letter-spacing:-0.01em;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  border-radius:0;position:relative;
+}
+.formula::before{
+  content:"EQUATION";position:absolute;top:-9px;left:20px;background:var(--paper);
+  color:var(--ink);padding:0 8px;font-family:var(--mono);font-size:10px;letter-spacing:0.2em;
+}
+.formula .var{color:var(--ochre);font-style:italic}
+.formula .op{opacity:0.5;margin:0 4px}
+.formula-note{font-family:var(--mono);font-size:12px;color:var(--char);opacity:0.7;margin-top:12px}
+
+/* ====== CALCULATOR ====== */
+.calc-shell{
+  display:grid;grid-template-columns:1fr 1.2fr;gap:40px;margin-top:40px;
+}
+@media(max-width:1000px){.calc-shell{grid-template-columns:1fr}}
+.calc-panel{background:var(--paper-2);padding:32px;border:1px solid var(--line)}
+.calc-panel h3{margin-bottom:20px}
+.input-group{margin-bottom:20px}
+.input-group label{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--char);margin-bottom:6px;
+}
+.input-group label span{color:var(--rust);opacity:0.7;margin-left:6px}
+.input-group input, .input-group select{
+  width:100%;padding:12px 14px;border:1px solid var(--line-strong);background:var(--paper);
+  font-family:var(--mono);font-size:14px;color:var(--ink);outline:none;border-radius:0;
+  transition:border-color .2s;
+}
+.input-group input:focus, .input-group select:focus{border-color:var(--rust)}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.material-list{display:grid;gap:12px}
+.mat-row{display:grid;grid-template-columns:1.4fr 1fr 80px;gap:8px;align-items:center}
+.mat-row input, .mat-row select{padding:8px 10px;font-size:13px}
+.mat-row button{
+  background:var(--rust);border:none;color:var(--paper);font-family:var(--mono);font-size:11px;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:8px;height:100%;
+}
+.mat-row button:hover{background:var(--rust-2)}
+.add-mat{
+  background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11px;
+  letter-spacing:0.1em;text-transform:uppercase;padding:10px 16px;border:none;cursor:pointer;margin-top:10px;
+}
+.add-mat:hover{background:var(--moss)}
+
+/* RESULTS PANEL */
+.results{background:var(--ink);color:var(--paper);padding:32px;position:sticky;top:90px}
+.results h3{color:var(--paper);font-family:var(--serif);font-weight:400}
+.big-result{
+  font-family:var(--serif);font-weight:300;font-size:80px;line-height:1;
+  color:var(--ochre);letter-spacing:-0.03em;margin:14px 0 4px;
+}
+.big-result .unit{font-size:24px;color:var(--paper);opacity:0.6;font-family:var(--mono);font-weight:400;margin-left:8px}
+.result-sub{font-family:var(--mono);font-size:11px;color:var(--paper);opacity:0.6;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:24px}
+.breakdown-bar{
+  height:30px;background:rgba(241,236,223,0.1);display:flex;overflow:hidden;margin:20px 0 10px;
+  border:1px solid rgba(241,236,223,0.2);
+}
+.breakdown-seg{transition:all .5s}
+.breakdown-seg:hover{filter:brightness(1.2)}
+.breakdown-list{display:grid;gap:10px;font-family:var(--mono);font-size:12px}
+.bk-row{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(241,236,223,0.1)}
+.bk-row .dot{width:12px;height:12px}
+.bk-row .name{color:var(--paper);opacity:0.85}
+.bk-row .val{color:var(--ochre);font-weight:500}
+
+.equiv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;padding-top:24px;border-top:1px solid rgba(241,236,223,0.2)}
+.equiv{text-align:center;padding:14px 8px;background:rgba(241,236,223,0.05)}
+.equiv .ev-icon{font-size:32px;margin-bottom:4px;display:block}
+.equiv .ev-num{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ochre)}
+.equiv .ev-lab{font-family:var(--mono);font-size:9px;color:var(--paper);opacity:0.6;letter-spacing:0.1em;text-transform:uppercase}
+
+/* ====== BUILDING SIMULATION ====== */
+.sim-shell{display:grid;grid-template-columns:300px 1fr;gap:30px;margin-top:40px;align-items:start}
+@media(max-width:900px){.sim-shell{grid-template-columns:1fr}}
+.sim-controls{background:var(--paper-2);padding:24px;border:1px solid var(--line)}
+.sim-stage{background:linear-gradient(180deg, #d8e3eb 0%, #e8d9c1 70%, #c4a877 100%);border:1px solid var(--line-strong);aspect-ratio:4/3;position:relative;overflow:hidden}
+.sim-stage svg{width:100%;height:100%;display:block}
+.sim-readout{
+  position:absolute;top:14px;right:14px;background:rgba(13,14,12,0.85);color:var(--paper);
+  padding:12px 16px;font-family:var(--mono);font-size:11px;line-height:1.6;border-left:3px solid var(--ochre);
+}
+.sim-readout .num{color:var(--ochre);font-family:var(--serif);font-size:22px;font-weight:400;display:block}
+.lifecycle-tabs{display:flex;gap:0;margin-top:18px;border:1px solid var(--ink)}
+.lifecycle-tabs button{
+  flex:1;background:var(--paper);color:var(--ink);border:none;padding:10px 4px;
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  border-right:1px solid var(--ink);transition:all .2s;
+}
+.lifecycle-tabs button:last-child{border-right:none}
+.lifecycle-tabs button.active{background:var(--ink);color:var(--paper)}
+
+/* sim slider */
+.sim-slider{margin-bottom:16px}
+.sim-slider label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;color:var(--char)}
+.sim-slider label .val{color:var(--rust);font-weight:700}
+.sim-slider input[type=range]{
+  width:100%;-webkit-appearance:none;appearance:none;height:3px;background:var(--line-strong);outline:none;
+}
+.sim-slider input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;background:var(--rust);cursor:pointer;border-radius:50%;
+  border:2px solid var(--paper);box-shadow:0 0 0 1px var(--ink);
+}
+.sim-slider input[type=range]::-moz-range-thumb{
+  width:18px;height:18px;background:var(--rust);cursor:pointer;border-radius:50%;
+  border:2px solid var(--paper);box-shadow:0 0 0 1px var(--ink);
+}
+.sim-select{margin-bottom:14px}
+.sim-select label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;color:var(--char)}
+.sim-select select{
+  width:100%;padding:8px 10px;font-family:var(--mono);font-size:12px;
+  background:var(--paper);border:1px solid var(--line-strong);
+}
+
+/* ====== METHODOLOGY STEPS ====== */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:30px}
+@media(max-width:800px){.steps{grid-template-columns:1fr 1fr}}
+.step{
+  padding:30px 24px;border:1px solid var(--line);background:var(--paper);position:relative;
+}
+.step .step-num{
+  font-family:var(--serif);font-weight:300;font-size:60px;line-height:1;color:var(--rust);
+  letter-spacing:-0.04em;
+}
+.step h4{font-family:var(--serif);font-weight:600;font-size:16px;margin:14px 0 8px;letter-spacing:-0.01em}
+.step p{font-size:13px;line-height:1.55;color:var(--char)}
+.step::after{
+  content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  font-size:22px;color:var(--rust);background:var(--paper);padding:0 4px;z-index:2;
+}
+.step:last-child::after{display:none}
+@media(max-width:800px){.step::after{display:none}}
+
+/* ====== QUIZ ====== */
+.quiz-card{
+  background:var(--paper-2);padding:32px;border:1px solid var(--line);margin-top:30px;
+}
+.q-counter{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--rust);margin-bottom:12px}
+.q-text{font-family:var(--serif);font-size:24px;line-height:1.3;margin-bottom:24px;font-weight:500;letter-spacing:-0.01em}
+.q-options{display:grid;gap:10px}
+.q-opt{
+  padding:16px 20px;background:var(--paper);border:1px solid var(--line);cursor:pointer;
+  font-family:var(--sans);font-size:15px;text-align:left;transition:all .2s;
+}
+.q-opt:hover{background:var(--ink);color:var(--paper);transform:translateX(4px)}
+.q-opt.correct{background:var(--moss);color:var(--paper);border-color:var(--moss);animation:pulse 0.4s}
+.q-opt.wrong{background:var(--rust);color:var(--paper);border-color:var(--rust);animation:shake 0.4s}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.q-feedback{margin-top:18px;padding:14px;font-family:var(--mono);font-size:12px;line-height:1.6;display:none}
+.q-feedback.show{display:block}
+.q-feedback.right{background:rgba(45,74,43,0.12);border-left:3px solid var(--moss)}
+.q-feedback.wrong{background:rgba(200,84,43,0.12);border-left:3px solid var(--rust)}
+.quiz-progress{height:4px;background:var(--paper);margin-bottom:24px;overflow:hidden}
+.quiz-bar{height:100%;background:var(--rust);transition:width .4s ease}
+
+.quiz-done{text-align:center;padding:60px 20px}
+.quiz-done .score{font-family:var(--serif);font-size:120px;font-weight:300;letter-spacing:-0.04em;color:var(--rust);line-height:1}
+
+/* ====== ANIMATIONS ====== */
+.reveal{opacity:0;transform:translateY(20px);transition:all .8s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* footer */
+footer{padding:60px 40px 40px;border-top:1px solid var(--line);margin-top:80px;text-align:center;color:var(--char);opacity:0.85}
+footer > div{opacity:1}
+
+/* utility */
+.divider{height:1px;background:var(--line);margin:50px 0;width:100%}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+.muted{color:var(--char);opacity:0.7}
+.callout{
+  padding:20px 24px;background:var(--paper-2);border-left:4px solid var(--ochre);margin:24px 0;
+  font-family:var(--serif);font-size:18px;line-height:1.5;letter-spacing:-0.005em;
+}
+.callout strong{color:var(--rust);font-weight:600}
+
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand"><span class="brand-mark"></span><span>CARBON / Field Manual</span></div>
+  <div class="nav-links" id="nav-links">
+    <button data-go="home" class="active">Home</button>
+    <button data-go="fundamentals">01 Basics</button>
+    <button data-go="methods">02 Methods</button>
+    <button data-go="calculator">03 Calculator</button>
+    <button data-go="simulation">04 Simulation</button>
+    <button data-go="workflow">05 Workflow</button>
+    <button data-go="quiz">06 Quiz</button>
+  </div>
+  <div class="nav-meta">v2.6 · Vismay Loliyaniya</div>
+</nav>
+
+<main>
+
+<!-- ================ HOME ================ -->
+<section class="chapter active" id="home">
+  <div class="container">
+    <div class="chapter-tag">An Interactive Manual · For Civil & Environmental Engineering Students</div>
+    <h1 class="huge">How we count <em>carbon</em><br/>in the things we build.</h1>
+    <p class="lead muted">From the cement in a foundation to the kilowatt-hour that lights a corridor — every engineering decision has a measurable climate cost. This is a working introduction to <em>how</em> we calculate it.</p>
+    
+    <div class="author-card">
+      <div class="author-mark">VL</div>
+      <div class="author-body">
+        <div class="author-label">Course author · Module Lead</div>
+        <div class="author-name">Vismay Loliyaniya</div>
+        <div class="author-affil">University of East London &nbsp;·&nbsp; Malvern International PLC</div>
+      </div>
+    </div>
+    
+    <div class="hero-grid">
+      <div>
+        <div class="cta-row">
+          <button class="btn" data-go="fundamentals">Begin the Course <span class="arrow">→</span></button>
+          <button class="btn ghost" data-go="calculator">Try the Calculator</button>
+        </div>
+        <div class="stats-strip">
+          <div class="stat"><div class="num"><em>37%</em></div><div class="label">Global CO₂ emissions from buildings & construction</div></div>
+          <div class="stat"><div class="num">11%</div><div class="label">From embodied carbon in materials</div></div>
+          <div class="stat"><div class="num">2050</div><div class="label">Net-zero target for built environment</div></div>
+          <div class="stat"><div class="num">1.5°C</div><div class="label">Paris Agreement limit</div></div>
+        </div>
+      </div>
+      
+      <div class="globe-wrap">
+        <svg class="globe-svg" viewBox="0 0 400 400">
+          <defs>
+            <radialGradient id="globeGrad" cx="35%" cy="35%">
+              <stop offset="0%" stop-color="#7ea8c4"/>
+              <stop offset="60%" stop-color="#2d4a2b"/>
+              <stop offset="100%" stop-color="#0d0e0c"/>
+            </radialGradient>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(241,236,223,0.15)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <circle cx="200" cy="200" r="180" fill="url(#globeGrad)"/>
+          <circle cx="200" cy="200" r="180" fill="url(#grid)"/>
+          <!-- continents (abstract) -->
+          <path d="M 140 130 Q 160 110 200 120 T 260 140 Q 270 170 240 190 L 200 200 Q 170 195 150 180 Z" fill="#3d6438" opacity="0.7"/>
+          <path d="M 150 230 Q 180 220 220 230 T 270 260 Q 250 290 200 285 Q 160 280 150 250 Z" fill="#3d6438" opacity="0.7"/>
+          <path d="M 100 200 Q 120 180 130 220 T 110 270 Q 90 260 95 230 Z" fill="#3d6438" opacity="0.6"/>
+          <!-- emission rings -->
+          <circle cx="200" cy="200" r="180" fill="none" stroke="#c8542b" stroke-width="1" stroke-dasharray="2 8" opacity="0.6"/>
+          <circle cx="200" cy="200" r="195" fill="none" stroke="#c8542b" stroke-width="0.5" stroke-dasharray="4 10" opacity="0.4"/>
+        </svg>
+        <div class="co2-particle" style="left:30%;animation-delay:0s">CO₂</div>
+        <div class="co2-particle" style="left:55%;animation-delay:1s">CH₄</div>
+        <div class="co2-particle" style="left:70%;animation-delay:2s">CO₂</div>
+        <div class="co2-particle" style="left:45%;animation-delay:3s">N₂O</div>
+        <div class="co2-particle" style="left:25%;animation-delay:1.5s">CO₂</div>
+        <div class="co2-particle" style="left:60%;animation-delay:2.5s">SF₆</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>Six modules. One framework.</h2>
+    <p class="muted">Each module builds on the last. Move through in order, or jump to what you need.</p>
+    
+    <div class="module-grid">
+      <div class="mod-card" data-go="fundamentals">
+        <div class="mod-num">MODULE 01</div>
+        <h3>Fundamentals</h3>
+        <p>What carbon emissions actually are, the gases that matter, and the difference between embodied and operational carbon.</p>
+      </div>
+      <div class="mod-card" data-go="methods">
+        <div class="mod-num">MODULE 02</div>
+        <h3>Methods</h3>
+        <p>Process-based, input-output, and hybrid LCA. The four scopes. When to use which method.</p>
+      </div>
+      <div class="mod-card" data-go="calculator">
+        <div class="mod-num">MODULE 03</div>
+        <h3>Calculator</h3>
+        <p>Build a real building. Pick materials, set the energy mix, and watch the carbon footprint update live.</p>
+      </div>
+      <div class="mod-card" data-go="simulation">
+        <div class="mod-num">MODULE 04</div>
+        <h3>Simulation</h3>
+        <p>An animated 60-year building lifecycle showing where the emissions come from, and when.</p>
+      </div>
+      <div class="mod-card" data-go="workflow">
+        <div class="mod-num">MODULE 05</div>
+        <h3>Engineering Workflow</h3>
+        <p>The 8-step LCA procedure as used in practice — from goal definition to interpretation.</p>
+      </div>
+      <div class="mod-card" data-go="quiz">
+        <div class="mod-num">MODULE 06</div>
+        <h3>Knowledge Check</h3>
+        <p>Ten questions to test your understanding before you sit a real exam.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ FUNDAMENTALS ================ -->
+<section class="chapter" id="fundamentals">
+  <div class="container">
+    <div class="chapter-tag">Module 01 · 12 min read</div>
+    <h1 class="huge">What we mean by <em>carbon</em>.</h1>
+    <p class="lead muted">Engineers rarely measure pure carbon. We measure CO₂-equivalent — a common currency for several greenhouse gases of different strengths and lifetimes.</p>
+
+    <div class="diagram-block">
+      <h3>The Seven Greenhouse Gases (Kyoto Basket)</h3>
+      <p class="muted">Each gas is converted to "CO₂-equivalent" using its Global Warming Potential (GWP) over 100 years.</p>
+      <table class="method-table">
+        <thead>
+          <tr><th>Gas</th><th>Formula</th><th>GWP-100</th><th>Main Source in Engineering</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Carbon dioxide</strong></td><td>CO₂</td><td>1</td><td>Combustion, cement calcination, electricity</td></tr>
+          <tr><td><strong>Methane</strong></td><td>CH₄</td><td>27 – 30</td><td>Natural gas leakage, landfills, construction waste decay</td></tr>
+          <tr><td><strong>Nitrous oxide</strong></td><td>N₂O</td><td>273</td><td>Fertilisers, diesel engines, industrial processes</td></tr>
+          <tr><td><strong>Hydrofluorocarbons</strong></td><td>HFCs</td><td>4 – 12 400</td><td>Refrigerants in HVAC, foam insulation blowing agents</td></tr>
+          <tr><td><strong>Perfluorocarbons</strong></td><td>PFCs</td><td>6 630 – 11 100</td><td>Aluminium smelting, electronics manufacturing</td></tr>
+          <tr><td><strong>Sulphur hexafluoride</strong></td><td>SF₆</td><td>23 500</td><td>Electrical switchgear insulation</td></tr>
+          <tr><td><strong>Nitrogen trifluoride</strong></td><td>NF₃</td><td>17 400</td><td>Semiconductor manufacturing</td></tr>
+        </tbody>
+      </table>
+      <p class="formula-note">Source: IPCC AR6 Working Group I (2021). One tonne of N₂O warms the planet 273 times more than one tonne of CO₂ over a century.</p>
+    </div>
+
+    <div class="callout">
+      <strong>The core equation</strong> that every engineering carbon calculation reduces to:
+    </div>
+
+    <div class="formula">
+      <span>E</span><span class="op">=</span><span class="var">A</span><span class="op">×</span><span class="var">EF</span><span class="op">×</span><span class="var">GWP</span>
+    </div>
+    <p class="formula-note">
+      <strong>E</strong> = emissions in kgCO₂e &nbsp;·&nbsp;
+      <strong>A</strong> = activity data (kg of cement, kWh of electricity, km driven) &nbsp;·&nbsp;
+      <strong>EF</strong> = emission factor (kgCO₂ per unit of A) &nbsp;·&nbsp;
+      <strong>GWP</strong> = global warming potential (often baked into EF)
+    </p>
+
+    <div class="divider"></div>
+
+    <h2>Two carbon families</h2>
+    <p class="muted">In the built environment, every kgCO₂e falls into one of two buckets. Knowing which is which determines how — and when — you have to count it.</p>
+
+    <div class="two-col">
+      <div class="diagram-block" style="background:rgba(200,84,43,0.08);border-color:var(--rust)">
+        <div class="chapter-tag" style="color:var(--rust);margin-bottom:14px">EMBODIED CARBON</div>
+        <h3>Carbon locked in materials & construction</h3>
+        <p>All emissions released before the building is occupied — from quarrying limestone for cement, to firing bricks, to trucking steel to site, to the cranes themselves.</p>
+        <ul style="font-family:var(--mono);font-size:13px;line-height:1.9;margin-top:10px;padding-left:18px">
+          <li>Raw material extraction (A1)</li>
+          <li>Transport to factory (A2)</li>
+          <li>Manufacturing (A3)</li>
+          <li>Transport to site (A4)</li>
+          <li>Construction process (A5)</li>
+          <li>Maintenance & replacement (B1–B5)</li>
+          <li>End-of-life demolition (C1–C4)</li>
+        </ul>
+      </div>
+      <div class="diagram-block" style="background:rgba(126,168,196,0.12);border-color:var(--sky)">
+        <div class="chapter-tag" style="color:var(--sky);margin-bottom:14px">OPERATIONAL CARBON</div>
+        <h3>Carbon from running the building</h3>
+        <p>Emissions during the building's daily life — heating, cooling, lighting, lifts, hot water, plug loads. Calculated annually and multiplied by the building's expected lifespan.</p>
+        <ul style="font-family:var(--mono);font-size:13px;line-height:1.9;margin-top:10px;padding-left:18px">
+          <li>Heating energy (B6)</li>
+          <li>Cooling & ventilation (B6)</li>
+          <li>Lighting (B6)</li>
+          <li>Equipment / plug loads (B6)</li>
+          <li>Domestic hot water (B6)</li>
+          <li>Lifts & auxiliary systems (B6)</li>
+          <li>Water supply & treatment (B7)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Why this split matters:</strong> a high-performance net-zero-operational building can still have a huge embodied carbon footprint. Modern timber-frame designs typically halve embodied carbon vs. concrete.
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>The Three Scopes (GHG Protocol)</h2>
+    <p class="muted">When an organisation — a construction firm, a university, a city — reports its emissions, it uses three "scopes" to avoid double-counting.</p>
+
+    <div class="diagram-block">
+      <div class="scopes">
+        <div class="scope-card s1">
+          <span class="badge">Scope 1</span>
+          <h3>Direct emissions</h3>
+          <p style="font-size:14px;margin:0">Sources the organisation owns or controls.</p>
+          <ul>
+            <li>On-site boilers</li>
+            <li>Company-owned vehicles</li>
+            <li>Fugitive refrigerant leaks</li>
+            <li>Backup generators</li>
+            <li>Process emissions (e.g., cement)</li>
+          </ul>
+        </div>
+        <div class="scope-card s2">
+          <span class="badge">Scope 2</span>
+          <h3>Indirect — energy</h3>
+          <p style="font-size:14px;margin:0">Purchased electricity, steam, heat, cooling.</p>
+          <ul>
+            <li>Grid electricity</li>
+            <li>District heating networks</li>
+            <li>District cooling</li>
+            <li>Purchased steam</li>
+          </ul>
+        </div>
+        <div class="scope-card s3">
+          <span class="badge">Scope 3</span>
+          <h3>Indirect — value chain</h3>
+          <p style="font-size:14px;margin:0">Everything else, upstream and downstream.</p>
+          <ul>
+            <li>Purchased goods (materials)</li>
+            <li>Employee commuting</li>
+            <li>Business travel</li>
+            <li>Use of sold products</li>
+            <li>Waste disposal</li>
+            <li>Investments</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:30px">For most construction projects, <strong style="color:var(--rust)">Scope 3 is the largest category</strong> — often 70% or more — because it captures the embodied carbon of every material brought to site.</p>
+  </div>
+</section>
+
+<!-- ================ METHODS ================ -->
+<section class="chapter" id="methods">
+  <div class="container">
+    <div class="chapter-tag">Module 02 · 15 min read</div>
+    <h1 class="huge">Four ways to <em>measure</em> a footprint.</h1>
+    <p class="lead muted">Different problems call for different methods. The right choice depends on data availability, required accuracy, the system boundary, and how much time you have.</p>
+
+    <div class="diagram-block">
+      <table class="method-table">
+        <thead>
+          <tr><th>Method</th><th>How it works</th><th>Best for</th><th>Limitations</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Process-based LCA</strong><br/><span class="tag-pill">ISO 14040</span><span class="tag-pill">EN 15978</span></td>
+            <td>Tracks every input and output of a product through each life-cycle stage using physical measurements (kg, kWh, km).</td>
+            <td>Single products, specific materials, EPDs, building-level studies.</td>
+            <td>Truncation error — boundary cut-offs miss diffuse emissions in supply chains.</td>
+          </tr>
+          <tr>
+            <td><strong>Economic Input-Output LCA</strong><br/><span class="tag-pill">EIO-LCA</span></td>
+            <td>Maps emissions to sectors of the economy using national input-output tables. Spending data → emissions.</td>
+            <td>Whole organisations, broad estimates, completeness.</td>
+            <td>Sector-average data — can't distinguish a "green" supplier from a polluting one in the same sector.</td>
+          </tr>
+          <tr>
+            <td><strong>Hybrid LCA</strong></td>
+            <td>Combines detailed process data for foreground processes with IO data for background supply chain.</td>
+            <td>Comprehensive building or infrastructure assessments.</td>
+            <td>Data-intensive, expertise-heavy, risk of double-counting at the boundary.</td>
+          </tr>
+          <tr>
+            <td><strong>Tier 1 / 2 / 3 (IPCC)</strong><br/><span class="tag-pill">national</span></td>
+            <td>Tiered emission factors of increasing accuracy: Tier 1 default factors → Tier 3 country & technology-specific.</td>
+            <td>National GHG inventories, sector-wide reporting.</td>
+            <td>Tier 1 has wide uncertainty (±50%); Tier 3 requires extensive measurement.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>Standards engineers actually use</h2>
+    <div class="two-col">
+      <div>
+        <h3>ISO 14040 / 14044</h3>
+        <p>The international foundation for any LCA. Defines goal, scope, life-cycle inventory (LCI), impact assessment (LCIA), and interpretation. Any robust carbon study cites this.</p>
+        
+        <h3 style="margin-top:30px">EN 15978</h3>
+        <p>European standard for the environmental performance of buildings. Defines the A–B–C–D modular framework you'll see used throughout this manual (A1–A5 for embodied, B6–B7 for operational, etc.).</p>
+        
+        <h3 style="margin-top:30px">EN 15804</h3>
+        <p>Sets the rules for Environmental Product Declarations (EPDs) — the documents that publish a product's footprint. As of 2026, almost all major construction products in the EU have an EPD.</p>
+      </div>
+      <div>
+        <h3>GHG Protocol Corporate Standard</h3>
+        <p>The world's most-used standard for organisational accounting. Defines the three scopes you saw in Module 01 and how to draw organisational boundaries (equity share, financial control, operational control).</p>
+        
+        <h3 style="margin-top:30px">IPCC Guidelines (2019 Refinement)</h3>
+        <p>The methodology national governments use to report under the Paris Agreement. Defines the Tier 1/2/3 system and publishes default emission factors.</p>
+        
+        <h3 style="margin-top:30px">RICS Whole-Life Carbon (2nd ed.)</h3>
+        <p>UK industry standard for assessing whole-life carbon of buildings and infrastructure. Required for major public projects in the UK and increasingly used worldwide as a practical companion to EN 15978.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>The Life-Cycle Stages — visualised</h2>
+    <p class="muted">EN 15978 splits a building's life into four phases and seventeen modules. This is the spine of modern building carbon assessment.</p>
+
+    <div class="diagram-block">
+      <svg viewBox="0 0 1200 320" style="width:100%;height:auto;font-family:'JetBrains Mono',monospace">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#c8542b"/><stop offset="1" stop-color="#a8431f"/></linearGradient>
+          <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="#d8a23c"/><stop offset="1" stop-color="#c08828"/></linearGradient>
+          <linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="#2d4a2b"/><stop offset="1" stop-color="#1f3a1d"/></linearGradient>
+          <linearGradient id="g4" x1="0" x2="1"><stop offset="0" stop-color="#7ea8c4"/><stop offset="1" stop-color="#5f8aa6"/></linearGradient>
+        </defs>
+        
+        <!-- Phase headings -->
+        <text x="120" y="30" fill="#0d0e0c" font-size="11" letter-spacing="2">A · PRODUCT &amp; CONSTRUCTION</text>
+        <text x="500" y="30" fill="#0d0e0c" font-size="11" letter-spacing="2">B · USE STAGE</text>
+        <text x="850" y="30" fill="#0d0e0c" font-size="11" letter-spacing="2">C · END OF LIFE</text>
+        <text x="1080" y="30" fill="#0d0e0c" font-size="11" letter-spacing="2">D · BEYOND</text>
+        
+        <!-- A modules -->
+        <g>
+          <rect x="20" y="60" width="60" height="80" fill="url(#g1)"/>
+          <text x="50" y="105" fill="#f1ecdf" font-size="14" font-weight="700" text-anchor="middle">A1</text>
+          <text x="50" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Raw material</text>
+          
+          <rect x="90" y="60" width="60" height="80" fill="url(#g1)"/>
+          <text x="120" y="105" fill="#f1ecdf" font-size="14" font-weight="700" text-anchor="middle">A2</text>
+          <text x="120" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Transport</text>
+          
+          <rect x="160" y="60" width="60" height="80" fill="url(#g1)"/>
+          <text x="190" y="105" fill="#f1ecdf" font-size="14" font-weight="700" text-anchor="middle">A3</text>
+          <text x="190" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Manufacture</text>
+          
+          <rect x="230" y="60" width="60" height="80" fill="url(#g1)"/>
+          <text x="260" y="105" fill="#f1ecdf" font-size="14" font-weight="700" text-anchor="middle">A4</text>
+          <text x="260" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Transport site</text>
+          
+          <rect x="300" y="60" width="60" height="80" fill="url(#g1)"/>
+          <text x="330" y="105" fill="#f1ecdf" font-size="14" font-weight="700" text-anchor="middle">A5</text>
+          <text x="330" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Construction</text>
+        </g>
+        
+        <!-- B modules -->
+        <g>
+          <rect x="400" y="60" width="55" height="80" fill="url(#g2)"/>
+          <text x="427" y="105" fill="#0d0e0c" font-size="13" font-weight="700" text-anchor="middle">B1</text>
+          <text x="427" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Use</text>
+          
+          <rect x="460" y="60" width="55" height="80" fill="url(#g2)"/>
+          <text x="487" y="105" fill="#0d0e0c" font-size="13" font-weight="700" text-anchor="middle">B2</text>
+          <text x="487" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Maintenance</text>
+          
+          <rect x="520" y="60" width="55" height="80" fill="url(#g2)"/>
+          <text x="547" y="105" fill="#0d0e0c" font-size="13" font-weight="700" text-anchor="middle">B3</text>
+          <text x="547" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Repair</text>
+          
+          <rect x="580" y="60" width="55" height="80" fill="url(#g2)"/>
+          <text x="607" y="105" fill="#0d0e0c" font-size="13" font-weight="700" text-anchor="middle">B4</text>
+          <text x="607" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Replace</text>
+          
+          <rect x="640" y="60" width="55" height="80" fill="url(#g2)"/>
+          <text x="667" y="105" fill="#0d0e0c" font-size="13" font-weight="700" text-anchor="middle">B5</text>
+          <text x="667" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Refurb</text>
+          
+          <rect x="700" y="60" width="55" height="80" fill="#c8542b" opacity="0.9"/>
+          <text x="727" y="100" fill="#f1ecdf" font-size="13" font-weight="700" text-anchor="middle">B6</text>
+          <text x="727" y="115" fill="#f1ecdf" font-size="8" text-anchor="middle">ENERGY</text>
+          <text x="727" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Op. energy</text>
+          
+          <rect x="760" y="60" width="55" height="80" fill="url(#g2)"/>
+          <text x="787" y="105" fill="#0d0e0c" font-size="13" font-weight="700" text-anchor="middle">B7</text>
+          <text x="787" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Op. water</text>
+        </g>
+        
+        <!-- C modules -->
+        <g>
+          <rect x="850" y="60" width="50" height="80" fill="url(#g3)"/>
+          <text x="875" y="105" fill="#f1ecdf" font-size="13" font-weight="700" text-anchor="middle">C1</text>
+          <text x="875" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Demolish</text>
+          
+          <rect x="905" y="60" width="50" height="80" fill="url(#g3)"/>
+          <text x="930" y="105" fill="#f1ecdf" font-size="13" font-weight="700" text-anchor="middle">C2</text>
+          <text x="930" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Transport</text>
+          
+          <rect x="960" y="60" width="50" height="80" fill="url(#g3)"/>
+          <text x="985" y="105" fill="#f1ecdf" font-size="13" font-weight="700" text-anchor="middle">C3</text>
+          <text x="985" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Process</text>
+          
+          <rect x="1015" y="60" width="50" height="80" fill="url(#g3)"/>
+          <text x="1040" y="105" fill="#f1ecdf" font-size="13" font-weight="700" text-anchor="middle">C4</text>
+          <text x="1040" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Dispose</text>
+        </g>
+        
+        <!-- D module -->
+        <rect x="1090" y="60" width="80" height="80" fill="url(#g4)"/>
+        <text x="1130" y="105" fill="#f1ecdf" font-size="14" font-weight="700" text-anchor="middle">D</text>
+        <text x="1130" y="155" fill="#0d0e0c" font-size="9" text-anchor="middle">Reuse / Recycle</text>
+        
+        <!-- bottom labels showing emission proportions -->
+        <text x="600" y="200" text-anchor="middle" fill="#0d0e0c" font-size="11" letter-spacing="1">— TYPICAL CARBON SHARE OVER 60-YEAR BUILDING LIFE —</text>
+        
+        <rect x="20" y="220" width="370" height="40" fill="url(#g1)"/>
+        <text x="205" y="245" text-anchor="middle" fill="#f1ecdf" font-size="14" font-weight="700">EMBODIED ~ 35%</text>
+        
+        <rect x="395" y="220" width="450" height="40" fill="url(#g2)"/>
+        <text x="620" y="245" text-anchor="middle" fill="#0d0e0c" font-size="14" font-weight="700">OPERATIONAL ~ 60%</text>
+        
+        <rect x="850" y="220" width="220" height="40" fill="url(#g3)"/>
+        <text x="960" y="245" text-anchor="middle" fill="#f1ecdf" font-size="14" font-weight="700">EOL ~ 5%</text>
+        
+        <text x="20" y="295" fill="#0d0e0c" font-size="10" opacity="0.6">Based on RIBA 2030 Climate Challenge benchmarks for a typical European office building. Modern net-zero-operational designs are inverting this — embodied carbon now dominates.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================ CALCULATOR ================ -->
+<section class="chapter" id="calculator">
+  <div class="container">
+    <div class="chapter-tag">Module 03 · Interactive</div>
+    <h1 class="huge">Calculate a real <em>building</em>.</h1>
+    <p class="lead muted">Use real emission factors from the ICE database (Inventory of Carbon and Energy, Bath) and DEFRA grid factors. Change anything; the results update live.</p>
+
+    <div class="calc-shell">
+      <!-- INPUT PANEL -->
+      <div>
+        <div class="calc-panel">
+          <h3>① Building geometry</h3>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Floor area <span>m²</span></label>
+              <input type="number" id="gfa" value="2500" min="50">
+            </div>
+            <div class="input-group">
+              <label>Storeys</label>
+              <input type="number" id="storeys" value="4" min="1">
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Design life <span>years</span></label>
+              <input type="number" id="life" value="60" min="10" max="100">
+            </div>
+            <div class="input-group">
+              <label>Building type</label>
+              <select id="btype">
+                <option value="office" data-eui="120">Office</option>
+                <option value="residential" data-eui="90">Residential</option>
+                <option value="school" data-eui="130">School</option>
+                <option value="hospital" data-eui="380">Hospital</option>
+                <option value="retail" data-eui="220">Retail</option>
+                <option value="industrial" data-eui="180">Industrial</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-panel" style="margin-top:20px">
+          <h3>② Materials (embodied)</h3>
+          <p style="font-size:13px;margin-bottom:14px">Quantities are auto-suggested from floor area. Adjust to match your design.</p>
+          <div class="material-list" id="mat-list"></div>
+          <button class="add-mat" onclick="addMaterial()">+ Add Material</button>
+        </div>
+
+        <div class="calc-panel" style="margin-top:20px">
+          <h3>③ Energy & grid</h3>
+          <div class="input-group">
+            <label>Operational energy use <span>kWh / m² / yr</span></label>
+            <input type="number" id="eui" value="120" min="0">
+          </div>
+          <div class="input-group">
+            <label>Energy source</label>
+            <select id="energy-src">
+              <option value="0.207">UK grid mix 2026 (0.207 kg/kWh)</option>
+              <option value="0.371">EU average grid (0.371 kg/kWh)</option>
+              <option value="0.385">US average grid (0.385 kg/kWh)</option>
+              <option value="0.580">India grid (0.580 kg/kWh)</option>
+              <option value="0.020">100% renewable PPA (0.020 kg/kWh)</option>
+              <option value="0.180">Natural gas heating (0.180 kg/kWh)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div>
+        <div class="results">
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ochre);opacity:0.8;margin-bottom:6px">WHOLE-LIFE CARBON</div>
+          <h3 style="margin-bottom:0">Cradle-to-grave estimate</h3>
+          <div class="big-result"><span id="total-co2">0</span><span class="unit">tCO₂e</span></div>
+          <div class="result-sub" id="per-m2">— kgCO₂e per m² over life</div>
+          
+          <div class="breakdown-bar" id="bd-bar"></div>
+          <div class="breakdown-list" id="bd-list"></div>
+          
+          <div class="equiv-grid" id="equiv"></div>
+          
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(241,236,223,0.2);font-family:var(--mono);font-size:11px;color:var(--paper);opacity:0.6;line-height:1.6">
+            <strong style="color:var(--ochre)">RIBA 2030 target</strong> for new offices: <span style="color:var(--paper)">625 kgCO₂e/m²</span> embodied + <span style="color:var(--paper)">55 kWh/m²/yr</span> operational.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ SIMULATION ================ -->
+<section class="chapter" id="simulation">
+  <div class="container">
+    <div class="chapter-tag">Module 04 · Animated</div>
+    <h1 class="huge">Watch a building <em>emit</em>, 60 years in 60 seconds.</h1>
+    <p class="lead muted">Press play. Each second of animation is one year of the building's life. The yellow plumes are operational carbon (heating, lighting, running). The brown puffs are embodied carbon spikes from construction and renovation events.</p>
+
+    <div class="sim-shell">
+      <div>
+        <div class="sim-controls">
+          <h3 style="margin-bottom:18px">Sim parameters</h3>
+          <div class="sim-select">
+            <label>Structure</label>
+            <select id="sim-structure">
+              <option value="concrete">Reinforced concrete</option>
+              <option value="steel">Steel frame</option>
+              <option value="timber" selected>CLT timber</option>
+              <option value="masonry">Masonry / brick</option>
+            </select>
+          </div>
+          <div class="sim-select">
+            <label>Energy strategy</label>
+            <select id="sim-energy">
+              <option value="grid">Standard grid</option>
+              <option value="efficient" selected>Passivhaus + heat pump</option>
+              <option value="onsite">+ on-site solar</option>
+            </select>
+          </div>
+          <div class="sim-slider">
+            <label>Years <span class="val" id="yr-val">0</span></label>
+            <input type="range" id="sim-year" min="0" max="60" value="0">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:20px">
+            <button class="btn" id="play-btn" style="flex:1;padding:10px;font-size:11px">▶ PLAY</button>
+            <button class="btn ghost" id="reset-btn" style="flex:1;padding:10px;font-size:11px">⟲ RESET</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-stage" id="sim-stage">
+        <svg viewBox="0 0 800 600" id="sim-svg">
+          <defs>
+            <linearGradient id="skyGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#bcd0dd"/>
+              <stop offset="1" stop-color="#e8d9c1"/>
+            </linearGradient>
+            <pattern id="windowPat" width="35" height="50" patternUnits="userSpaceOnUse">
+              <rect width="35" height="50" fill="transparent"/>
+              <rect x="6" y="8" width="22" height="34" fill="#1a1b18" opacity="0.7"/>
+              <line x1="17" y1="8" x2="17" y2="42" stroke="#7ea8c4" stroke-width="0.5"/>
+            </pattern>
+            <linearGradient id="bldGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#d8d2c2"/>
+              <stop offset="1" stop-color="#b8b09e"/>
+            </linearGradient>
+            <radialGradient id="sun" cx="50%" cy="50%">
+              <stop offset="0" stop-color="#ffefa8" stop-opacity="1"/>
+              <stop offset="1" stop-color="#ffefa8" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          
+          <!-- sky -->
+          <rect width="800" height="450" fill="url(#skyGrad)"/>
+          <!-- sun -->
+          <circle cx="650" cy="120" r="80" fill="url(#sun)"/>
+          <circle cx="650" cy="120" r="30" fill="#ffd97a"/>
+          
+          <!-- ground -->
+          <rect y="450" width="800" height="150" fill="#7d5c3c"/>
+          <rect y="450" width="800" height="6" fill="#5a4128"/>
+          <!-- grass tufts -->
+          <g fill="#3d6438" opacity="0.7">
+            <path d="M40,450 Q42,440 44,450 Z"/><path d="M70,450 Q73,438 76,450 Z"/>
+            <path d="M720,450 Q723,440 726,450 Z"/><path d="M750,450 Q753,438 756,450 Z"/>
+          </g>
+          
+          <!-- building shadow -->
+          <ellipse cx="400" cy="455" rx="220" ry="14" fill="#0d0e0c" opacity="0.25"/>
+          
+          <!-- BUILDING - construction stages -->
+          <g id="building-group">
+            <!-- foundation always visible after year 0 -->
+            <rect id="foundation" x="220" y="440" width="360" height="14" fill="#888" opacity="0"/>
+            
+            <!-- floors -->
+            <g id="floors">
+              <rect class="floor" data-yr="0.5" x="240" y="380" width="320" height="60" fill="url(#bldGrad)" opacity="0"/>
+              <rect class="floor" data-yr="1" x="240" y="320" width="320" height="60" fill="url(#bldGrad)" opacity="0"/>
+              <rect class="floor" data-yr="1.5" x="240" y="260" width="320" height="60" fill="url(#bldGrad)" opacity="0"/>
+              <rect class="floor" data-yr="2" x="240" y="200" width="320" height="60" fill="url(#bldGrad)" opacity="0"/>
+              <!-- windows -->
+              <rect class="window-strip" data-yr="2.2" x="250" y="385" width="300" height="50" fill="url(#windowPat)" opacity="0"/>
+              <rect class="window-strip" data-yr="2.2" x="250" y="325" width="300" height="50" fill="url(#windowPat)" opacity="0"/>
+              <rect class="window-strip" data-yr="2.2" x="250" y="265" width="300" height="50" fill="url(#windowPat)" opacity="0"/>
+              <rect class="window-strip" data-yr="2.2" x="250" y="205" width="300" height="50" fill="url(#windowPat)" opacity="0"/>
+              <!-- roof -->
+              <polygon class="roof" data-yr="2.5" points="220,200 580,200 560,180 240,180" fill="#5a4128" opacity="0"/>
+              <!-- door -->
+              <rect class="door" data-yr="2.5" x="380" y="400" width="40" height="40" fill="#3d2818" opacity="0"/>
+              <!-- entrance -->
+              <rect class="door" data-yr="2.5" x="382" y="403" width="36" height="35" fill="#7ea8c4" opacity="0"/>
+            </g>
+            
+            <!-- solar panels appear with on-site option -->
+            <g id="solar-group" opacity="0">
+              <rect x="260" y="174" width="60" height="8" fill="#1a3a5a"/>
+              <rect x="340" y="174" width="60" height="8" fill="#1a3a5a"/>
+              <rect x="420" y="174" width="60" height="8" fill="#1a3a5a"/>
+              <rect x="500" y="174" width="60" height="8" fill="#1a3a5a"/>
+            </g>
+            
+            <!-- crane during construction -->
+            <g id="crane" opacity="0">
+              <rect x="100" y="100" width="6" height="350" fill="#c8542b"/>
+              <line x1="103" y1="100" x2="250" y2="100" stroke="#c8542b" stroke-width="4"/>
+              <line x1="103" y1="100" x2="50" y2="100" stroke="#c8542b" stroke-width="4"/>
+              <line x1="200" y1="100" x2="200" y2="180" stroke="#444" stroke-width="1"/>
+              <rect x="190" y="180" width="20" height="12" fill="#444"/>
+            </g>
+          </g>
+          
+          <!-- emission plumes container -->
+          <g id="plumes"></g>
+          
+          <!-- year indicator on stage -->
+          <g>
+            <rect x="20" y="20" width="120" height="50" fill="#0d0e0c" opacity="0.85"/>
+            <text x="30" y="40" fill="#d8a23c" font-family="JetBrains Mono" font-size="10" letter-spacing="2">YEAR</text>
+            <text id="stage-year" x="30" y="62" fill="#f1ecdf" font-family="Fraunces" font-size="22" font-weight="400">00</text>
+            <text x="80" y="62" fill="#f1ecdf" font-family="JetBrains Mono" font-size="11" opacity="0.6">/ 60</text>
+          </g>
+        </svg>
+        <div class="sim-readout">
+          <div>Cumulative tCO₂e</div>
+          <span class="num" id="sim-co2">0</span>
+          <div style="opacity:0.7">Current stage: <span id="sim-stage-name" style="color:#d8a23c">Site preparation</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lifecycle-tabs">
+      <button class="active" data-phase="all">All phases</button>
+      <button data-phase="construction">A1–A5 Construction</button>
+      <button data-phase="operational">B6 Operation</button>
+      <button data-phase="renovation">B4 Renovation</button>
+      <button data-phase="eol">C1–C4 End of Life</button>
+    </div>
+
+    <div class="callout" style="margin-top:30px">
+      <strong>Notice the spikes</strong>: years 0–3 show a steep climb (embodied construction emissions). Years 25 and 50 show smaller spikes — renovations and façade replacement. The slope between is operational carbon, which dominates the total even at modern efficiency standards.
+    </div>
+  </div>
+</section>
+
+<!-- ================ WORKFLOW ================ -->
+<section class="chapter" id="workflow">
+  <div class="container">
+    <div class="chapter-tag">Module 05 · Process</div>
+    <h1 class="huge">The eight-step <em>workflow</em>.</h1>
+    <p class="lead muted">In professional practice, a building carbon assessment follows the same ISO 14040 sequence. Skip a step and the result is not defensible.</p>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><h4>Goal & Scope</h4><p>Why are we measuring? What boundary (cradle-to-gate? cradle-to-grave?). Set the functional unit — usually "1 m² of GIA over 60 years".</p></div>
+      <div class="step"><div class="step-num">02</div><h4>System Boundary</h4><p>Which life-cycle modules (A1–D) are included? Cut-off rule: typically include processes that contribute > 1% of total mass or energy.</p></div>
+      <div class="step"><div class="step-num">03</div><h4>Inventory (LCI)</h4><p>Quantity take-off from the design model — every kg of steel, m³ of concrete, m² of insulation. Use BIM where possible.</p></div>
+      <div class="step"><div class="step-num">04</div><h4>Emission Factors</h4><p>Match each material to an EPD or a generic database (ICE, Ecoinvent, OneClick LCA, EC3). Note geographic and temporal validity.</p></div>
+    </div>
+    <div class="steps" style="margin-top:1px">
+      <div class="step"><div class="step-num">05</div><h4>Calculation</h4><p>Apply E = A × EF for every line item. Sum within each life-cycle module. Most teams use specialist software, but a spreadsheet works for early-stage studies.</p></div>
+      <div class="step"><div class="step-num">06</div><h4>Impact Assessment</h4><p>Aggregate to a single indicator (kgCO₂e). Some studies also report other impact categories (acidification, eutrophication, ozone depletion).</p></div>
+      <div class="step"><div class="step-num">07</div><h4>Interpretation</h4><p>Sensitivity analysis — which assumptions matter? Hot-spot analysis — where are the biggest emissions? Identify reduction opportunities.</p></div>
+      <div class="step"><div class="step-num">08</div><h4>Reporting</h4><p>Deliver per RICS / EN 15978 / client requirement. Include uncertainty range, data quality assessment, and recommendations.</p></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2>A worked example: 1 m³ of concrete</h2>
+    <p class="muted">Walk through the calculation by hand. Every entry comes from real industry data.</p>
+
+    <div class="diagram-block">
+      <table class="method-table">
+        <thead><tr><th>Step</th><th>Activity data</th><th>Emission factor</th><th>Emissions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cement (CEM I)</strong></td><td>320 kg</td><td>0.912 kgCO₂e/kg</td><td>291.8 kgCO₂e</td></tr>
+          <tr><td><strong>Fine aggregate</strong></td><td>800 kg</td><td>0.0048 kgCO₂e/kg</td><td>3.8 kgCO₂e</td></tr>
+          <tr><td><strong>Coarse aggregate</strong></td><td>1050 kg</td><td>0.0048 kgCO₂e/kg</td><td>5.0 kgCO₂e</td></tr>
+          <tr><td><strong>Water</strong></td><td>165 kg</td><td>0.00034 kgCO₂e/kg</td><td>0.1 kgCO₂e</td></tr>
+          <tr><td><strong>Batching energy</strong></td><td>2 kWh</td><td>0.207 kgCO₂e/kWh</td><td>0.4 kgCO₂e</td></tr>
+          <tr><td><strong>Transport (50 km)</strong></td><td>2.4 tonne·km</td><td>0.107 kgCO₂e/t·km</td><td>0.3 kgCO₂e</td></tr>
+          <tr style="background:rgba(200,84,43,0.1)"><td colspan="3"><strong style="font-size:18px">TOTAL — 1 m³ concrete (A1–A4)</strong></td><td><strong style="font-size:18px">~ 301 kgCO₂e</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="formula-note" style="margin-top:16px"><strong style="color:var(--rust)">Insight:</strong> 97% of the carbon in concrete comes from cement alone. This is why low-carbon cements (using GGBS or fly-ash replacement) are the single biggest lever in structural design.</p>
+    </div>
+
+    <div class="callout">
+      <strong>Engineer's rule of thumb:</strong> in a typical commercial building, structure accounts for ~50% of embodied carbon, façade ~20%, MEP services ~15%, and internal finishes ~15%. Optimise the structure first.
+    </div>
+  </div>
+</section>
+
+<!-- ================ QUIZ ================ -->
+<section class="chapter" id="quiz">
+  <div class="container">
+    <div class="chapter-tag">Module 06 · Test yourself</div>
+    <h1 class="huge">Ten questions. <em>One try each.</em></h1>
+    <p class="lead muted">Cover everything from the previous modules. At the end you'll see a score and an explanation of any wrong answers.</p>
+    
+    <div class="quiz-progress"><div class="quiz-bar" id="quiz-bar" style="width:10%"></div></div>
+    <div class="quiz-card" id="quiz-card"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div style="font-family:var(--serif);font-size:20px;font-weight:500;color:var(--ink);letter-spacing:-0.01em;margin-bottom:8px;text-transform:none">
+    Developed by Vismay Loliyaniya
+  </div>
+  <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.15em;margin-bottom:20px">
+    Module Lead · University of East London · Malvern International PLC
+  </div>
+  <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;opacity:0.6">
+    CARBON · INTERACTIVE FIELD MANUAL · BUILT FOR ENGINEERING STUDENTS<br/>
+    DATA: ICE v3.0 · DEFRA 2025 · IPCC AR6 · RIBA 2030
+  </div>
+</footer>
+
+<script>
+/* ============== NAVIGATION ============== */
+const nav = document.getElementById('nav-links');
+const goTo = (id) => {
+  document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('#nav-links button').forEach(b=>b.classList.toggle('active', b.dataset.go===id));
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(id==='simulation') resetSim();
+  if(id==='calculator') updateCalc();
+  if(id==='quiz') startQuiz();
+};
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click', ()=>goTo(b.dataset.go)));
+
+/* ============== CALCULATOR ============== */
+const MATERIALS = [
+  {name:'Concrete (C30/37)', ef:0.137, unit:'kg', density:2400, defaultPerM2: 600},
+  {name:'Concrete (low-carbon, 50% GGBS)', ef:0.071, unit:'kg', density:2400, defaultPerM2: 0},
+  {name:'Steel (rebar, virgin)', ef:2.45, unit:'kg', density:7850, defaultPerM2: 60},
+  {name:'Steel (rebar, recycled)', ef:0.760, unit:'kg', density:7850, defaultPerM2: 0},
+  {name:'CLT Timber', ef:0.437, unit:'kg', density:480, defaultPerM2: 0},
+  {name:'Glulam Timber', ef:0.512, unit:'kg', density:500, defaultPerM2: 0},
+  {name:'Clay bricks', ef:0.213, unit:'kg', density:1700, defaultPerM2: 80},
+  {name:'Plasterboard', ef:0.391, unit:'kg', density:850, defaultPerM2: 25},
+  {name:'Mineral wool insulation', ef:1.28, unit:'kg', density:80, defaultPerM2: 3},
+  {name:'EPS insulation', ef:3.29, unit:'kg', density:30, defaultPerM2: 0},
+  {name:'Aluminium (façade)', ef:8.24, unit:'kg', density:2700, defaultPerM2: 5},
+  {name:'Glass (double glazing)', ef:1.44, unit:'kg', density:2500, defaultPerM2: 20},
+  {name:'Copper (services)', ef:2.71, unit:'kg', density:8960, defaultPerM2: 1},
+];
+
+let rows = [
+  {mat:0, qty: 0},   // concrete
+  {mat:2, qty: 0},   // steel
+  {mat:6, qty: 0},   // bricks
+  {mat:7, qty: 0},   // plasterboard
+  {mat:8, qty: 0},   // insulation
+  {mat:11, qty: 0},  // glass
+];
+
+function renderMaterials(){
+  const gfa = +document.getElementById('gfa').value || 1000;
+  // initialise defaults on first render
+  rows.forEach(r=>{
+    if(r.qty===0 && MATERIALS[r.mat].defaultPerM2){
+      r.qty = Math.round(MATERIALS[r.mat].defaultPerM2 * gfa);
+    }
+  });
+  const list = document.getElementById('mat-list');
+  list.innerHTML = '';
+  rows.forEach((r,i)=>{
+    const div = document.createElement('div');
+    div.className = 'mat-row';
+    div.innerHTML = `
+      <select onchange="rows[${i}].mat=+this.value;updateCalc()">
+        ${MATERIALS.map((m,j)=>`<option value="${j}" ${j===r.mat?'selected':''}>${m.name} · ${m.ef} kg/kg</option>`).join('')}
+      </select>
+      <input type="number" value="${r.qty}" min="0" onchange="rows[${i}].qty=+this.value;updateCalc()" placeholder="kg">
+      <button onclick="rows.splice(${i},1);renderMaterials();updateCalc()">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function addMaterial(){
+  rows.push({mat: 4, qty: 5000});
+  renderMaterials();
+  updateCalc();
+}
+
+function updateCalc(){
+  const gfa = +document.getElementById('gfa').value || 1;
+  const life = +document.getElementById('life').value || 1;
+  const eui = +document.getElementById('eui').value || 0;
+  const ef = +document.getElementById('energy-src').value;
+  
+  // embodied
+  let embodied = 0;
+  const matBreakdown = {};
+  rows.forEach(r=>{
+    const m = MATERIALS[r.mat];
+    const e = r.qty * m.ef;
+    embodied += e;
+    matBreakdown[m.name] = (matBreakdown[m.name]||0) + e;
+  });
+  
+  // construction A5 ~ 8% of A1-A3
+  const constructionA5 = embodied * 0.08;
+  // maintenance & replacement B1-B5 ~ 30% of A1-A3 over 60yr
+  const maintenance = embodied * 0.30 * (life/60);
+  
+  // operational
+  const operational = eui * gfa * life * ef;
+  
+  // end of life
+  const eol = embodied * 0.05;
+  
+  const total = embodied + constructionA5 + maintenance + operational + eol;
+  const totalT = total/1000;
+  
+  document.getElementById('total-co2').textContent = totalT.toFixed(1);
+  document.getElementById('per-m2').textContent = `${(total/gfa).toFixed(0)} kgCO₂e per m² over ${life}-year life`;
+  
+  // breakdown bar
+  const cats = [
+    {name:'Embodied (A1–A3)', val:embodied, color:'#c8542b'},
+    {name:'Construction (A5)', val:constructionA5, color:'#a8431f'},
+    {name:'Maintenance (B1–B5)', val:maintenance, color:'#d8a23c'},
+    {name:'Operational (B6)', val:operational, color:'#2d4a2b'},
+    {name:'End-of-life (C1–C4)', val:eol, color:'#5a4128'},
+  ];
+  const bar = document.getElementById('bd-bar');
+  bar.innerHTML = '';
+  cats.forEach(c=>{
+    const seg = document.createElement('div');
+    seg.className = 'breakdown-seg';
+    seg.style.cssText = `width:${(c.val/total*100)||0}%;background:${c.color}`;
+    seg.title = `${c.name}: ${(c.val/1000).toFixed(1)} tCO₂e`;
+    bar.appendChild(seg);
+  });
+  
+  const list = document.getElementById('bd-list');
+  list.innerHTML = cats.map(c=>`
+    <div class="bk-row">
+      <div class="dot" style="background:${c.color}"></div>
+      <div class="name">${c.name}</div>
+      <div class="val">${(c.val/1000).toFixed(1)} t · ${(c.val/total*100).toFixed(0)}%</div>
+    </div>
+  `).join('');
+  
+  // equivalents
+  const cars = Math.round(totalT / 4.6);   // avg car ~ 4.6 t/yr
+  const flights = Math.round(totalT / 1.0); // London-NY return ~ 1 t per pax
+  const trees = Math.round(totalT * 45);    // 1 tree absorbs ~22 kg/yr → 1 tCO2 ≈ 45 tree-years
+  
+  document.getElementById('equiv').innerHTML = `
+    <div class="equiv"><span class="ev-icon">🚗</span><div class="ev-num">${cars.toLocaleString()}</div><div class="ev-lab">car-years</div></div>
+    <div class="equiv"><span class="ev-icon">✈</span><div class="ev-num">${flights.toLocaleString()}</div><div class="ev-lab">return flights LDN-NYC</div></div>
+    <div class="equiv"><span class="ev-icon">🌳</span><div class="ev-num">${trees.toLocaleString()}</div><div class="ev-lab">tree-years to offset</div></div>
+  `;
+}
+
+document.getElementById('gfa').addEventListener('input', ()=>{
+  // do NOT regenerate defaults — user has manual quantities
+  updateCalc();
+});
+document.getElementById('storeys').addEventListener('input', updateCalc);
+document.getElementById('life').addEventListener('input', updateCalc);
+document.getElementById('btype').addEventListener('change', e=>{
+  const eui = e.target.options[e.target.selectedIndex].dataset.eui;
+  document.getElementById('eui').value = eui;
+  updateCalc();
+});
+document.getElementById('eui').addEventListener('input', updateCalc);
+document.getElementById('energy-src').addEventListener('change', updateCalc);
+
+renderMaterials();
+updateCalc();
+
+/* ============== SIMULATION ============== */
+let simYear = 0;
+let simPlaying = false;
+let simInterval = null;
+let cumulativeCO2 = 0;
+
+const STRUCTURE_EMBODIED = {
+  concrete: 850,   // tCO2e for 2500 m² building
+  steel: 720,
+  timber: 380,
+  masonry: 620,
+};
+const ENERGY_FACTOR = {
+  grid: 1.0,
+  efficient: 0.35,
+  onsite: 0.15,
+};
+
+function updateSimVisuals(){
+  // update stage year
+  document.getElementById('stage-year').textContent = String(simYear).padStart(2,'0');
+  document.getElementById('yr-val').textContent = simYear;
+  document.getElementById('sim-year').value = simYear;
+  
+  // building construction phases
+  document.getElementById('foundation').style.opacity = simYear >= 0.2 ? '1' : '0';
+  document.getElementById('foundation').style.transition = 'opacity 0.4s';
+  
+  document.querySelectorAll('.floor, .window-strip, .roof, .door').forEach(el=>{
+    const yr = +el.dataset.yr;
+    el.style.transition = 'opacity 0.5s';
+    el.style.opacity = simYear >= yr ? '1' : '0';
+  });
+  
+  // crane appears during construction
+  document.getElementById('crane').style.transition = 'opacity 0.5s';
+  document.getElementById('crane').style.opacity = (simYear > 0.1 && simYear < 2.6) ? '1' : '0';
+  
+  // solar panels with onsite option
+  const energy = document.getElementById('sim-energy').value;
+  document.getElementById('solar-group').style.transition = 'opacity 0.5s';
+  document.getElementById('solar-group').style.opacity = (energy==='onsite' && simYear >= 2.5) ? '1' : '0';
+  
+  // calculate cumulative emissions
+  const structure = document.getElementById('sim-structure').value;
+  const embodiedTotal = STRUCTURE_EMBODIED[structure];
+  const energyMult = ENERGY_FACTOR[energy];
+  // operational ~ 12 tCO2/yr base for 2500m² office at avg grid
+  const opAnnual = 12 * energyMult;
+  
+  let cum = 0;
+  // construction A1-A5 happens over years 0-3
+  if(simYear <= 3){
+    cum += embodiedTotal * (simYear/3);
+  } else {
+    cum += embodiedTotal;
+  }
+  // operational
+  if(simYear > 3){
+    cum += opAnnual * (simYear - 3);
+  }
+  // renovation B4 at year 25 (façade) and 50 (services)
+  if(simYear >= 25) cum += embodiedTotal * 0.12;
+  if(simYear >= 50) cum += embodiedTotal * 0.18;
+  // EOL at year 60
+  if(simYear >= 60) cum += embodiedTotal * 0.05;
+  
+  cumulativeCO2 = cum;
+  document.getElementById('sim-co2').textContent = cum.toFixed(0);
+  
+  // stage name
+  let stage = 'Site preparation';
+  if(simYear > 0.1 && simYear <= 2.5) stage = 'Construction (A1–A5)';
+  else if(simYear > 2.5 && simYear < 25) stage = 'Operation (B6)';
+  else if(simYear >= 25 && simYear < 26) stage = 'Major refurbishment (B4)';
+  else if(simYear >= 26 && simYear < 50) stage = 'Operation (B6)';
+  else if(simYear >= 50 && simYear < 51) stage = 'Façade replacement (B4)';
+  else if(simYear >= 51 && simYear < 60) stage = 'Operation (B6)';
+  else if(simYear >= 60) stage = 'End of life (C1–C4)';
+  document.getElementById('sim-stage-name').textContent = stage;
+  
+  // spawn plumes during emissive periods
+  if(simPlaying){
+    if(simYear > 0.1 && simYear <= 2.5){
+      spawnPlume('embodied');  // construction = brown
+    }
+    if(simYear > 3){
+      if(Math.random() < 0.8) spawnPlume('operational'); // ongoing yellow
+    }
+    if((simYear>=25 && simYear<25.6) || (simYear>=50 && simYear<50.6)){
+      spawnPlume('embodied');
+      spawnPlume('embodied');
+    }
+  }
+}
+
+function spawnPlume(type){
+  const plumes = document.getElementById('plumes');
+  const ns = 'http://www.w3.org/2000/svg';
+  const circle = document.createElementNS(ns, 'circle');
+  const x = 280 + Math.random()*240;
+  const y = 200 + Math.random()*220;
+  circle.setAttribute('cx', x);
+  circle.setAttribute('cy', y);
+  circle.setAttribute('r', type==='embodied' ? 8 : 5);
+  circle.setAttribute('fill', type==='embodied' ? '#7d5c3c' : '#d8a23c');
+  circle.setAttribute('opacity', '0.7');
+  plumes.appendChild(circle);
+  
+  // animate
+  const targetY = y - 200 - Math.random()*100;
+  const targetX = x + (Math.random()-0.5)*100;
+  const targetR = type==='embodied' ? 25 : 18;
+  
+  let t = 0;
+  const animate = () => {
+    t += 0.02;
+    if(t >= 1){
+      plumes.removeChild(circle);
+      return;
+    }
+    circle.setAttribute('cy', y + (targetY-y)*t);
+    circle.setAttribute('cx', x + (targetX-x)*t);
+    circle.setAttribute('r', 8 + (targetR-8)*t);
+    circle.setAttribute('opacity', 0.7 * (1-t));
+    requestAnimationFrame(animate);
+  };
+  animate();
+}
+
+function playSim(){
+  if(simPlaying){
+    simPlaying = false;
+    document.getElementById('play-btn').innerHTML = '▶ PLAY';
+    clearInterval(simInterval);
+    return;
+  }
+  simPlaying = true;
+  document.getElementById('play-btn').innerHTML = '⏸ PAUSE';
+  if(simYear >= 60) simYear = 0;
+  simInterval = setInterval(()=>{
+    simYear = Math.min(60, simYear + 0.5);
+    updateSimVisuals();
+    if(simYear >= 60){
+      simPlaying = false;
+      document.getElementById('play-btn').innerHTML = '▶ PLAY';
+      clearInterval(simInterval);
+    }
+  }, 350);
+}
+
+function resetSim(){
+  simPlaying = false;
+  clearInterval(simInterval);
+  document.getElementById('play-btn').innerHTML = '▶ PLAY';
+  simYear = 0;
+  document.getElementById('plumes').innerHTML = '';
+  updateSimVisuals();
+}
+
+document.getElementById('play-btn').addEventListener('click', playSim);
+document.getElementById('reset-btn').addEventListener('click', resetSim);
+document.getElementById('sim-year').addEventListener('input', e=>{
+  simYear = +e.target.value;
+  updateSimVisuals();
+});
+document.getElementById('sim-structure').addEventListener('change', updateSimVisuals);
+document.getElementById('sim-energy').addEventListener('change', updateSimVisuals);
+
+document.querySelectorAll('.lifecycle-tabs button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.lifecycle-tabs button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+updateSimVisuals();
+
+/* ============== QUIZ ============== */
+const QUIZ = [
+  {
+    q: "An engineer reports a building's footprint as '850 kgCO₂e/m²'. The 'e' stands for…",
+    options: ["estimated", "equivalent", "embodied", "emitted"],
+    correct: 1,
+    explain: "'e' = CO₂-equivalent. It expresses all greenhouse gases (CH₄, N₂O, HFCs etc.) in a single number weighted by their GWP."
+  },
+  {
+    q: "Which life-cycle module covers operational energy use in a building?",
+    options: ["A5", "B4", "B6", "C2"],
+    correct: 2,
+    explain: "EN 15978 module B6 covers all operational energy use — heating, cooling, lighting, plug loads. B7 covers water."
+  },
+  {
+    q: "Emissions from electricity purchased from the grid belong in which scope under the GHG Protocol?",
+    options: ["Scope 1", "Scope 2", "Scope 3", "Scope 4"],
+    correct: 1,
+    explain: "Purchased electricity, steam, heat and cooling are always Scope 2 — indirect emissions from purchased energy. Scope 4 doesn't exist in the standard."
+  },
+  {
+    q: "In a typical concrete mix, what proportion of the embodied carbon comes from cement alone?",
+    options: ["About 25%", "About 50%", "About 75%", "Over 90%"],
+    correct: 3,
+    explain: "Roughly 97% of the embodied carbon in standard concrete comes from cement, because limestone calcination (CaCO₃ → CaO + CO₂) is intrinsically emissive — even before fuel burning."
+  },
+  {
+    q: "The core equation E = A × EF stands for…",
+    options: ["Emissions = Area × Energy Factor", "Emissions = Activity × Emission Factor", "Energy = Area × Efficiency", "Embodied = Annual × Footprint"],
+    correct: 1,
+    explain: "Every carbon calculation reduces to Emissions = Activity data × Emission factor. The Activity is anything you can measure in physical units; the EF converts it to kgCO₂e."
+  },
+  {
+    q: "Which LCA method is best for a quick, complete estimate of an entire organisation's footprint?",
+    options: ["Process-based LCA", "Economic Input-Output LCA", "Hybrid LCA", "Tier 3 IPCC"],
+    correct: 1,
+    explain: "EIO-LCA uses spending data and sector emission factors — it's faster and more complete than process-based for whole-organisation studies, at the cost of resolution."
+  },
+  {
+    q: "GWP-100 of methane (CH₄) is approximately…",
+    options: ["1", "28", "273", "23 500"],
+    correct: 1,
+    explain: "Per IPCC AR6, methane's GWP-100 is about 27–30. N₂O is 273. SF₆ is 23 500. CO₂ is the baseline (1)."
+  },
+  {
+    q: "A timber-frame building usually has lower embodied carbon than concrete because…",
+    options: ["Timber buildings are smaller", "Wood sequesters CO₂ during growth and processing emissions are lower", "Concrete needs more steel reinforcement", "Timber has no end-of-life emissions"],
+    correct: 1,
+    explain: "Trees absorb CO₂ as they grow (biogenic carbon), and processing wood requires far less energy than calcining limestone for cement. The biogenic carbon stays stored as long as the wood is in service."
+  },
+  {
+    q: "Which standard sets the rules for Environmental Product Declarations of construction products?",
+    options: ["ISO 9001", "EN 15804", "ASHRAE 90.1", "BREEAM"],
+    correct: 1,
+    explain: "EN 15804 defines the Product Category Rules for construction-product EPDs in Europe. ISO 9001 is quality management; ASHRAE 90.1 is energy efficiency; BREEAM is a building rating scheme."
+  },
+  {
+    q: "Why is operational carbon's share of whole-life emissions falling in modern buildings?",
+    options: ["Buildings are getting smaller", "Grids are decarbonising and energy efficiency is improving", "We've stopped measuring it", "Embodied carbon is being subtracted"],
+    correct: 1,
+    explain: "As electricity grids decarbonise (more renewables, less coal) and buildings become more efficient (better insulation, heat pumps), operational emissions per m² fall — making embodied carbon the dominant share."
+  },
+];
+
+let qIndex = 0;
+let qScore = 0;
+
+function startQuiz(){
+  qIndex = 0;
+  qScore = 0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if(qIndex >= QUIZ.length){
+    showResults();
+    return;
+  }
+  const q = QUIZ[qIndex];
+  document.getElementById('quiz-bar').style.width = `${((qIndex)/QUIZ.length)*100}%`;
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="q-counter">Question ${qIndex+1} of ${QUIZ.length}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="q-options">
+      ${q.options.map((opt,i)=>`<button class="q-opt" data-i="${i}">${String.fromCharCode(65+i)}. ${opt}</button>`).join('')}
+    </div>
+    <div class="q-feedback" id="q-fb"></div>
+  `;
+  document.querySelectorAll('.q-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = +b.dataset.i;
+      const isRight = i === q.correct;
+      document.querySelectorAll('.q-opt').forEach(x=>{
+        x.disabled = true;
+        if(+x.dataset.i === q.correct) x.classList.add('correct');
+      });
+      if(!isRight) b.classList.add('wrong');
+      const fb = document.getElementById('q-fb');
+      fb.className = 'q-feedback show ' + (isRight?'right':'wrong');
+      fb.innerHTML = `<strong>${isRight?'CORRECT':'INCORRECT'}.</strong> ${q.explain}<div style="margin-top:14px"><button class="btn" id="next-q">${qIndex===QUIZ.length-1?'See Results':'Next Question'} →</button></div>`;
+      if(isRight) qScore++;
+      document.getElementById('next-q').addEventListener('click', ()=>{
+        qIndex++;
+        renderQuestion();
+      });
+    });
+  });
+}
+
+function showResults(){
+  document.getElementById('quiz-bar').style.width = '100%';
+  const pct = Math.round(qScore/QUIZ.length*100);
+  let comment = '';
+  if(pct === 100) comment = 'Perfect. Time to write your own EPDs.';
+  else if(pct >= 80) comment = 'Strong grasp. You could brief a project team.';
+  else if(pct >= 60) comment = 'Solid foundations. Review the methods module.';
+  else comment = 'Not quite. Revisit the fundamentals — repetition cements the concepts.';
+  
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="quiz-done">
+      <div class="q-counter">Final score</div>
+      <div class="score">${pct}<span style="font-size:40px;color:var(--char)">%</span></div>
+      <p class="lead" style="margin:24px auto;max-width:50ch">${comment}</p>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--char);opacity:0.6;margin-bottom:30px">${qScore} of ${QUIZ.length} correct</div>
+      <button class="btn" onclick="startQuiz()">⟲ Retake Quiz</button>
+      <button class="btn ghost" data-go="home" onclick="goTo('home')" style="margin-left:10px">↑ Back to Top</button>
+    </div>
+  `;
+}
+
+/* ============== INIT ============== */
+// Reveal observer for any sections later (kept simple)
+window.addEventListener('load', () => {
+  document.querySelectorAll('.reveal').forEach(el=>{
+    new IntersectionObserver((entries)=>{
+      entries.forEach(e=>e.isIntersecting && e.target.classList.add('in'));
+    }, {threshold:0.15}).observe(el);
+  });
+});
+</script>
+
+<script>
+(function(){
+  document.addEventListener("contextmenu",function(e){e.preventDefault();return false;});
+  document.addEventListener("keydown",function(e){
+    var k=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&["u","s","a","c","p"].includes(k)){e.preventDefault();return false;}
+    if(k==="f12"||((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c"].includes(k))){e.preventDefault();return false;}
+  });
+  document.addEventListener("selectstart",function(e){
+    if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"||e.target.tagName==="SELECT")return true;
+    e.preventDefault();return false;
+  });
+  document.addEventListener("dragstart",function(e){e.preventDefault();return false;});
+  document.addEventListener("copy",function(e){e.preventDefault();return false;});
+  setInterval(function(){
+    var t=160;
+    if(window.outerWidth-window.innerWidth>t||window.outerHeight-window.innerHeight>t){
+      document.body.style.filter="blur(10px)";
+    } else {
+      document.body.style.filter="none";
+    }
+  },500);
+})();
+</script>
+</body>
+</html>
