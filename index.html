@@ -3,281 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vismay Loliyaniya | Educator & Career Advisor</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Vismay Loliyaniya | Civil Engineer · Educator · Career Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --white: #ffffff;
-  --off-white: #f8f7f4;
-  --light: #f0ede8;
-  --border: #e2ddd6;
-  --border-dark: #c8c2b8;
-  --text-dark: #1a1814;
-  --text-mid: #4a453e;
-  --text-light: #7a736a;
-  --ink: #0f0d0b;
-  --slate: #1e2530;
-  --teal: #1a6b6b;
-  --teal-pale: #e8f4f4;
+  --off: #f9f8f6;
+  --surface: #f2f0ec;
+  --border: #e4e1da;
+  --border-mid: #cac6bc;
+  --ink: #0e0d0b;
+  --ink-mid: #3e3b34;
+  --ink-light: #7a7568;
+  --teal: #0d5c4f;
+  --teal-light: #e4f0ee;
+  --teal-mid: #1a7a69;
+  --amber: #b55e0e;
+  --amber-light: #fdf0e4;
+  --slate: #1c2432;
+  --slate-mid: #2d3a4f;
+  --green: #22613a;
+  --green-light: #e8f4ec;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--white);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:var(--teal);}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:64px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo{
+  width:38px;height:38px;background:var(--slate);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;
+  color:var(--white);letter-spacing:1px;flex-shrink:0;
+}
+.nav-text-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:var(--ink);line-height:1.1;}
+.nav-text-role{font-size:0.63rem;color:var(--ink-light);letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.nav-links{display:flex;align-items:center;gap:0;list-style:none;}
+.nav-links a{
+  display:block;padding:6px 16px;color:var(--ink-mid);text-decoration:none;
+  font-size:0.75rem;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;
+  transition:color 0.2s;border-right:1px solid var(--border);
+}
+.nav-links li:first-child a{border-left:1px solid var(--border);}
+.nav-links a:hover{color:var(--teal);}
+.nav-cta{
+  margin-left:16px;background:var(--teal) !important;color:var(--white) !important;
+  border-radius:4px !important;padding:8px 18px !important;border:none !important;
+  font-weight:600 !important;transition:background 0.2s !important;
+}
+.nav-cta:hover{background:var(--teal-mid) !important;}
+.hamburger{
+  display:none;flex-direction:column;gap:5px;background:none;border:none;
+  cursor:pointer;padding:8px;
+}
+.hamburger span{width:22px;height:2px;background:var(--ink);border-radius:2px;display:block;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-nav{
+  display:none;position:fixed;top:64px;left:0;right:0;z-index:499;
+  background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);padding:16px 0;
+  transform:translateY(-20px);opacity:0;transition:all 0.25s;pointer-events:none;
+}
+.mobile-nav.open{transform:translateY(0);opacity:1;pointer-events:all;}
+.mobile-nav a{
+  display:block;padding:12px 32px;font-size:0.9rem;font-weight:500;
+  color:var(--ink-mid);text-decoration:none;border-bottom:1px solid var(--border);
+  transition:color 0.2s;
+}
+.mobile-nav a:last-child{border-bottom:none;background:var(--teal);color:var(--white);margin:8px 16px 0;border-radius:6px;text-align:center;}
+.mobile-nav a:hover{color:var(--teal);}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;padding-top:64px;
+  display:grid;grid-template-columns:1fr 380px;
+}
+.hero-left{
+  padding:72px 56px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+  background:var(--white);position:relative;
+}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;}
+.eyebrow-line{width:40px;height:1px;background:var(--teal);}
+.eyebrow-text{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--teal);letter-spacing:3px;text-transform:uppercase;}
+.status-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pulse 2.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero-h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3rem,5.5vw,5.6rem);
+  font-weight:400;line-height:0.95;color:var(--ink);
+  margin-bottom:10px;letter-spacing:-1.5px;
+}
+.hero-h1 em{font-style:italic;color:var(--teal);font-weight:400;}
+.hero-tagline{
+  font-family:'Playfair Display',serif;font-size:1.15rem;
+  color:var(--ink-light);font-style:italic;margin-bottom:28px;
+}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:3px;font-size:0.7rem;
+  font-weight:500;letter-spacing:0.5px;
+}
+.badge-dark{background:var(--slate);color:var(--white);}
+.badge-teal{background:var(--teal);color:var(--white);}
+.badge-outline{background:var(--off);border:1px solid var(--border-mid);color:var(--ink-mid);}
+.hero-desc{
+  max-width:540px;font-size:0.97rem;line-height:1.8;
+  color:var(--ink-mid);margin-bottom:40px;font-weight:300;
+}
+.hero-desc strong{color:var(--ink);font-weight:600;}
+.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.btn-primary{
+  background:var(--slate);color:var(--white);padding:12px 26px;
+  border:none;border-radius:4px;font-family:'DM Sans',sans-serif;
+  font-size:0.8rem;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.25s;text-decoration:none;display:inline-block;
+}
+.btn-primary:hover{background:var(--teal);transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,92,79,0.25);}
+.btn-ghost{
+  background:transparent;color:var(--ink-mid);padding:12px 22px;
+  border:1px solid var(--border-mid);border-radius:4px;
+  font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;
+  letter-spacing:0.8px;text-transform:uppercase;cursor:pointer;
+  transition:all 0.25s;text-decoration:none;display:inline-block;
+}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal);}
+/* Hero right panel */
+.hero-right{
+  background:var(--slate);padding:64px 36px;
+  display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;
+}
+.hero-right::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:260px;height:260px;border-radius:50%;
+  border:1px solid rgba(255,255,255,0.04);
+}
+.photo-placeholder{
+  width:100px;height:100px;background:rgba(255,255,255,0.08);
+  border:2px dashed rgba(255,255,255,0.2);border-radius:8px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin-bottom:24px;cursor:pointer;transition:all 0.2s;
+  font-size:0.6rem;color:rgba(255,255,255,0.3);letter-spacing:1.5px;
+  text-transform:uppercase;gap:6px;
+}
+.photo-placeholder svg{width:28px;height:28px;stroke:rgba(255,255,255,0.25);}
+.photo-placeholder:hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.12);}
+.rp-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:600;color:var(--white);margin-bottom:4px;}
+.rp-title{font-size:0.6rem;color:rgba(255,255,255,0.4);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:32px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:28px;}
+.stat-cell{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);padding:18px 16px;}
+.stat-num{font-size:1.8rem;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px;letter-spacing:-0.5px;}
+.stat-lbl{font-size:0.58rem;color:rgba(255,255,255,0.38);letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.rp-email{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:4px;padding:12px 14px;display:flex;align-items:center;gap:10px;
+  text-decoration:none;transition:background 0.2s;margin-bottom:12px;
+}
+.rp-email:hover{background:rgba(255,255,255,0.09);}
+.rp-email svg{width:16px;height:16px;stroke:rgba(255,255,255,0.45);flex-shrink:0;}
+.rp-email span{font-size:0.72rem;color:rgba(255,255,255,0.6);font-family:'DM Mono',monospace;}
+.rp-divider{height:1px;background:rgba(255,255,255,0.08);margin:20px 0;}
+.rp-location{font-size:0.6rem;color:rgba(255,255,255,0.35);letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px;}
+.rp-location svg{width:12px;height:12px;stroke:rgba(255,255,255,0.3);}
+
+/* ── SECTIONS ── */
+.section-wrap{padding:96px 56px;}
+.section-eyebrow{
+  font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--teal);
+  letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;
+  display:inline-flex;align-items:center;gap:12px;
+}
+.section-eyebrow::after{content:'';display:inline-block;width:36px;height:1px;background:var(--teal);}
+.section-h2{
+  font-family:'Playfair Display',serif;font-size:clamp(2rem,3.2vw,3rem);
+  font-weight:400;color:var(--ink);line-height:1.05;letter-spacing:-0.5px;
+}
+.section-h2 em{font-style:italic;color:var(--teal);}
+
+/* ── ABOUT ── */
+#about{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-top:56px;align-items:start;}
+.about-body p{font-size:0.95rem;line-height:1.85;color:var(--ink-mid);margin-bottom:18px;font-weight:300;}
+.about-body p strong{color:var(--ink);font-weight:600;}
+.expertise-cells{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:28px;border:1px solid var(--border);background:var(--border);}
+.ex-cell{background:var(--white);padding:12px 14px;font-size:0.78rem;color:var(--ink-mid);display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.ex-cell::before{content:'▸';color:var(--teal);font-size:0.6rem;flex-shrink:0;margin-top:2px;}
+.timeline{position:relative;}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:0;margin-bottom:2px;}
+.tl-yr{
+  padding:18px 14px 18px 0;font-family:'DM Mono',monospace;font-size:0.58rem;
+  color:var(--teal);letter-spacing:0.5px;text-align:right;
+  border-right:2px solid var(--border);position:relative;
+}
+.tl-yr::after{
+  content:'';position:absolute;right:-5px;top:24px;
+  width:8px;height:8px;background:var(--white);
+  border:2px solid var(--teal);border-radius:50%;
+}
+.tl-content{padding:16px 0 16px 20px;border-bottom:1px solid var(--border);}
+.tl-item:last-child .tl-content{border-bottom:none;}
+.tl-role{font-size:0.85rem;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.tl-org{font-size:0.75rem;color:var(--teal);font-weight:500;margin-bottom:4px;}
+.tl-desc{font-size:0.72rem;color:var(--ink-light);line-height:1.55;}
+
+/* ── GUIDANCE / SERVICES ── */
+#services{background:var(--white);}
+.svc-intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:end;margin-bottom:56px;}
+.svc-intro-p{font-size:0.95rem;color:var(--ink-mid);line-height:1.8;font-weight:300;}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+.svc-card{background:var(--white);padding:32px 28px;transition:background 0.25s;cursor:default;}
+.svc-card:hover{background:var(--off);}
+.svc-card:hover .svc-num{color:var(--teal);}
+.svc-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:400;color:var(--border-mid);line-height:1;margin-bottom:16px;transition:color 0.25s;}
+.svc-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.2;}
+.svc-desc{font-size:0.8rem;color:var(--ink-light);line-height:1.7;margin-bottom:16px;font-weight:300;}
+.svc-tag{display:inline-block;background:var(--teal-light);color:var(--teal);padding:3px 10px;border-radius:3px;font-size:0.62rem;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;}
+
+/* ── PROJECTS ── */
+#projects{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:56px;}
+.proj-card{background:var(--white);padding:32px 30px;transition:background 0.2s;}
+.proj-card:hover{background:var(--off);}
+.proj-meta{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.proj-type{
+  font-size:0.6rem;font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;
+  padding:3px 10px;border-radius:3px;
+}
+.pt-research{background:var(--teal-light);color:var(--teal);}
+.pt-industry{background:var(--amber-light);color:var(--amber);}
+.pt-education{background:var(--green-light);color:var(--green);}
+.proj-year{font-size:0.6rem;font-family:'DM Mono',monospace;color:var(--ink-light);letter-spacing:1px;}
+.proj-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.25;}
+.proj-desc{font-size:0.8rem;color:var(--ink-light);line-height:1.7;margin-bottom:16px;font-weight:300;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.proj-pill{background:var(--surface);border:1px solid var(--border);color:var(--ink-mid);padding:3px 10px;border-radius:3px;font-size:0.68rem;font-weight:400;}
+.proj-highlight{background:var(--slate);color:var(--white);padding:32px 30px;display:flex;flex-direction:column;justify-content:center;}
+.proj-highlight .proj-title{color:var(--white);}
+.proj-highlight .proj-desc{color:rgba(255,255,255,0.6);}
+.proj-stat{margin-top:20px;display:flex;gap:24px;}
+.pstat-val{font-size:1.6rem;font-weight:700;color:var(--white);line-height:1;}
+.pstat-lbl{font-size:0.58rem;color:rgba(255,255,255,0.4);letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-top:3px;}
+
+/* ── RESEARCH ── */
+#research{background:var(--white);}
+.research-intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:end;margin-bottom:56px;}
+.research-intro-p{font-size:0.95rem;color:var(--ink-mid);line-height:1.8;font-weight:300;}
+.pub-list{display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);}
+.pub-item{
+  background:var(--white);padding:24px 28px;border-bottom:1px solid var(--border);
+  display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:start;
+  transition:background 0.2s;
+}
+.pub-item:last-child{border-bottom:none;}
+.pub-item:hover{background:var(--off);}
+.pub-index{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ink-light);letter-spacing:1px;margin-top:2px;min-width:28px;}
+.pub-body{}
+.pub-title{font-size:0.9rem;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.4;}
+.pub-authors{font-size:0.75rem;color:var(--ink-light);margin-bottom:6px;}
+.pub-authors strong{color:var(--teal);font-weight:600;}
+.pub-venue{font-size:0.72rem;font-family:'DM Mono',monospace;color:var(--ink-light);letter-spacing:0.5px;}
+.pub-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:3px;font-size:0.6rem;
+  font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;
+  white-space:nowrap;align-self:start;
+}
+.pb-wip{background:var(--amber-light);color:var(--amber);}
+.pb-pub{background:var(--green-light);color:var(--green);}
+.pb-conf{background:var(--teal-light);color:var(--teal);}
+
+/* ── SKILLS ── */
+#skills{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;margin-top:56px;}
+.skill-block-lbl{
+  font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:3px;
+  text-transform:uppercase;color:var(--ink-light);margin-bottom:14px;
+  padding-bottom:10px;border-bottom:1px solid var(--border);margin-top:32px;
+}
+.skill-block-lbl:first-child{margin-top:0;}
+.chip-group{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{
+  background:var(--white);border:1px solid var(--border);
+  color:var(--ink-mid);padding:5px 13px;border-radius:3px;
+  font-size:0.76rem;font-weight:400;transition:all 0.2s;cursor:default;
+}
+.chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-light);}
+.mem-card{
+  background:var(--white);border:1px solid var(--border);border-radius:4px;
+  padding:16px 18px;display:flex;align-items:center;gap:14px;
+  transition:border-color 0.2s;margin-bottom:8px;
+}
+.mem-card:hover{border-color:var(--teal);}
+.mem-icon{width:40px;height:40px;background:var(--slate);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.mem-name{font-size:0.88rem;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.mem-sub{font-size:0.7rem;color:var(--ink-light);}
+.cert-progress{
+  background:var(--amber-light);border:1px solid #f5d0a0;border-radius:4px;
+  padding:14px 18px;display:flex;align-items:center;gap:12px;
+}
+.cert-progress-dot{width:8px;height:8px;background:var(--amber);border-radius:50%;flex-shrink:0;}
+.cert-progress-text{font-size:0.78rem;color:var(--amber);font-weight:500;}
+
+/* ── CONTACT ── */
+#contact{background:var(--slate);}
+.contact-wrap{padding:96px 56px;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin-top:56px;}
+.c-eyebrow{font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.35);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;display:inline-flex;align-items:center;gap:12px;}
+.c-eyebrow::after{content:'';display:inline-block;width:36px;height:1px;background:rgba(255,255,255,0.2);}
+.c-h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.2vw,3rem);font-weight:400;color:var(--white);line-height:1.05;}
+.c-h2 em{font-style:italic;color:rgba(255,255,255,0.45);}
+.c-tagline{font-size:0.95rem;color:rgba(255,255,255,0.5);line-height:1.8;font-weight:300;margin:24px 0 32px;}
+.c-link{text-decoration:none;display:block;margin-bottom:10px;}
+.c-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);border-radius:4px;transition:all 0.2s;
+}
+.c-link:hover .c-item{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.16);}
+.c-icon{width:34px;height:34px;background:rgba(255,255,255,0.07);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.c-icon svg{width:16px;height:16px;stroke:rgba(255,255,255,0.5);}
+.c-item-lbl{font-family:'DM Mono',monospace;font-size:0.58rem;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.c-item-val{font-size:0.82rem;color:rgba(255,255,255,0.7);}
+/* Form */
+.form-note{font-size:0.72rem;color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:20px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fg{margin-bottom:14px;}
+.fl{font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:block;}
+.fi,.ft{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:4px;padding:11px 14px;font-family:'DM Sans',sans-serif;
+  font-size:0.88rem;color:var(--white);outline:none;
+  transition:border-color 0.2s;
+}
+.fi::placeholder,.ft::placeholder{color:rgba(255,255,255,0.2);}
+.fi:focus,.ft:focus{border-color:rgba(255,255,255,0.3);}
+.ft{resize:none;height:110px;}
+.fs{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);
+  border-radius:4px;padding:11px 14px;font-size:0.88rem;color:rgba(255,255,255,0.4);
+  cursor:pointer;
+}
+.fs select{
+  background:transparent;border:none;color:rgba(255,255,255,0.65);
+  font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;flex:1;cursor:pointer;
+}
+.fs select option{background:var(--slate);color:var(--white);}
+.form-btn{
+  width:100%;background:var(--white);color:var(--slate);padding:13px;
+  border:none;border-radius:4px;font-family:'DM Sans',sans-serif;
+  font-size:0.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;margin-top:6px;
+}
+.form-btn:hover{background:var(--teal-light);color:var(--teal);}
+.form-btn.sending{background:var(--teal);color:var(--white);}
+.form-success{
+  display:none;text-align:center;padding:32px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
+  border-radius:4px;
+}
+.form-success.show{display:block;}
+.form-success p{color:rgba(255,255,255,0.7);font-size:0.9rem;margin-top:8px;}
+.form-success .check{font-size:2rem;}
+/* Footer */
+footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-between;align-items:center;}
+.foot-l{font-family:'Playfair Display',serif;font-size:0.9rem;color:rgba(255,255,255,0.45);}
+.foot-l strong{color:rgba(255,255,255,0.7);font-weight:600;}
+.foot-r{font-family:'DM Mono',monospace;font-size:0.58rem;color:rgba(255,255,255,0.25);letter-spacing:1px;text-transform:uppercase;}
+
+/* ── INTERACTIVE TOOLS ── */
+.tools-header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:64px;margin-bottom:28px;}
+.tools-header-left{flex:1;}
+.tools-intro-p{font-size:0.88rem;color:var(--ink-mid);line-height:1.75;font-weight:300;max-width:600px;margin-top:6px;}
+.tools-count-badge{
+  background:var(--slate);color:var(--white);
+  font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:2px;
+  padding:8px 16px;border-radius:4px;white-space:nowrap;align-self:flex-start;margin-top:4px;
+}
+.tools-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);
+}
+.tool-card{
+  background:var(--white);padding:24px 22px;
+  display:flex;flex-direction:column;transition:background 0.2s;
+}
+.tool-card:hover{background:var(--off);}
+.tool-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.tool-meta{display:flex;flex-direction:column;gap:5px;}
+.tool-icon{font-size:1.5rem;flex-shrink:0;}
+.tool-title{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.3;}
+.tool-desc{font-size:0.75rem;color:var(--ink-light);line-height:1.65;margin-bottom:12px;font-weight:300;flex:1;}
+.tool-btn{
+  display:inline-block;background:var(--slate);color:var(--white);
+  padding:9px 16px;border-radius:3px;text-decoration:none;
+  font-size:0.72rem;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;
+  transition:all 0.2s;text-align:center;font-family:'DM Sans',sans-serif;
+  margin-top:auto;
+}
+.tool-btn:hover{background:var(--teal);transform:translateY(-1px);}
+@media(max-width:1100px){.tools-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){
+  .tools-grid{grid-template-columns:1fr;}
+  .tools-header{flex-direction:column;gap:12px;}
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; }
-body { background: var(--white); color: var(--text-dark); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+.reveal{opacity:0;transform:translateY(22px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+.rd1{transition-delay:0.1s;}
+.rd2{transition-delay:0.2s;}
+@keyframes heroIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.hero-left>*{animation:heroIn 0.75s ease both;}
+.hero-left>*:nth-child(1){animation-delay:0.05s;}
+.hero-left>*:nth-child(2){animation-delay:0.12s;}
+.hero-left>*:nth-child(3){animation-delay:0.18s;}
+.hero-left>*:nth-child(4){animation-delay:0.24s;}
+.hero-left>*:nth-child(5){animation-delay:0.30s;}
+.hero-left>*:nth-child(6){animation-delay:0.36s;}
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--light); }
-::-webkit-scrollbar-thumb { background: var(--teal); }
-
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 64px; height: 68px;
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-brand { display: flex; align-items: center; gap: 14px; }
-.nav-initials {
-  width: 36px; height: 36px; background: var(--slate); color: var(--white);
-  border-radius: 4px; display: flex; align-items: center; justify-content: center;
-  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; letter-spacing: 1px;
-}
-.nav-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600; color: var(--ink); }
-.nav-role { font-size: 0.68rem; color: var(--text-light); letter-spacing: 1px; text-transform: uppercase; }
-.nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
-.nav-links a {
-  display: block; padding: 6px 18px; color: var(--text-mid); text-decoration: none;
-  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase;
-  transition: color 0.2s; border-right: 1px solid var(--border);
-}
-.nav-links li:first-child a { border-left: 1px solid var(--border); }
-.nav-links a:hover { color: var(--teal); }
-.nav-cta {
-  background: var(--slate) !important; color: var(--white) !important;
-  border-radius: 3px; padding: 8px 18px !important; border: none !important;
-  margin-left: 16px;
-}
-.nav-cta:hover { background: var(--teal) !important; }
-
-/* HERO */
-#hero {
-  min-height: 100vh; display: grid; grid-template-columns: 1fr 420px;
-  align-items: center; padding-top: 68px; overflow: hidden;
-}
-.hero-left {
-  padding: 80px 64px; border-right: 1px solid var(--border); position: relative; z-index: 2;
-}
-.hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 32px; }
-.hero-eyebrow-line { width: 48px; height: 1px; background: var(--teal); }
-.hero-eyebrow-text { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--teal); letter-spacing: 3px; text-transform: uppercase; }
-.status-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; animation: blink 2.5s infinite; }
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-h1 {
-  font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 5.5vw, 6rem);
-  font-weight: 300; line-height: 0.95; color: var(--ink); margin-bottom: 12px; letter-spacing: -1px;
-}
-h1 em { font-style: italic; color: var(--teal); font-weight: 300; }
-
-.hero-subtitle {
-  font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--text-light);
-  font-style: italic; margin-bottom: 36px; font-weight: 400;
-}
-
-.hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 44px; }
-.badge {
-  display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px;
-  border: 1px solid var(--border-dark); border-radius: 2px;
-  font-size: 0.72rem; font-family: 'Outfit', sans-serif; font-weight: 500;
-  color: var(--text-mid); background: var(--off-white);
-}
-.badge.primary { background: var(--slate); border-color: var(--slate); color: var(--white); }
-
-.hero-desc { max-width: 520px; font-size: 1rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 48px; font-weight: 300; }
-.hero-desc strong { color: var(--ink); font-weight: 600; }
-
-.hero-actions { display: flex; gap: 14px; align-items: center; }
-.btn-primary {
-  background: var(--slate); color: var(--white); padding: 13px 28px; border: none; border-radius: 3px;
-  font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 1px;
-  text-transform: uppercase; cursor: pointer; transition: all 0.25s; text-decoration: none; display: inline-block;
-}
-.btn-primary:hover { background: var(--teal); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,107,107,0.25); }
-.btn-ghost {
-  background: transparent; color: var(--text-mid); padding: 13px 24px; border: 1px solid var(--border-dark); border-radius: 3px;
-  font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 500; letter-spacing: 1px;
-  text-transform: uppercase; cursor: pointer; transition: all 0.25s; text-decoration: none; display: inline-block;
-}
-.btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
-
-/* HERO RIGHT */
-.hero-right {
-  background: var(--slate); height: 100%; min-height: 100vh;
-  padding: 80px 40px; display: flex; flex-direction: column; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.hero-right::before {
-  content: ''; position: absolute; top: -60px; right: -60px;
-  width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.05);
-}
-.hero-right::after {
-  content: ''; position: absolute; bottom: -80px; left: -40px;
-  width: 300px; height: 300px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.04);
-}
-.profile-initials-large {
-  width: 90px; height: 90px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 6px; display: flex; align-items: center; justify-content: center;
-  font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600;
-  color: var(--white); letter-spacing: 2px; margin-bottom: 28px; position: relative; z-index: 1;
-}
-.panel-name { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--white); margin-bottom: 4px; position: relative; z-index: 1; }
-.panel-title { font-size: 0.68rem; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 36px; font-family: 'JetBrains Mono', monospace; position: relative; z-index: 1; }
-
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 32px; position: relative; z-index: 1; }
-.stat-cell { background: rgba(255,255,255,0.04); padding: 20px 18px; border: 1px solid rgba(255,255,255,0.07); }
-.stat-number {
-  font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 700;
-  color: var(--white); line-height: 1; margin-bottom: 5px; letter-spacing: -0.5px;
-}
-.stat-desc { font-size: 0.62rem; color: rgba(255,255,255,0.4); letter-spacing: 1.2px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
-
-.panel-email {
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 3px;
-  padding: 14px 16px; display: flex; align-items: center; gap: 10px;
-  position: relative; z-index: 1; text-decoration: none; transition: all 0.2s;
-}
-.panel-email:hover { background: rgba(255,255,255,0.1); }
-.panel-email-icon { font-size: 1rem; opacity: 0.6; }
-.panel-email-text { font-size: 0.76rem; color: rgba(255,255,255,0.65); font-family: 'JetBrains Mono', monospace; }
-.panel-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 28px 0; position: relative; z-index: 1; }
-.panel-location { display: flex; align-items: center; gap: 8px; font-size: 0.68rem; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; position: relative; z-index: 1; }
-
-/* SECTIONS */
-.section-wrap { padding: 100px 64px; }
-.section-label {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--teal);
-  letter-spacing: 4px; text-transform: uppercase; margin-bottom: 14px;
-  display: flex; align-items: center; gap: 14px;
-}
-.section-label::after { content: ''; flex: 0 0 40px; height: 1px; background: var(--teal); }
-.section-heading {
-  font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 3.5vw, 3.2rem);
-  font-weight: 300; color: var(--ink); line-height: 1.1; letter-spacing: -0.5px;
-}
-.section-heading em { font-style: italic; color: var(--teal); }
-
-/* ABOUT */
-#about { background: var(--off-white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.about-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 60px; }
-.about-body p { font-size: 1rem; line-height: 1.8; color: var(--text-mid); margin-bottom: 20px; font-weight: 300; }
-.about-body p strong { color: var(--ink); font-weight: 600; }
-.expertise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 36px; border: 1px solid var(--border); background: var(--border); }
-.expertise-cell { background: var(--white); padding: 14px 16px; display: flex; align-items: flex-start; gap: 10px; font-size: 0.82rem; color: var(--text-mid); line-height: 1.4; }
-.expertise-cell::before { content: '▸'; color: var(--teal); font-size: 0.65rem; flex-shrink: 0; margin-top: 2px; }
-
-/* TIMELINE */
-.timeline { position: relative; }
-.tl-item { display: grid; grid-template-columns: 90px 1fr; gap: 0; margin-bottom: 2px; }
-.tl-year {
-  padding: 20px 16px 20px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
-  color: var(--teal); letter-spacing: 1px; text-align: right; border-right: 2px solid var(--border); position: relative;
-}
-.tl-year::after {
-  content: ''; position: absolute; right: -5px; top: 26px;
-  width: 8px; height: 8px; background: var(--white); border: 2px solid var(--teal); border-radius: 50%;
-}
-.tl-content { padding: 18px 0 18px 24px; border-bottom: 1px solid var(--border); }
-.tl-item:last-child .tl-content { border-bottom: none; }
-.tl-role { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
-.tl-org { font-size: 0.78rem; color: var(--teal); font-weight: 500; margin-bottom: 4px; }
-.tl-desc { font-size: 0.75rem; color: var(--text-light); line-height: 1.5; }
-
-/* SERVICES */
-#services { background: var(--white); }
-.services-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: end; margin-bottom: 60px; }
-.services-intro p { font-size: 1rem; color: var(--text-mid); line-height: 1.75; font-weight: 300; }
-.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-.svc-card { background: var(--white); padding: 36px 30px; transition: background 0.25s; cursor: default; }
-.svc-card:hover { background: var(--off-white); }
-.svc-card:hover .svc-num { color: var(--teal); }
-.svc-num { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; color: var(--border-dark); line-height: 1; margin-bottom: 20px; transition: color 0.25s; }
-.svc-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--ink); margin-bottom: 12px; line-height: 1.2; }
-.svc-desc { font-size: 0.82rem; color: var(--text-light); line-height: 1.7; margin-bottom: 20px; font-weight: 300; }
-.svc-pill { display: inline-block; background: var(--teal-pale); color: var(--teal); padding: 3px 12px; border-radius: 2px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 1.5px; text-transform: uppercase; }
-
-/* SKILLS */
-#skills { background: var(--off-white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.skills-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-top: 60px; }
-.skill-block-title { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-light); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-top: 36px; }
-.skill-block-title:first-child { margin-top: 0; }
-.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { background: var(--white); border: 1px solid var(--border); color: var(--text-mid); padding: 6px 14px; border-radius: 2px; font-size: 0.78rem; font-weight: 400; transition: all 0.2s; cursor: default; }
-.chip:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-pale); }
-.membership-card { background: var(--white); border: 1px solid var(--border); border-radius: 3px; padding: 20px 22px; display: flex; align-items: center; gap: 18px; transition: border-color 0.2s; }
-.membership-card:hover { border-color: var(--teal); }
-.membership-icon { width: 44px; height: 44px; background: var(--slate); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
-.membership-name { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
-.membership-sub { font-size: 0.72rem; color: var(--text-light); }
-
-/* CONTACT */
-#contact { background: var(--slate); }
-.contact-wrap { padding: 100px 64px; }
-.contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 60px; }
-.contact-left .section-label { color: rgba(255,255,255,0.4); }
-.contact-left .section-label::after { background: rgba(255,255,255,0.2); }
-.contact-left .section-heading { color: var(--white); }
-.contact-left .section-heading em { color: rgba(255,255,255,0.45); }
-.contact-tagline { font-size: 1rem; color: rgba(255,255,255,0.5); line-height: 1.75; font-weight: 300; margin-top: 28px; margin-bottom: 36px; }
-.contact-link-block { text-decoration: none; display: block; margin-bottom: 12px; }
-.contact-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 3px; transition: all 0.2s; }
-.contact-link-block:hover .contact-item { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); }
-.contact-item-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.08); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
-.contact-item-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; }
-.contact-item-value { font-size: 0.85rem; color: rgba(255,255,255,0.75); }
-
-.form-group { margin-bottom: 16px; }
-.form-label { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; display: block; }
-.form-input, .form-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 3px; padding: 13px 16px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: var(--white); outline: none; transition: border-color 0.2s; resize: none; }
-.form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.25); }
-.form-input:focus, .form-textarea:focus { border-color: rgba(255,255,255,0.3); }
-.form-textarea { height: 120px; }
-.form-btn { width: 100%; background: var(--white); color: var(--slate); padding: 14px; border: none; border-radius: 3px; font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
-.form-btn:hover { background: var(--teal); color: var(--white); }
-
-/* FOOTER */
-footer { background: var(--ink); padding: 24px 64px; display: flex; justify-content: space-between; align-items: center; }
-.footer-left { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; color: rgba(255,255,255,0.5); }
-.footer-left strong { color: rgba(255,255,255,0.75); font-weight: 600; }
-.footer-right { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.3); letter-spacing: 1px; text-transform: uppercase; }
-
-/* ANIMATIONS */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.12s; }
-.reveal-delay-2 { transition-delay: 0.22s; }
-
-@keyframes heroIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-.hero-left > * { animation: heroIn 0.8s ease both; }
-.hero-left > *:nth-child(1) { animation-delay: 0.05s; }
-.hero-left > *:nth-child(2) { animation-delay: 0.12s; }
-.hero-left > *:nth-child(3) { animation-delay: 0.18s; }
-.hero-left > *:nth-child(4) { animation-delay: 0.24s; }
-.hero-left > *:nth-child(5) { animation-delay: 0.30s; }
-.hero-left > *:nth-child(6) { animation-delay: 0.36s; }
-
-/* RESPONSIVE */
-@media (max-width: 960px) {
-  nav { padding: 0 24px; }
-  .nav-links { display: none; }
-  #hero { grid-template-columns: 1fr; }
-  .hero-left { padding: 60px 24px; border-right: none; border-bottom: 1px solid var(--border); }
-  .hero-right { min-height: auto; padding: 48px 24px; }
-  .section-wrap, .contact-wrap { padding: 64px 24px; }
-  .about-layout, .services-intro, .skills-layout, .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-  .services-grid { grid-template-columns: 1fr; }
-  footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .mobile-nav{display:block;}
+  #hero{grid-template-columns:1fr;}
+  .hero-left{padding:48px 24px;border-right:none;border-bottom:1px solid var(--border);}
+  .hero-right{min-height:auto;padding:40px 24px;}
+  .section-wrap,.contact-wrap{padding:64px 24px;}
+  .about-grid,.svc-intro-grid,.skills-grid,.contact-grid,.research-intro-grid{grid-template-columns:1fr;gap:40px;}
+  .svc-grid{grid-template-columns:1fr;}
+  .projects-grid{grid-template-columns:1fr;}
+  .pub-item{grid-template-columns:auto 1fr;grid-template-rows:auto auto;}
+  .pub-badge{grid-column:2;}
+  footer{padding:16px 24px;flex-direction:column;gap:8px;text-align:center;}
+  .form-row{grid-template-columns:1fr;}
+  .stat-num{font-size:1.4rem;}
+  .proj-highlight{order:-1;}
 }
 </style>
 </head>
@@ -285,85 +460,97 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
 
 <!-- NAV -->
 <nav>
-  <div class="nav-brand">
-    <div class="nav-initials">VL</div>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">VL</div>
     <div>
-      <div class="nav-name">Vismay Loliyaniya</div>
-      <div class="nav-role">GMICE &middot; Educator &middot; Career Advisor</div>
+      <div class="nav-text-name">Vismay Loliyaniya</div>
+      <div class="nav-text-role">GMICE · Educator · Career Advisor</div>
     </div>
-  </div>
+  </a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#services">Guidance</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#research">Research</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact" class="nav-cta">Contact</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#services" class="mobile-link">Guidance</a>
+  <a href="#projects" class="mobile-link">Projects</a>
+  <a href="#research" class="mobile-link">Research</a>
+  <a href="#skills" class="mobile-link">Skills</a>
+  <a href="#contact" class="mobile-link">Get In Touch</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
   <div class="hero-left">
     <div class="hero-eyebrow">
-      <div class="hero-eyebrow-line"></div>
-      <span class="hero-eyebrow-text">Available for Career Guidance</span>
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Open for Career Guidance</span>
       <div class="status-dot"></div>
     </div>
-
-    <h1>Vismay<br><em>Loliyaniya</em></h1>
-
-    <div class="hero-subtitle">Educator &middot; Researcher &middot; Career Advisor</div>
-
+    <h1 class="hero-h1">Vismay<br><em>Loliyaniya</em></h1>
+    <div class="hero-tagline">Educator · Researcher · Career Advisor</div>
     <div class="hero-badges">
-      <span class="badge primary">GMICE</span>
-      <span class="badge primary" style="background:#1a6b6b;border-color:#1a6b6b;">GradIStructE</span>
-      <span class="badge">MSc Civil Engineering &mdash; Distinction</span>
-      <span class="badge">10+ Years Experience</span>
-      <span class="badge">London, UK</span>
+      <span class="badge badge-dark">GMICE</span>
+      <span class="badge badge-teal">GradIStructE</span>
+      <span class="badge badge-outline">MSc Civil Engineering — Distinction</span>
+      <span class="badge badge-outline">10+ Years Experience</span>
+      <span class="badge badge-outline">London, UK</span>
     </div>
-
     <p class="hero-desc">
-      A <strong>Geotechnical Engineer, Lecturer, and Research Lead</strong> dedicated to shaping the next generation of built environment professionals. With a decade of industry and academic experience, I provide structured guidance on career pathways, professional accreditation, and academic progression.
+      A <strong>Geotechnical Engineer, Lecturer, and Research Lead</strong> dedicated to shaping the next generation of built environment professionals. With a decade of industry and academic experience, I guide students and professionals through career pathways, professional accreditation, and academic progression in civil engineering.
     </p>
-
     <div class="hero-actions">
       <a href="#services" class="btn-primary">Explore My Guidance</a>
-      <a href="#contact" class="btn-ghost">Get In Touch</a>
+      <a href="#contact" class="btn-ghost">Book a Session</a>
     </div>
   </div>
-
   <div class="hero-right">
-    <div class="profile-initials-large">VL</div>
-    <div class="panel-name">Vismay Loliyaniya</div>
-    <div class="panel-title">Lecturer &nbsp;/&nbsp; Programme Manager &nbsp;/&nbsp; Researcher</div>
-
+    <div class="photo-placeholder" title="Photo coming soon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      Add Photo
+    </div>
+    <div class="rp-name">Vismay Loliyaniya</div>
+    <div class="rp-title">Lecturer · Programme Manager · Researcher</div>
     <div class="stats-grid">
       <div class="stat-cell">
-        <div class="stat-number">10+</div>
-        <div class="stat-desc">Years Exp.</div>
+        <div class="stat-num">10+</div>
+        <div class="stat-lbl">Years Exp.</div>
       </div>
       <div class="stat-cell">
-        <div class="stat-number">MSc</div>
-        <div class="stat-desc">Distinction UWL</div>
+        <div class="stat-num">MSc</div>
+        <div class="stat-lbl">Distinction UWL</div>
       </div>
       <div class="stat-cell">
-        <div class="stat-number">UK</div>
-        <div class="stat-desc">Acad. Standards</div>
+        <div class="stat-num">£45M+</div>
+        <div class="stat-lbl">Projects Led</div>
       </div>
       <div class="stat-cell">
-        <div class="stat-number">WEF</div>
-        <div class="stat-desc">Nexus Research</div>
+        <div class="stat-num">WEF</div>
+        <div class="stat-lbl">Nexus Research</div>
       </div>
     </div>
-
-    <a href="mailto:vismaymloliyaniya@gmail.com" class="panel-email">
-      <span class="panel-email-icon">&#9993;</span>
-      <span class="panel-email-text">vismaymloliyaniya@gmail.com</span>
+    <a href="mailto:vismaymloliyaniya@gmail.com" class="rp-email">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+      </svg>
+      <span>vismaymloliyaniya@gmail.com</span>
     </a>
-
-    <div class="panel-divider"></div>
-
-    <div class="panel-location">
-      <span>&#9679;</span>
+    <div class="rp-divider"></div>
+    <div class="rp-location">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+      </svg>
       London, United Kingdom
     </div>
   </div>
@@ -372,105 +559,86 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
 <!-- ABOUT -->
 <section id="about">
   <div class="section-wrap">
-    <div class="section-label reveal">Background</div>
-    <h2 class="section-heading reveal">Engineer. Educator.<br><em>Mentor.</em></h2>
-
-    <div class="about-layout">
+    <div class="section-eyebrow reveal">Background</div>
+    <h2 class="section-h2 reveal">Engineer. Educator.<br><em>Mentor.</em></h2>
+    <div class="about-grid">
       <div class="about-body reveal">
-        <p>I am a <strong>Civil Engineer, Construction Manager, and Academic</strong> with 10 years of experience across infrastructure delivery, higher education teaching, and digital learning. I hold an <strong>MSc in Civil Engineering with Distinction</strong> from the University of West London and a <strong>BE Civil Engineering with Merit</strong> from Gujarat Technological University.</p>
-        <p>Currently serving as <strong>Lecturer in Engineering at the University of East London</strong> through Malvern International PLC, I deliver modules in Construction Technology, Project Management, Sustainability, and Applied Engineering Maths. I also teach <strong>NCUK Foundation Year</strong> programmes, supporting students' preparation for university progression.</p>
-        <p>As <strong>Research Lead at the University of West London</strong>, I focus on the Water-Energy-Food (WEF) Nexus and Digital Twin development for sustainable infrastructure — integrating IoT and AI for real-time monitoring of constructed wetland systems. My industry experience includes managing <strong>£15M+ construction projects</strong> and leading site operations with full HSE compliance.</p>
-
-        <div class="expertise-grid">
-          <div class="expertise-cell">Civil &amp; Geotechnical Engineering</div>
-          <div class="expertise-cell">Construction &amp; Site Management</div>
-          <div class="expertise-cell">Higher Education Teaching</div>
-          <div class="expertise-cell">Curriculum &amp; Programme Leadership</div>
-          <div class="expertise-cell">WEF Nexus &amp; Digital Twin Research</div>
-          <div class="expertise-cell">SCORM &amp; Moodle Digital Learning</div>
+        <p>I am a <strong>Civil Engineer, Construction Manager, and Academic</strong> with 10 years of experience spanning infrastructure delivery, higher education, and digital learning. I hold an <strong>MSc in Civil Engineering with Distinction</strong> from the University of West London and a <strong>BE Civil Engineering with Merit</strong> from Gujarat Technological University.</p>
+        <p>Currently serving as <strong>Lecturer in Engineering at the University of East London</strong> through Malvern International PLC, I deliver modules in Construction Technology, Project Management, Sustainability, and Applied Engineering Maths, as well as <strong>NCUK Foundation Year</strong> programmes preparing international students for degree-level study.</p>
+        <p>As <strong>Research Lead at the University of West London</strong>, my work focuses on the Water-Energy-Food (WEF) Nexus and Digital Twin development for sustainable infrastructure — integrating IoT and AI for real-time wetland monitoring. Industry experience includes managing <strong>£45M+ construction projects</strong> across the UK and India with full HSE compliance.</p>
+        <div class="expertise-cells">
+          <div class="ex-cell">Civil &amp; Geotechnical Engineering</div>
+          <div class="ex-cell">Construction &amp; Site Management</div>
+          <div class="ex-cell">Higher Education Teaching</div>
+          <div class="ex-cell">Curriculum &amp; Programme Leadership</div>
+          <div class="ex-cell">WEF Nexus &amp; Digital Twin Research</div>
+          <div class="ex-cell">SCORM &amp; Moodle Digital Learning</div>
         </div>
       </div>
-
-      <div class="reveal reveal-delay-1">
+      <div class="reveal rd1">
         <div class="timeline">
           <div class="tl-item">
-            <div class="tl-year">2025–NOW</div>
+            <div class="tl-yr">2025–NOW</div>
             <div class="tl-content">
               <div class="tl-role">Lecturer in Engineering &amp; NCUK Foundation Lecturer</div>
-              <div class="tl-org">University of East London via Malvern International PLC &middot; London</div>
-              <div class="tl-desc">Delivering engineering &amp; construction modules; Module Lead for assessments &amp; academic quality; creating SCORM packages &amp; Moodle-based digital learning content</div>
+              <div class="tl-org">University of East London via Malvern International PLC · London</div>
+              <div class="tl-desc">Engineering &amp; construction module delivery; Module Lead for assessments; SCORM &amp; Moodle digital content development</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">2024–NOW</div>
+            <div class="tl-yr">2024–NOW</div>
             <div class="tl-content">
-              <div class="tl-role">Research Lead &mdash; WEF Nexus &amp; Digital Twin Development</div>
-              <div class="tl-org">University of West London &middot; London</div>
-              <div class="tl-desc">Leading research on water, energy &amp; food systems; digital twin project for constructed wetland monitoring using IoT &amp; AI; stakeholder mapping &amp; EU policy evaluation</div>
+              <div class="tl-role">Research Lead — WEF Nexus &amp; Digital Twin</div>
+              <div class="tl-org">University of West London · London</div>
+              <div class="tl-desc">Digital twin project for constructed wetland monitoring using IoT &amp; AI; EU policy evaluation &amp; stakeholder mapping</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">APR–SEP 2025</div>
+            <div class="tl-yr">APR–SEP 2025</div>
             <div class="tl-content">
               <div class="tl-role">Programme Manager / Lecturer in Construction</div>
-              <div class="tl-org">Caspian School of Academics &middot; London</div>
-              <div class="tl-desc">Led curriculum design &amp; quality assurance for BTEC &amp; HNC programmes; promoted to Programme Manager for leadership in academic operations</div>
+              <div class="tl-org">Caspian School of Academics · London</div>
+              <div class="tl-desc">Curriculum design &amp; QA for BTEC &amp; HNC programmes; promoted to Programme Manager</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">DEC 2024–APR 2025</div>
+            <div class="tl-yr">DEC 2024–APR 2025</div>
             <div class="tl-content">
               <div class="tl-role">Site Manager / Technical Head</div>
-              <div class="tl-org">Prime Phenix &middot; London</div>
-              <div class="tl-desc">Managed £15M+ residential construction project; reduced delays by 15%; ensured 100% CDM &amp; HSE compliance</div>
+              <div class="tl-org">Prime Phenix · London</div>
+              <div class="tl-desc">Managed £15M+ residential project; 15% delay reduction; 100% CDM &amp; HSE compliance</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">2023–2024</div>
+            <div class="tl-yr">2023–2024</div>
             <div class="tl-content">
-              <div class="tl-role">MSc Civil Engineering &mdash; Distinction</div>
+              <div class="tl-role">MSc Civil Engineering — Distinction</div>
               <div class="tl-org">University of West London</div>
-              <div class="tl-desc">Specialisation in geotechnical engineering, resilient infrastructure &amp; digital innovation</div>
+              <div class="tl-desc">Geotechnical engineering, resilient infrastructure &amp; digital innovation</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">2022–2023</div>
+            <div class="tl-yr">2022–2023</div>
             <div class="tl-content">
               <div class="tl-role">Geotechnical Engineer</div>
-              <div class="tl-org">FAMS Design Solutions &middot; Mumbai, India</div>
-              <div class="tl-desc">Led geotechnical investigations for 5+ major infrastructure projects; enhanced project efficiency by 20%</div>
+              <div class="tl-org">FAMS Design Solutions · Mumbai, India</div>
+              <div class="tl-desc">Led geotechnical investigations for 5+ major infrastructure projects; 20% efficiency gain</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">2021–2022</div>
+            <div class="tl-yr">2021–2022</div>
             <div class="tl-content">
               <div class="tl-role">Project Manager / Senior Civil Engineer</div>
-              <div class="tl-org">Teracon Projects &middot; Ahmedabad, India</div>
-              <div class="tl-desc">Managed £30M+ multi-storey building projects; delivered commercial fit-out 5% under budget; reduced delays by 20%</div>
+              <div class="tl-org">Teracon Projects · Ahmedabad, India</div>
+              <div class="tl-desc">Managed £30M+ multi-storey projects; 5% under budget; 20% delay reduction</div>
             </div>
           </div>
           <div class="tl-item">
-            <div class="tl-year">2018–2021</div>
+            <div class="tl-yr">2016–2021</div>
             <div class="tl-content">
-              <div class="tl-role">Assistant Civil Engineer</div>
-              <div class="tl-org">PSY Group of Construction &middot; Ahmedabad, India</div>
-              <div class="tl-desc">Supervised £10M+ commercial &amp; residential projects; coordinated material procurement &amp; contractor schedules</div>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-year">2016–2018</div>
-            <div class="tl-content">
-              <div class="tl-role">Junior Civil Engineer</div>
-              <div class="tl-org">Vahanvati Corporation &middot; Gandhinagar, India</div>
-              <div class="tl-desc">Assisted in design &amp; construction of commercial &amp; residential buildings; on-site inspections &amp; methodology improvement</div>
-            </div>
-          </div>
-          <div class="tl-item">
-            <div class="tl-year">2011–2015</div>
-            <div class="tl-content">
-              <div class="tl-role">BE Civil Engineering &mdash; Merit</div>
-              <div class="tl-org">Gujarat Technological University &middot; India</div>
-              <div class="tl-desc">Bachelor of Engineering with Merit distinction</div>
+              <div class="tl-role">Civil Engineer (Junior → Assistant)</div>
+              <div class="tl-org">PSY Group of Construction &amp; Vahanvati Corporation · India</div>
+              <div class="tl-desc">Supervised £10M+ commercial &amp; residential projects across Gujarat</div>
             </div>
           </div>
         </div>
@@ -479,53 +647,333 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
   </div>
 </section>
 
-<!-- SERVICES -->
+<!-- GUIDANCE / SERVICES -->
 <section id="services">
   <div class="section-wrap">
-    <div class="services-intro">
+    <div class="svc-intro-grid">
       <div>
-        <div class="section-label reveal">Career Guidance</div>
-        <h2 class="section-heading reveal">How I Can<br><em>Help You</em></h2>
+        <div class="section-eyebrow reveal">Career Guidance</div>
+        <h2 class="section-h2 reveal">How I Can<br><em>Help You</em></h2>
       </div>
-      <p class="reveal reveal-delay-1">Whether you are a student at the start of your journey or a professional seeking to advance, I offer structured, experience-backed guidance tailored to the built environment and engineering sectors.</p>
+      <p class="svc-intro-p reveal rd1">Whether you are a student at the start of your engineering journey or a professional looking to advance, I offer structured, experience-backed guidance tailored to the built environment and UK higher education sector.</p>
     </div>
-
-    <div class="services-grid">
+    <div class="svc-grid">
       <div class="svc-card reveal">
         <div class="svc-num">01</div>
         <div class="svc-title">Academic Pathway Planning</div>
-        <p class="svc-desc">Guidance on selecting the right undergraduate or postgraduate programme in Civil Engineering, Construction, or Built Environment fields aligned with UK academic standards.</p>
-        <span class="svc-pill">Students</span>
+        <p class="svc-desc">Guidance on selecting the right undergraduate or postgraduate programme in Civil Engineering, Construction, or Built Environment fields aligned with UK academic standards and UCAS processes.</p>
+        <span class="svc-tag">Students</span>
       </div>
-      <div class="svc-card reveal reveal-delay-1">
+      <div class="svc-card reveal rd1">
         <div class="svc-num">02</div>
         <div class="svc-title">Built Environment Careers</div>
-        <p class="svc-desc">Expert advice on career opportunities in civil engineering, geotechnical, site management, and construction — from entry-level roles to chartered engineer status.</p>
-        <span class="svc-pill">Graduates</span>
+        <p class="svc-desc">Expert advice on career opportunities in civil engineering, geotechnical, site management, and construction — from entry-level roles to chartered engineer status with ICE or CIOB.</p>
+        <span class="svc-tag">Graduates</span>
       </div>
-      <div class="svc-card reveal reveal-delay-2">
+      <div class="svc-card reveal rd2">
         <div class="svc-num">03</div>
         <div class="svc-title">Research &amp; Innovation Guidance</div>
-        <p class="svc-desc">Mentoring on sustainability research, Digital Twin technologies, and WEF Nexus topics. Support for dissertations, research proposals, and academic publishing.</p>
-        <span class="svc-pill">Researchers</span>
+        <p class="svc-desc">Mentoring on sustainability research, Digital Twin technologies, and WEF Nexus topics. Support for dissertations, research proposals, and academic publishing in peer-reviewed journals.</p>
+        <span class="svc-tag">Researchers</span>
       </div>
       <div class="svc-card reveal">
         <div class="svc-num">04</div>
         <div class="svc-title">Professional Accreditation</div>
-        <p class="svc-desc">Guidance on achieving ICE membership (GMICE to MICE to FICE), CIOB accreditation, and NVQ/NOCN qualifications essential for career progression in the UK.</p>
-        <span class="svc-pill">Professionals</span>
+        <p class="svc-desc">Guidance on achieving ICE membership (GMICE → MICE → FICE), CIOB accreditation, and NVQ/NOCN qualifications. I have navigated this path myself and can guide you step by step.</p>
+        <span class="svc-tag">Professionals</span>
       </div>
-      <div class="svc-card reveal reveal-delay-1">
+      <div class="svc-card reveal rd1">
         <div class="svc-num">05</div>
         <div class="svc-title">Study &amp; Work in the UK</div>
-        <p class="svc-desc">Support for international students navigating UK higher education, employability, and transitioning into the UK construction and engineering job market.</p>
-        <span class="svc-pill">International</span>
+        <p class="svc-desc">Support for international students navigating UK higher education, student visas, Graduate Route visa requirements, and transitioning into the UK construction and engineering job market.</p>
+        <span class="svc-tag">International</span>
       </div>
-      <div class="svc-card reveal reveal-delay-2">
+      <div class="svc-card reveal rd2">
         <div class="svc-num">06</div>
         <div class="svc-title">Career Transition Coaching</div>
-        <p class="svc-desc">Structured coaching for professionals shifting into engineering education, academia, or sustainability roles. CV review, interview preparation, and personal branding.</p>
-        <span class="svc-pill">Career Change</span>
+        <p class="svc-desc">Structured coaching for professionals moving into engineering education, academia, or sustainability roles. Includes CV review, interview preparation, and personal brand development.</p>
+        <span class="svc-tag">Career Change</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="section-eyebrow reveal">Featured Work</div>
+    <h2 class="section-h2 reveal">Projects &amp;<br><em>Achievements</em></h2>
+    <div class="projects-grid">
+      <div class="proj-card reveal">
+        <div class="proj-meta">
+          <span class="proj-type pt-research">Research</span>
+          <span class="proj-year">2024–Present</span>
+        </div>
+        <div class="proj-title">Digital Twin for Constructed Wetland Monitoring</div>
+        <p class="proj-desc">Developed a real-time IoT and AI-powered Digital Twin system for constructed wetland infrastructure at UWL. Integrates sensor data streams with predictive modelling for sustainable water management aligned with WEF Nexus frameworks.</p>
+        <div class="proj-tags">
+          <span class="proj-pill">Digital Twin</span>
+          <span class="proj-pill">IoT</span>
+          <span class="proj-pill">AI/ML</span>
+          <span class="proj-pill">WEF Nexus</span>
+          <span class="proj-pill">UWL Research</span>
+        </div>
+      </div>
+      <div class="proj-highlight reveal rd1">
+        <div class="proj-meta">
+          <span class="proj-type pt-industry" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);">Industry</span>
+          <span class="proj-year" style="color:rgba(255,255,255,0.4);">2024–2025</span>
+        </div>
+        <div class="proj-title">£15M Residential Construction — London</div>
+        <p class="proj-desc">Led as Site Manager &amp; Technical Head for a major residential project in London. Delivered with full CDM &amp; HSE compliance, reduced programme delays, and managed a multidisciplinary site team throughout.</p>
+        <div class="proj-stat">
+          <div>
+            <div class="pstat-val">15%</div>
+            <div class="pstat-lbl">Delay Reduction</div>
+          </div>
+          <div>
+            <div class="pstat-val">100%</div>
+            <div class="pstat-lbl">HSE Compliance</div>
+          </div>
+          <div>
+            <div class="pstat-val">£15M</div>
+            <div class="pstat-lbl">Project Value</div>
+          </div>
+        </div>
+      </div>
+      <div class="proj-card reveal">
+        <div class="proj-meta">
+          <span class="proj-type pt-education">Education</span>
+          <span class="proj-year">2025–Present</span>
+        </div>
+        <div class="proj-title">SCORM-Based Digital Learning Suite — UEL</div>
+        <p class="proj-desc">Designed and built a full suite of interactive SCORM packages for engineering and construction modules at the University of East London. Includes gamified assessments, embedded simulations, and Moodle-integrated e-learning pathways.</p>
+        <div class="proj-tags">
+          <span class="proj-pill">SCORM</span>
+          <span class="proj-pill">Moodle</span>
+          <span class="proj-pill">Gamification</span>
+          <span class="proj-pill">HE Teaching</span>
+        </div>
+      </div>
+      <div class="proj-card reveal rd1">
+        <div class="proj-meta">
+          <span class="proj-type pt-industry">Industry</span>
+          <span class="proj-year">2021–2022</span>
+        </div>
+        <div class="proj-title">£30M Multi-Storey Commercial Development — Ahmedabad</div>
+        <p class="proj-desc">Served as Project Manager &amp; Senior Civil Engineer overseeing a large-scale multi-storey commercial development. Delivered the commercial fit-out 5% under budget while reducing programme delays by 20% through optimised resource scheduling.</p>
+        <div class="proj-tags">
+          <span class="proj-pill">Project Management</span>
+          <span class="proj-pill">Structural</span>
+          <span class="proj-pill">Cost Control</span>
+          <span class="proj-pill">Fit-Out</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE TOOLS SUBSECTION -->
+    <div class="tools-header reveal">
+      <div class="tools-header-left">
+        <div class="section-eyebrow" style="margin-bottom:10px;">Interactive Student Tools</div>
+        <p class="tools-intro-p">Bespoke web-based learning tools built for engineering students — covering materials science, construction processes, sustainability, and project management. Each tool is fully interactive and accessible from any device.</p>
+      </div>
+      <div class="tools-count-badge">8 Tools</div>
+    </div>
+    <div class="tools-grid">
+
+      <div class="tool-card reveal">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-education">Education</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">⚽</div>
+        </div>
+        <div class="tool-title">Stakeholder Management &amp; Safety Soccer Challenge</div>
+        <p class="tool-desc">A gamified interactive platform teaching the art of stakeholder identification, engagement strategy, and site safety — complete with a Soccer Challenge quiz to test knowledge under pressure.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Stakeholder Management</span>
+          <span class="proj-pill">Site Safety</span>
+          <span class="proj-pill">Gamification</span>
+          <span class="proj-pill">Project Management</span>
+        </div>
+        <a href="stakeholder_management.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal rd1">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-research">Materials</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">🔬</div>
+        </div>
+        <div class="tool-title">Tensile Strength Testing Laboratory — EG4022</div>
+        <p class="tool-desc">A virtual tensile testing lab simulating real stress-strain behaviour for engineering materials. Students observe yield points, strain hardening, and fracture using industry-standard data from Callister &amp; EN standards.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Tensile Testing</span>
+          <span class="proj-pill">Stress-Strain</span>
+          <span class="proj-pill">EG4022</span>
+          <span class="proj-pill">Materials Science</span>
+        </div>
+        <a href="Tensile_Testing_Lab.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal rd2">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-research">Materials</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">💥</div>
+        </div>
+        <div class="tool-title">Tensile Strength &amp; Fracture Behaviour Hub — EG4022</div>
+        <p class="tool-desc">A comprehensive 2-hour interactive lecture hub covering 12 topics on tensile strength and fracture mechanics, with HS2 Phase 1 infrastructure case studies woven throughout. Includes learning outcomes and navigation by section.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Fracture Mechanics</span>
+          <span class="proj-pill">HS2 Case Study</span>
+          <span class="proj-pill">EG4022</span>
+          <span class="proj-pill">Lecture Hub</span>
+        </div>
+        <a href="Tensile_Fracture_Hub.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-research">Materials</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">⚙️</div>
+        </div>
+        <div class="tool-title">Virtual Fatigue Test Laboratory — EG4022</div>
+        <p class="tool-desc">Simulates cyclic fatigue testing using Paris Law crack-growth modelling. Students explore threshold, stable crack growth, and rapid fracture regions — with adjustable material constants and live crack propagation visualisation.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Fatigue Testing</span>
+          <span class="proj-pill">Paris Law</span>
+          <span class="proj-pill">Crack Propagation</span>
+          <span class="proj-pill">EG4022</span>
+        </div>
+        <a href="Virtual_Fatigue_Lab.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal rd1">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-research">Materials</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">⚛️</div>
+        </div>
+        <div class="tool-title">Atomic Bonding &amp; Crystal Structures — EG4022</div>
+        <p class="tool-desc">An adaptive interactive module on atomic bonding types and crystal structures, with material-specific quizzes and a drag-and-drop bonding definition activity. Content tailored to the student's chosen material, with a downloadable assessment at the end.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Atomic Bonding</span>
+          <span class="proj-pill">Crystal Structures</span>
+          <span class="proj-pill">Adaptive Quiz</span>
+          <span class="proj-pill">EG4022</span>
+        </div>
+        <a href="AtomicBonding_.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal rd2">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-research">Mathematics</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">🧊</div>
+        </div>
+        <div class="tool-title">The Tesseract — 4D Geometry Explainer</div>
+        <p class="tool-desc">An animated explainer helping engineering students visualise a 4-dimensional hypercube (tesseract) as part of the EG4022 Engineering Materials module. Bridges abstract mathematical concepts with practical spatial reasoning for engineers.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">4D Geometry</span>
+          <span class="proj-pill">Visualisation</span>
+          <span class="proj-pill">Applied Maths</span>
+          <span class="proj-pill">EG4022</span>
+        </div>
+        <a href="Tesseract_Explainer.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-education">Sustainability</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">🌍</div>
+        </div>
+        <div class="tool-title">Carbon Emissions — Interactive Field Manual for Engineers</div>
+        <p class="tool-desc">A structured field manual guiding engineering students through carbon measurement, CO₂-equivalent calculations, and the climate cost of construction decisions — from cement foundations to electrical systems. Module-based with progressive learning.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Carbon Emissions</span>
+          <span class="proj-pill">CO₂-Equivalent</span>
+          <span class="proj-pill">Sustainability</span>
+          <span class="proj-pill">Net Zero</span>
+        </div>
+        <a href="carbon-emissions-platform_.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+      <div class="tool-card reveal rd1">
+        <div class="tool-card-top">
+          <div class="tool-meta">
+            <span class="proj-type pt-education">Construction</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <div class="tool-icon">🏗️</div>
+        </div>
+        <div class="tool-title">Building Construction Process — Week 3 Interactive Hub</div>
+        <p class="tool-desc">A gamified learning hub covering the full building construction process. Students explore project stages, flip role cards to discover the 10 core site roles, and earn XP throughout — making the construction lifecycle memorable and engaging.</p>
+        <div class="proj-tags" style="margin-bottom:16px;">
+          <span class="proj-pill">Construction Process</span>
+          <span class="proj-pill">Site Roles</span>
+          <span class="proj-pill">XP Gamification</span>
+          <span class="proj-pill">Week 3</span>
+        </div>
+        <a href="Construction_Interactive_.html" target="_blank" class="tool-btn">Launch Tool →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-wrap">
+    <div class="research-intro-grid">
+      <div>
+        <div class="section-eyebrow reveal">Academic Output</div>
+        <h2 class="section-h2 reveal">Research &amp;<br><em>Publications</em></h2>
+      </div>
+      <p class="research-intro-p reveal rd1">My research sits at the intersection of sustainable infrastructure, digital systems, and interdisciplinary policy — with a focus on the Water-Energy-Food Nexus and Digital Twin technologies for real-world built environment applications.</p>
+    </div>
+    <div class="pub-list">
+      <div class="pub-item reveal">
+        <div class="pub-index">01</div>
+        <div class="pub-body">
+          <div class="pub-title">Digital Twin Development for Constructed Wetland Systems: An IoT-Enabled Framework for WEF Nexus Monitoring</div>
+          <div class="pub-authors"><strong>Loliyaniya, V.</strong></div>
+          <div class="pub-venue">MSc Dissertation · University of West London · 2024 · Distinction</div>
+        </div>
+        <span class="pub-badge pb-wip">In Progress</span>
+      </div>
+      <div class="pub-item reveal rd1">
+        <div class="pub-index">02</div>
+        <div class="pub-body">
+          <div class="pub-title">Interdisciplinary Policy Evaluation of EU Water-Energy-Food Nexus Governance Frameworks</div>
+          <div class="pub-authors"><strong>Loliyaniya, V.</strong> et al.</div>
+          <div class="pub-venue">Research Working Paper · University of West London WEF Nexus Group · 2025</div>
+        </div>
+        <span class="pub-badge pb-wip">In Progress</span>
+      </div>
+      <div class="pub-item reveal rd2">
+        <div class="pub-index">03</div>
+        <div class="pub-body">
+          <div class="pub-title">Gamification in Engineering Education: Design and Evaluation of SCORM-Based Assessment Modules</div>
+          <div class="pub-authors"><strong>Loliyaniya, V.</strong></div>
+          <div class="pub-venue">Teaching Practice Research · University of East London · 2025–Present</div>
+        </div>
+        <span class="pub-badge pb-wip">In Progress</span>
       </div>
     </div>
   </div>
@@ -534,25 +982,23 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
 <!-- SKILLS -->
 <section id="skills">
   <div class="section-wrap">
-    <div class="section-label reveal">Competencies</div>
-    <h2 class="section-heading reveal">Skills &amp;<br><em>Expertise</em></h2>
-
-    <div class="skills-layout">
+    <div class="section-eyebrow reveal">Competencies</div>
+    <h2 class="section-h2 reveal">Skills &amp;<br><em>Expertise</em></h2>
+    <div class="skills-grid">
       <div class="reveal">
-        <div class="skill-block-title">Technical Proficiency</div>
+        <div class="skill-block-lbl">Technical Proficiency</div>
         <div class="chip-group">
           <span class="chip">Civil &amp; Geotechnical Engineering</span>
-          <span class="chip">Site Supervision &amp; Team Leadership</span>
+          <span class="chip">Site Supervision &amp; Leadership</span>
           <span class="chip">Project Management</span>
-          <span class="chip">Risk Assessment &amp; Management</span>
-          <span class="chip">Digital Twin &amp; IoT Integration</span>
+          <span class="chip">Risk Assessment</span>
+          <span class="chip">Digital Twin &amp; IoT</span>
           <span class="chip">HS&amp;E Management</span>
-          <span class="chip">Internal &amp; External Fit-Out</span>
-          <span class="chip">Quality Assurance &amp; Compliance</span>
+          <span class="chip">Quality Assurance</span>
           <span class="chip">Stakeholder Engagement</span>
+          <span class="chip">BIM</span>
         </div>
-
-        <div class="skill-block-title">Tools &amp; Software</div>
+        <div class="skill-block-lbl">Tools &amp; Software</div>
         <div class="chip-group">
           <span class="chip">AutoCAD 2D</span>
           <span class="chip">Primavera P6</span>
@@ -562,10 +1008,8 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
           <span class="chip">Procore</span>
           <span class="chip">Moodle</span>
           <span class="chip">Microsoft Office Suite</span>
-          <span class="chip">Turnitin</span>
         </div>
-
-        <div class="skill-block-title">Education &amp; Mentoring</div>
+        <div class="skill-block-lbl">Education &amp; Mentoring</div>
         <div class="chip-group">
           <span class="chip">Curriculum Development</span>
           <span class="chip">SCORM Package Design</span>
@@ -576,52 +1020,55 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
           <span class="chip">NCUK Foundation Teaching</span>
         </div>
       </div>
-
-      <div class="reveal reveal-delay-1">
-        <div class="skill-block-title">Areas of Knowledge</div>
+      <div class="reveal rd1">
+        <div class="skill-block-lbl">Areas of Knowledge</div>
         <div class="chip-group">
           <span class="chip">WEF Nexus Research</span>
-          <span class="chip">Interdisciplinary Policy Analysis</span>
           <span class="chip">CDM Regulations</span>
           <span class="chip">BTEC / HNC Programmes</span>
           <span class="chip">Ofqual &amp; NOCN Frameworks</span>
-          <span class="chip">Schedule &amp; Resource Management</span>
-          <span class="chip">Construction Materials &amp; Testing</span>
-          <span class="chip">Resilient Infrastructure</span>
-          <span class="chip">UK Higher Education</span>
           <span class="chip">EU Policy &amp; Governance</span>
           <span class="chip">IoT &amp; AI Technologies</span>
-          <span class="chip">BIM</span>
+          <span class="chip">Resilient Infrastructure</span>
+          <span class="chip">UK Higher Education</span>
+          <span class="chip">Construction Materials &amp; Testing</span>
         </div>
-
-        <div class="skill-block-title">Professional Memberships &amp; Certificates</div>
-        <div class="membership-card">
-          <div class="membership-icon">&#127963;&#65039;</div>
+        <div class="skill-block-lbl">Professional Memberships</div>
+        <div class="mem-card">
+          <div class="mem-icon">🏛️</div>
           <div>
-            <div class="membership-name">GMICE</div>
-            <div class="membership-sub">Graduate Member &mdash; Institution of Civil Engineers, UK</div>
+            <div class="mem-name">GMICE</div>
+            <div class="mem-sub">Graduate Member — Institution of Civil Engineers, UK</div>
           </div>
         </div>
-        <div class="membership-card" style="margin-top:10px;">
-          <div class="membership-icon">&#127963;&#65039;</div>
+        <div class="mem-card">
+          <div class="mem-icon">🏛️</div>
           <div>
-            <div class="membership-name">GradIStructE</div>
-            <div class="membership-sub">Graduate Member &mdash; Institution of Structural Engineers, UK</div>
+            <div class="mem-name">GradIStructE</div>
+            <div class="mem-sub">Graduate Member — Institution of Structural Engineers, UK</div>
           </div>
         </div>
-        <div class="membership-card" style="margin-top:10px;">
-          <div class="membership-icon">&#128203;</div>
+        <div class="mem-card">
+          <div class="mem-icon">🏗️</div>
           <div>
-            <div class="membership-name">CSCS White Card</div>
-            <div class="membership-sub">Academically Qualified Person &mdash; Construction Skills</div>
+            <div class="mem-name">CIOB — Educator Pathway</div>
+            <div class="mem-sub">Member — Chartered Institute of Building, UK</div>
           </div>
         </div>
-        <div class="membership-card" style="margin-top:10px;">
-          <div class="membership-icon">&#127891;</div>
+        <div class="mem-card">
+          <div class="mem-icon">📋</div>
           <div>
-            <div class="membership-name">FHEA (In Progress)</div>
-            <div class="membership-sub">Fellowship in Higher Education Teaching &amp; Learning</div>
+            <div class="mem-name">CSCS White Card</div>
+            <div class="mem-sub">Academically Qualified Person — Construction Skills</div>
           </div>
+        </div>
+        <div class="cert-progress">
+          <div class="cert-progress-dot"></div>
+          <div class="cert-progress-text">🏗️ Working towards FCIOB — Fellowship of the Chartered Institute of Building</div>
+        </div>
+        <div class="cert-progress" style="margin-top:8px;">
+          <div class="cert-progress-dot"></div>
+          <div class="cert-progress-text">🎓 FHEA in progress — Fellowship in Higher Education Teaching &amp; Learning</div>
         </div>
       </div>
     </div>
@@ -631,57 +1078,93 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-wrap">
-    <div class="contact-layout">
+    <div class="contact-grid">
       <div class="contact-left">
-        <div class="section-label reveal">Get In Touch</div>
-        <h2 class="section-heading reveal">Ready to Shape<br><em>Your Career?</em></h2>
-        <p class="contact-tagline reveal">Whether you are a student exploring options, a graduate planning your next move, or a professional looking to pivot — I am here to help guide your journey.</p>
-
-        <a href="mailto:vismaymloliyaniya@gmail.com" class="contact-link-block reveal">
-          <div class="contact-item">
-            <div class="contact-item-icon">&#9993;</div>
+        <div class="c-eyebrow reveal">Get In Touch</div>
+        <h2 class="c-h2 reveal">Ready to Shape<br><em>Your Career?</em></h2>
+        <p class="c-tagline reveal">Whether you are a student exploring options, a graduate planning your next move, or a professional looking to pivot — I am here to help guide your journey in civil engineering and the built environment.</p>
+        <a href="mailto:vismaymloliyaniya@gmail.com" class="c-link reveal">
+          <div class="c-item">
+            <div class="c-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>
+              </svg>
+            </div>
             <div>
-              <div class="contact-item-label">Email</div>
-              <div class="contact-item-value">vismaymloliyaniya@gmail.com</div>
+              <div class="c-item-lbl">Email</div>
+              <div class="c-item-val">vismaymloliyaniya@gmail.com</div>
             </div>
           </div>
         </a>
-
-        <a href="https://www.linkedin.com/in/vismayloliyaniya/" target="_blank" class="contact-link-block reveal reveal-delay-1">
-          <div class="contact-item">
-            <div class="contact-item-icon">&#128188;</div>
+        <a href="https://www.linkedin.com/in/vismayloliyaniya/" target="_blank" class="c-link reveal rd1">
+          <div class="c-item">
+            <div class="c-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+              </svg>
+            </div>
             <div>
-              <div class="contact-item-label">LinkedIn</div>
-              <div class="contact-item-value">linkedin.com/in/vismayloliyaniya</div>
+              <div class="c-item-lbl">LinkedIn</div>
+              <div class="c-item-val">linkedin.com/in/vismayloliyaniya</div>
             </div>
           </div>
         </a>
-
-        <div class="contact-link-block reveal reveal-delay-2">
-          <div class="contact-item">
-            <div class="contact-item-icon">&#128205;</div>
+        <div class="c-link reveal rd2">
+          <div class="c-item">
+            <div class="c-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+              </svg>
+            </div>
             <div>
-              <div class="contact-item-label">Location</div>
-              <div class="contact-item-value">London, United Kingdom</div>
+              <div class="c-item-lbl">Location</div>
+              <div class="c-item-val">London, United Kingdom</div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="reveal reveal-delay-1">
-        <div class="form-group">
-          <label class="form-label">Your Name</label>
-          <input type="text" class="form-input" placeholder="e.g. John Smith" />
+      <div class="reveal rd1">
+        <p class="form-note">// Replies within 24–48 hours</p>
+        <div id="contactForm">
+          <div class="form-row">
+            <div class="fg">
+              <label class="fl" for="fname">First Name</label>
+              <input class="fi" id="fname" type="text" placeholder="e.g. Sarah" />
+            </div>
+            <div class="fg">
+              <label class="fl" for="lname">Last Name</label>
+              <input class="fi" id="lname" type="text" placeholder="e.g. Khan" />
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl" for="femail">Email Address</label>
+            <input class="fi" id="femail" type="email" placeholder="your@email.com" />
+          </div>
+          <div class="fg">
+            <label class="fl" for="ftype">I am looking for guidance on</label>
+            <div class="fs">
+              <select id="ftype">
+                <option value="">Select a topic...</option>
+                <option>Academic pathway planning</option>
+                <option>Career in civil engineering / built environment</option>
+                <option>Professional accreditation (ICE / CIOB)</option>
+                <option>Study &amp; work in the UK (international)</option>
+                <option>MSc / PhD research guidance</option>
+                <option>Career transition coaching</option>
+                <option>Other / general enquiry</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl" for="fmsg">Tell me about your goals</label>
+            <textarea class="ft" id="fmsg" placeholder="Briefly describe where you are now and what you are hoping to achieve..."></textarea>
+          </div>
+          <button class="form-btn" id="formBtn" onclick="submitForm()">Send Message →</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Your Email</label>
-          <input type="email" class="form-input" placeholder="your@email.com" />
+        <div class="form-success" id="formSuccess">
+          <div class="check">✓</div>
+          <p>Thank you! Your message has been sent. Vismay will be in touch within 24–48 hours.</p>
         </div>
-        <div class="form-group">
-          <label class="form-label">How Can I Help?</label>
-          <textarea class="form-textarea" placeholder="Tell me about your career goals or what guidance you are looking for..."></textarea>
-        </div>
-        <button class="form-btn" onclick="this.innerText='Message Sent \u2713'; this.style.background='#1a6b6b'; this.style.color='#fff';">Send Message</button>
       </div>
     </div>
   </div>
@@ -689,23 +1172,83 @@ footer { background: var(--ink); padding: 24px 64px; display: flex; justify-cont
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-left"><strong>Vismay Loliyaniya</strong>, GMICE &mdash; Educator &amp; Career Advisor</div>
-  <div class="footer-right">London, UK &nbsp;&middot;&nbsp; Built Environment &nbsp;&middot;&nbsp; Civil Engineering</div>
+  <div class="foot-l"><strong>Vismay Loliyaniya</strong>, GMICE — Educator &amp; Career Advisor</div>
+  <div class="foot-r">London, UK &nbsp;·&nbsp; Built Environment &nbsp;·&nbsp; Civil Engineering</div>
 </footer>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// Reveal on scroll
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      const t = document.querySelector(a.getAttribute('href'));
-      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+// Smooth scroll nav
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(!t)return;
+    e.preventDefault();
+    closeMobileNav();
+    t.scrollIntoView({behavior:'smooth',block:'start'});
   });
+});
+
+// Mobile nav toggle
+const hbg=document.getElementById('hamburger');
+const mNav=document.getElementById('mobileNav');
+function closeMobileNav(){
+  hbg.classList.remove('open');
+  mNav.classList.remove('open');
+}
+hbg.addEventListener('click',()=>{
+  hbg.classList.toggle('open');
+  mNav.classList.toggle('open');
+});
+document.querySelectorAll('.mobile-link').forEach(l=>{
+  l.addEventListener('click',closeMobileNav);
+});
+
+// Contact form — sends via Formspree
+async function submitForm(){
+  const btn=document.getElementById('formBtn');
+  const fname=document.getElementById('fname').value.trim();
+  const lname=document.getElementById('lname').value.trim();
+  const email=document.getElementById('femail').value.trim();
+  const type=document.getElementById('ftype').value;
+  const msg=document.getElementById('fmsg').value.trim();
+  if(!fname||!email||!msg){
+    alert('Please fill in your name, email, and message.');
+    return;
+  }
+  btn.textContent='Sending…';
+  btn.classList.add('sending');
+  btn.disabled=true;
+  // Formspree endpoint — replace YOUR_FORM_ID with the one from formspree.io
+  try{
+    const res=await fetch('https://formspree.io/f/YOUR_FORM_ID',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        name:fname+' '+lname,
+        email,
+        topic:type||'General enquiry',
+        message:msg
+      })
+    });
+    if(res.ok){
+      document.getElementById('contactForm').style.display='none';
+      document.getElementById('formSuccess').classList.add('show');
+    } else {
+      throw new Error('Server error');
+    }
+  } catch{
+    btn.textContent='Send Message →';
+    btn.classList.remove('sending');
+    btn.disabled=false;
+    alert('Could not send — please email directly at vismaymloliyaniya@gmail.com');
+  }
+}
 </script>
 </body>
 </html>
