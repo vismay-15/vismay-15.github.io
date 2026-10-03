@@ -255,10 +255,39 @@ nav{
 .proj-highlight .proj-title{color:var(--white);}
 .proj-highlight .proj-desc{color:rgba(255,255,255,0.6);}
 .proj-stat{margin-top:20px;display:flex;gap:24px;}
-.proj-feature{grid-column:1/-1;display:block;text-decoration:none;color:inherit;border-left:3px solid var(--teal);}
-.proj-feature:hover .proj-link,.proj-feature:focus-visible .proj-link{text-decoration:underline;}
+.proj-feature{grid-column:1/-1;position:relative;display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center;text-decoration:none;color:inherit;padding:40px 36px;}
+.proj-feature::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#1f6fb2 0 20%,#d9930f 20% 40%,#4e8a3a 40% 60%,#138a7e 60% 80%,#7a5ba6 80% 100%);}
+.proj-feature:hover{background:var(--white);}
 .proj-feature:focus-visible{outline:2px solid var(--teal);outline-offset:-2px;}
-.proj-link{display:inline-block;margin-top:16px;font-size:0.72rem;font-family:'DM Mono',monospace;letter-spacing:1px;color:var(--teal);font-weight:500;}
+.proj-feature .proj-title{font-size:1.45rem;}
+.pf-live{display:inline-flex;align-items:center;gap:6px;font-size:0.6rem;font-family:'DM Mono',monospace;letter-spacing:1px;color:var(--teal);text-transform:uppercase;margin-left:auto;}
+.pf-live::before{content:'';width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2.5s infinite;}
+.pf-stats{display:flex;gap:28px;margin:4px 0 20px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.pf-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1;}
+.pf-lbl{font-size:0.56rem;font-family:'DM Mono',monospace;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink-light);margin-top:5px;}
+.pf-cta{display:inline-flex;align-items:center;gap:8px;margin-top:22px;background:var(--slate);color:var(--white);padding:11px 22px;border-radius:4px;font-size:0.75rem;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;transition:background 0.25s,box-shadow 0.25s;}
+.pf-cta span{transition:transform 0.25s;}
+.proj-feature:hover .pf-cta{background:var(--teal);box-shadow:0 6px 20px rgba(13,92,79,0.22);}
+.proj-feature:hover .pf-cta span{transform:translateX(3px);}
+.pf-media{position:relative;margin:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;aspect-ratio:14/11;background:#d9e6ec;box-shadow:0 12px 32px rgba(20,39,58,0.10);}
+.pf-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.7s ease;}
+.proj-feature:hover .pf-media img{transform:scale(1.04);}
+.pf-media figcaption{position:absolute;left:12px;bottom:12px;background:rgba(20,39,58,0.82);color:#fff;font-size:0.6rem;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:3px;}
+.hero-feature{display:inline-flex;align-self:flex-start;width:fit-content;align-items:center;gap:10px;margin-top:28px;padding:5px 16px 5px 5px;border:1px solid var(--border-mid);border-radius:999px;background:var(--white);color:var(--ink-mid);font-size:0.78rem;text-decoration:none;transition:border-color 0.2s,box-shadow 0.2s;max-width:100%;}
+.hero-feature:hover,.hero-feature:focus-visible{border-color:var(--teal);box-shadow:0 4px 14px rgba(13,92,79,0.12);}
+.hf-new{background:var(--teal);color:#fff;font-size:0.58rem;font-family:'DM Mono',monospace;letter-spacing:1.2px;text-transform:uppercase;padding:4px 9px;border-radius:999px;flex-shrink:0;}
+.hero-feature strong{color:var(--ink);font-weight:600;}
+.hf-arrow{color:var(--teal);transition:transform 0.2s;}
+.hero-feature:hover .hf-arrow{transform:translateX(3px);}
+a.stat-link{position:relative;text-decoration:none;display:block;transition:background 0.2s;}
+a.stat-link::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,#1f6fb2 0 20%,#d9930f 20% 40%,#4e8a3a 40% 60%,#138a7e 60% 80%,#7a5ba6 80% 100%);opacity:0.85;}
+a.stat-link:hover,a.stat-link:focus-visible{background:rgba(255,255,255,0.09);}
+@media(max-width:900px){
+  .proj-feature{grid-template-columns:1fr;gap:24px;padding:32px 24px;}
+  .pf-media{order:-1;}
+  .pf-stats{gap:18px;}
+  .hero-feature{border-radius:14px;align-items:flex-start;padding:8px 14px 8px 8px;}
+}
 .pub-link{display:inline-block;margin-top:6px;font-size:0.72rem;font-family:'DM Mono',monospace;letter-spacing:0.5px;color:var(--teal);text-decoration:none;}
 .pub-link:hover,.pub-link:focus-visible{text-decoration:underline;}
 .foot-r a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
@@ -441,6 +470,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
 .hero-left>*:nth-child(4){animation-delay:0.24s;}
 .hero-left>*:nth-child(5){animation-delay:0.30s;}
 .hero-left>*:nth-child(6){animation-delay:0.36s;}
+.hero-left>*:nth-child(7){animation-delay:0.42s;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
@@ -520,6 +550,11 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
       <a href="#services" class="btn-primary">Explore My Guidance</a>
       <a href="#contact" class="btn-ghost">Book a Session</a>
     </div>
+    <a class="hero-feature" href="/fwe-nexus/">
+      <span class="hf-new">New</span>
+      <span><strong>WEF Nexus Europe</strong> — explore my interactive research website</span>
+      <span class="hf-arrow" aria-hidden="true">→</span>
+    </a>
   </div>
   <div class="hero-right">
       <img src="./images/profile-image.jpeg" alt="Vismay Loliyaniya" class="photo-placeholder">
@@ -538,10 +573,10 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
         <div class="stat-num">£45M+</div>
         <div class="stat-lbl">Projects Led</div>
       </div>
-      <div class="stat-cell">
+      <a class="stat-cell stat-link" href="/fwe-nexus/" aria-label="WEF Nexus research website">
         <div class="stat-num">WEF</div>
-        <div class="stat-lbl">Nexus Research</div>
-      </div>
+        <div class="stat-lbl">Nexus Research →</div>
+      </a>
     </div>
     <a href="mailto:vismaymloliyaniya@gmail.com" class="rp-email">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -708,19 +743,31 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
     <h2 class="section-h2 reveal">Projects &amp;<br><em>Achievements</em></h2>
     <div class="projects-grid">
       <a class="proj-card proj-feature reveal" href="/fwe-nexus/">
-        <div class="proj-meta">
-          <span class="proj-type pt-research">Research website</span>
-          <span class="proj-year">2025–Present</span>
+        <div class="pf-body">
+          <div class="proj-meta">
+            <span class="proj-type pt-research">Research website</span>
+            <span class="proj-year">2025–Present</span>
+            <span class="pf-live">Live</span>
+          </div>
+          <div class="proj-title">WEF Nexus Europe — Drivers, Governance &amp; Stakeholders</div>
+          <p class="proj-desc">An interactive research website on how Europe governs water, energy and food together. Hover over any organisation on the map to see its nexus work and future direction, then explore key challenges, open-data charts, conflict hotspots and the research roadmap.</p>
+          <div class="pf-stats">
+            <div><div class="pf-num">22</div><div class="pf-lbl">Organisations mapped</div></div>
+            <div><div class="pf-num">10</div><div class="pf-lbl">Shared EU projects</div></div>
+            <div><div class="pf-num">5</div><div class="pf-lbl">Conflict hotspots</div></div>
+          </div>
+          <div class="proj-tags">
+            <span class="proj-pill">WEF Nexus</span>
+            <span class="proj-pill">Governance</span>
+            <span class="proj-pill">Stakeholder Mapping</span>
+            <span class="proj-pill">Open Data</span>
+          </div>
+          <span class="pf-cta">Explore the website <span aria-hidden="true">→</span></span>
         </div>
-        <div class="proj-title">WEF Nexus Europe — Drivers, Governance &amp; Stakeholders</div>
-        <p class="proj-desc">An interactive research website on how Europe governs water, energy and food together: a map of 22 organisations and the projects they share, key challenges with open-data charts, conflict hotspots, a governance framework and the research roadmap.</p>
-        <div class="proj-tags">
-          <span class="proj-pill">WEF Nexus</span>
-          <span class="proj-pill">Governance</span>
-          <span class="proj-pill">Stakeholder Mapping</span>
-          <span class="proj-pill">Open Data</span>
-        </div>
-        <span class="proj-link">Visit the website →</span>
+        <figure class="pf-media">
+          <img src="./images/wef-nexus-map.jpg" width="1120" height="880" loading="lazy" alt="Map of Europe showing 22 water, energy and food organisations linked by shared research projects">
+          <figcaption>Interactive stakeholder map</figcaption>
+        </figure>
       </a>
       <div class="proj-card reveal">
         <div class="proj-meta">
