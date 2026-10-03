@@ -415,7 +415,15 @@ a.stat-link:hover,a.stat-link:focus-visible{background:rgba(255,255,255,0.09);}
 }
 .form-success.show{display:block;}
 .form-success p{color:rgba(255,255,255,0.7);font-size:0.9rem;margin-top:8px;}
-.form-success .check{font-size:2rem;}
+.form-success .check{font-size:2rem;color:#4ade80;}
+.form-success a{color:#fff;text-decoration:underline;}
+.form-success p strong{color:#fff;font-weight:600;}
+.fs-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.fs-btn{background:#fff;color:var(--slate);border:1px solid #fff;border-radius:4px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;cursor:pointer;}
+.fs-btn-ghost{background:transparent;color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.3);}
+.fs-btn:hover{background:var(--teal-light);color:var(--teal);border-color:var(--teal-light);}
+.form-error{color:#fca5a5;font-size:0.82rem;margin:0 0 12px;}
+.form-note{color:rgba(255,255,255,0.45);font-size:0.72rem;margin-top:10px;line-height:1.5;}
 /* Footer */
 footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-between;align-items:center;}
 .foot-l{font-family:'Playfair Display',serif;font-size:0.9rem;color:rgba(255,255,255,0.45);}
@@ -1221,11 +1229,18 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
             <label class="fl" for="fmsg">Tell me about your goals</label>
             <textarea class="ft" id="fmsg" placeholder="Briefly describe where you are now and what you are hoping to achieve..."></textarea>
           </div>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button class="form-btn" id="formBtn" onclick="submitForm()">Send Message →</button>
+          <p class="form-note">Opens your email app with your message ready to send. Nothing is stored on this website.</p>
         </div>
-        <div class="form-success" id="formSuccess">
+        <div class="form-success" id="formSuccess" role="status" tabindex="-1">
           <div class="check">✓</div>
-          <p>Thank you! Your message has been sent. Vismay will be in touch within 24–48 hours.</p>
+          <p><strong>Your email app should now be open with your message ready.</strong> Just press send there, and Vismay will reply within 24–48 hours.</p>
+          <p>Didn't open? Copy your message and email it to <a href="mailto:vismaymloliyaniya@gmail.com">vismaymloliyaniya@gmail.com</a>.</p>
+          <div class="fs-actions">
+            <button type="button" class="fs-btn" id="copyMsgBtn" onclick="copyMessage()">Copy my message</button>
+            <button type="button" class="fs-btn fs-btn-ghost" onclick="resetForm()">Back to the form</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1272,45 +1287,55 @@ document.querySelectorAll('.mobile-link').forEach(l=>{
 });
 
 // Contact form — sends via Formspree
-async function submitForm(){
-  const btn=document.getElementById('formBtn');
+const CONTACT_EMAIL='vismaymloliyaniya@gmail.com';
+let lastMessage='';
+function submitForm(){
   const fname=document.getElementById('fname').value.trim();
   const lname=document.getElementById('lname').value.trim();
   const email=document.getElementById('femail').value.trim();
   const type=document.getElementById('ftype').value;
   const msg=document.getElementById('fmsg').value.trim();
-  if(!fname||!email||!msg){
-    alert('Please fill in your name, email, and message.');
+  const err=document.getElementById('formError');
+  const missing=[];
+  if(!fname) missing.push('your first name');
+  if(!email) missing.push('your email');
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) missing.push('a valid email address');
+  if(!msg) missing.push('a message');
+  if(missing.length){
+    err.textContent='Please add '+missing.join(', ').replace(/, ([^,]*)$/,' and $1')+'.';
+    err.hidden=false;
     return;
   }
-  btn.textContent='Sending…';
-  btn.classList.add('sending');
-  btn.disabled=true;
-  // Formspree endpoint — replace YOUR_FORM_ID with the one from formspree.io
-  try{
-    const res=await fetch('https://formspree.io/f/YOUR_FORM_ID',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({
-        name:fname+' '+lname,
-        email,
-        topic:type||'General enquiry',
-        message:msg
-      })
-    });
-    if(res.ok){
-      document.getElementById('contactForm').style.display='none';
-      document.getElementById('formSuccess').classList.add('show');
-    } else {
-      throw new Error('Server error');
-    }
-  } catch{
-    btn.textContent='Send Message →';
-    btn.classList.remove('sending');
-    btn.disabled=false;
-    alert('Could not send — please email directly at vismaymloliyaniya@gmail.com');
-  }
+  err.hidden=true;
+  const name=(fname+' '+lname).trim();
+  const topic=type||'General enquiry';
+  lastMessage='Name: '+name+'\nEmail: '+email+'\nTopic: '+topic+'\n\n'+msg;
+  const subject='Website enquiry: '+topic+' ('+name+')';
+  window.location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lastMessage);
+  document.getElementById('contactForm').style.display='none';
+  const ok=document.getElementById('formSuccess');
+  ok.classList.add('show');
+  ok.focus();
 }
+function copyMessage(){
+  const btn=document.getElementById('copyMsgBtn');
+  const done=()=>{btn.textContent='Copied';setTimeout(()=>btn.textContent='Copy my message',2000);};
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(lastMessage).then(done).catch(()=>fallbackCopy(done));}
+  else fallbackCopy(done);
+}
+function fallbackCopy(done){
+  const t=document.createElement('textarea');t.value=lastMessage;document.body.appendChild(t);t.select();
+  try{document.execCommand('copy');done();}catch(e){}
+  t.remove();
+}
+function resetForm(){
+  document.getElementById('formSuccess').classList.remove('show');
+  document.getElementById('contactForm').style.display='';
+}
+['fname','femail','fmsg'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',()=>{document.getElementById('formError').hidden=true;});
+});
 </script>
 </body>
 </html>
