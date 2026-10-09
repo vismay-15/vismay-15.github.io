@@ -106,7 +106,8 @@ nav{
 }
 .nav-text-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:var(--ink);line-height:1.1;}
 .nav-text-role{font-size:0.63rem;color:var(--ink-light);letter-spacing:1.5px;text-transform:uppercase;font-family:'DM Mono',monospace;white-space:nowrap;}
-@media(max-width:1180px){.role-extra{display:none;}}
+@media(max-width:1180px){.role-extra{display:none;}.nav-links a{padding:6px 11px;}.nav-cta{margin-left:10px;}}
+@media(max-width:1000px){nav{padding:0 20px;}.nav-links{display:none;}.hamburger{display:flex;}.mobile-nav{display:block;}}
 .nav-links{display:flex;align-items:center;gap:0;list-style:none;}
 .nav-links a{
   display:block;padding:6px 16px;color:var(--ink-mid);text-decoration:none;
@@ -562,7 +563,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-brand">
+  <a href="/" class="nav-brand">
     <div class="nav-logo">VL</div>
     <div>
       <div class="nav-text-name">Vismay Loliyaniya</div>
@@ -574,6 +575,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
     <li><a href="#services">Guidance</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#research">Research</a></li>
+    <li><a href="/fwe-nexus/">WEF Nexus</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact" class="nav-cta">Contact</a></li>
   </ul>
@@ -586,6 +588,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
   <a href="#services" class="mobile-link">Guidance</a>
   <a href="#projects" class="mobile-link">Projects</a>
   <a href="#research" class="mobile-link">Research</a>
+  <a href="/fwe-nexus/" class="mobile-link">WEF Nexus</a>
   <a href="#skills" class="mobile-link">Skills</a>
   <a href="#contact" class="mobile-link">Get In Touch</a>
 </div>
@@ -1207,7 +1210,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
       <div class="contact-left">
         <div class="c-eyebrow reveal">Get In Touch</div>
         <h2 class="c-h2 reveal">Ready to Shape<br><em>Your Career?</em></h2>
-        <p class="c-tagline reveal">Whether you are a student exploring options, a graduate planning your next move, or a professional looking to pivot — I am here to help guide your journey in civil engineering and the built environment.</p>
+        <p class="c-tagline reveal">Whether you are a student exploring options, a graduate planning your next move, or a professional looking to pivot — I am here to help guide your journey in civil engineering and the built environment. Questions, suggestions and corrections about my WEF Nexus research are welcome here too.</p>
         <a href="mailto:vismaymloliyaniya@gmail.com" class="c-link reveal">
           <div class="c-item">
             <div class="c-icon">
@@ -1230,7 +1233,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
             </div>
             <div>
               <div class="c-item-lbl">LinkedIn</div>
-              <div class="c-item-val">linkedin.com/in/vismayloliyaniya</div>
+              <div class="c-item-val">Vismay Loliyaniya, MSc, GMICE, CAVA, IQA</div>
             </div>
           </div>
         </a>
@@ -1266,7 +1269,7 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
             <input class="fi" id="femail" type="email" placeholder="your@email.com" />
           </div>
           <div class="fg">
-            <label class="fl" for="ftype">I am looking for guidance on</label>
+            <label class="fl" for="ftype">What is it about?</label>
             <div class="fs">
               <select id="ftype">
                 <option value="">Select a topic...</option>
@@ -1276,6 +1279,9 @@ footer{background:#0b0f16;padding:22px 56px;display:flex;justify-content:space-b
                 <option>Study &amp; work in the UK (international)</option>
                 <option>MSc / PhD research guidance</option>
                 <option>Career transition coaching</option>
+                <option value="WEF Nexus research: question or suggestion">WEF Nexus research: question or suggestion</option>
+                <option value="WEF Nexus map: correction or new organisation">WEF Nexus map: correction or new organisation</option>
+                <option>Collaboration or speaking</option>
                 <option>Other / general enquiry</option>
               </select>
             </div>
@@ -1391,6 +1397,19 @@ function resetForm(){
   const el=document.getElementById(id);
   if(el) el.addEventListener('input',()=>{document.getElementById('formError').hidden=true;});
 });
+
+// Pre-fill the contact form from links on the WEF Nexus pages
+(function(){
+  const q=new URLSearchParams(location.search);
+  const topic=q.get('topic'); const about=q.get('about');
+  if(!topic&&!about) return;
+  const map={research:'WEF Nexus research: question or suggestion',suggestion:'WEF Nexus research: question or suggestion',question:'WEF Nexus research: question or suggestion',correction:'WEF Nexus map: correction or new organisation',stakeholder:'WEF Nexus map: correction or new organisation',collaboration:'Collaboration or speaking'};
+  const sel=document.getElementById('ftype');
+  if(sel&&map[topic]) sel.value=map[topic];
+  const msg=document.getElementById('fmsg');
+  if(msg&&about&&!msg.value) msg.value='About: '+about+'\n\n';
+  if(topic==='stakeholder'&&msg&&!msg.value) msg.value='Organisation I suggest adding: \n\nWhy it belongs on the map: ';
+})();
 </script>
 </body>
 </html>
